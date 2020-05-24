@@ -22,14 +22,14 @@ public class QuestionController {
 		this.repository = questionrepository;
 	}
 	
-	@PostMapping("/question")
+	@PostMapping("/questions")
 	Integer saveQuestion(@RequestBody Question newQuestion) {
 		return repository.save(newQuestion).getId();
 	}
 	
-	@GetMapping("/questions/{id}")
-	List<Question> getAllQuestionsForQuestionPaper(@PathVariable Integer id) {
-		return repository.getAllQuestionsForQuestionPaper(id);
+	@GetMapping("/questions/{questionPaperID}")
+	List<Question> getAllQuestionsForQuestionPaper(@PathVariable Integer questionPaperID) {
+		return repository.getAllQuestionsForQuestionPaper(questionPaperID);
 	}
 	
 	@PutMapping("/questions/{id}")

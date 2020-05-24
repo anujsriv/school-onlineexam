@@ -15,6 +15,9 @@ public class QuestionPaper {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 	
+	@Column(name = "CREATED_BY")
+	private String teacherID;;
+	
 	@Column(name = "SUBJECT")
 	private String subject;
 	
@@ -39,6 +42,9 @@ public class QuestionPaper {
 	@Column(name = "EVALUATION_TYPE")
 	private String evaluationType;
 	
+	@Column(name = "INSTRUCTIONS")
+	private String instructions;
+	
 	@Column(name = "STATUS")
 	private String status;
 
@@ -56,6 +62,20 @@ public class QuestionPaper {
 		this.id = id;
 	}
 	
+	/**
+	 * @return the teacherID
+	 */
+	public String getTeacherID() {
+		return teacherID;
+	}
+
+	/**
+	 * @param teacherID the teacherID to set
+	 */
+	public void setTeacherID(String teacherID) {
+		this.teacherID = teacherID;
+	}
+
 	/**
 	 * @return the subject
 	 */
@@ -166,6 +186,20 @@ public class QuestionPaper {
 	 */
 	public void setEvaluationType(String evaluationType) {
 		this.evaluationType = evaluationType;
+	}
+
+	/**
+	 * @return the instructions
+	 */
+	public String getInstructions() {
+		return instructions;
+	}
+
+	/**
+	 * @param instructions the instructions to set
+	 */
+	public void setInstructions(String instructions) {
+		this.instructions = instructions;
 	}
 
 	/**
