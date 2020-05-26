@@ -9,7 +9,7 @@ function RegistrationForm(props) {
         email : "",
         password : "",
         confirmPassword: "",
-        type : "",
+        type : "teacher",
         successMessage: null
     })
     const handleChange = (e) => {
@@ -42,6 +42,7 @@ function RegistrationForm(props) {
                 })
                 .catch(function (error) {
                     console.log(error);
+                    props.showError("Some error ocurred");
                 });    
         } else {
             props.showError('Please enter valid Username, Password and/ or User Type')    
@@ -49,7 +50,7 @@ function RegistrationForm(props) {
         
     }
     const redirectToHome = (data) => {
-        if(state.type === 'Teacher'){
+        if(state.type === 'teacher'){
             props.updateTitle('Home')
             props.history.push('/teacherhome', data);
         } else{

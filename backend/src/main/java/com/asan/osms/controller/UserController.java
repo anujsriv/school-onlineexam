@@ -20,8 +20,8 @@ public class UserController {
 	}
 	
 	@PostMapping("/users")
-	Integer saveUser(@RequestBody User user) {
-		return repository.save(user).getId();
+	User saveUser(@RequestBody User user) {
+		return repository.save(user);
 	}
 	
 	@PostMapping("/login")

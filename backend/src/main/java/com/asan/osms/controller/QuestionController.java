@@ -23,8 +23,8 @@ public class QuestionController {
 	}
 	
 	@PostMapping("/questions")
-	Integer saveQuestion(@RequestBody Question newQuestion) {
-		return repository.save(newQuestion).getId();
+	Question saveQuestion(@RequestBody Question newQuestion) {
+		return repository.save(newQuestion);
 	}
 	
 	@GetMapping("/questions/{questionPaperID}")

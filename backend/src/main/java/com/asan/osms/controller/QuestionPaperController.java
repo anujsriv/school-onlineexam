@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.asan.osms.entity.QuestionPaper;
+import com.asan.osms.exception.ResourceNotFoundException;
 import com.asan.osms.repository.QuestionPaperRepository;
 
 @RestController
@@ -28,9 +29,9 @@ public class QuestionPaperController {
 	}
 	
 	@PostMapping("/questionpapers")
-	Integer newQuestionPaper(@RequestBody QuestionPaper questionPaper) {
+	QuestionPaper newQuestionPaper(@RequestBody QuestionPaper questionPaper) {
 		questionPaper.setStatus("Complete");
-		return repository.save(questionPaper).getId();
+		return repository.save(questionPaper);
 	}
 	
 	@GetMapping("/questionpapers/{id}")
@@ -39,21 +40,26 @@ public class QuestionPaperController {
 		try {
 			oldQuestionPaper = repository.findById(id).get();
 		} catch (NoSuchElementException ex) {
-			
+			throw new ResourceNotFoundException(String.valueOf(id));
 		}
 		
-		return oldQuestionPaper;
+		if (oldQuestionPaper != null) {
+			return oldQuestionPaper;
+		}
+		
+		throw new ResourceNotFoundException(String.valueOf(id));
+		
 	}
 	
 	@PutMapping("/questionpapers/{id}")
-	Integer updateQuestionPaper(@RequestBody QuestionPaper newQuestionPaper, @PathVariable Integer id) {
+	QuestionPaper updateQuestionPaper(@RequestBody QuestionPaper newQuestionPaper, @PathVariable Integer id) {
 		
 		QuestionPaper oldQuestionPaper = null;
 		try {
 			oldQuestionPaper = repository.findById(id).get();
 		} catch (NoSuchElementException ex) {
 			newQuestionPaper.setId(id);
-			return repository.save(newQuestionPaper).getId();
+			return repository.save(newQuestionPaper);
 		}
 		
 		oldQuestionPaper.setClassName(newQuestionPaper.getClassName());
@@ -65,7 +71,7 @@ public class QuestionPaperController {
 		oldQuestionPaper.setSection(newQuestionPaper.getSection());
 		oldQuestionPaper.setStatus("Complete");
 		
-		return repository.save(oldQuestionPaper).getId();
+		return repository.save(oldQuestionPaper);
 		
 	}
 

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.asan.osms.entity.Answer;
+import com.asan.osms.exception.ResourceNotFoundException;
 import com.asan.osms.repository.AnswerRepository;
 
 @RestController
@@ -21,8 +22,8 @@ public class AnswerController {
 	}
 	
 	@PutMapping("/answers")
-	Integer saveAnswer(@RequestBody Answer answer) {
-		return repository.save(answer).getId();
+	Answer saveAnswer(@RequestBody Answer answer) {
+		return repository.save(answer);
 	}
 	
 	@GetMapping("/answers/{answerPaperID}/{questionID}")
@@ -32,11 +33,14 @@ public class AnswerController {
 		try {
 			answer = repository.findByAnswerPaperAndQuestion(answerPaperID, questionID);
 		} catch (NoSuchElementException ex) {
-			
+			throw new ResourceNotFoundException(String.valueOf(answerPaperID));
 		}
 		
-		return answer;
+		if (answer != null) {
+			return answer;
+		}
 		
+		throw new ResourceNotFoundException(String.valueOf(answerPaperID));
 	}
 
 }
