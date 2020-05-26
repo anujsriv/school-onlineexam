@@ -2,13 +2,12 @@ package com.asan.osms.controller;
 
 import java.util.NoSuchElementException;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.asan.osms.entity.User;
+import com.asan.osms.exception.ResourceNotFoundException;
 import com.asan.osms.repository.UserRepository;
 
 @RestController
@@ -20,22 +19,26 @@ public class UserController {
 		this.repository = userRepository;
 	}
 	
-	@PutMapping("/users")
+	@PostMapping("/users")
 	Integer saveUser(@RequestBody User user) {
 		return repository.save(user).getId();
 	}
 	
-	@GetMapping("/users/{userName}/{password}")
-	User getByUsernameAndPassword(@PathVariable String userName, @PathVariable String password) {
+	@PostMapping("/login")
+	User getByUsernameAndPassword(@RequestBody User requestedUser) {
 		User user = null;
 		
 		try {
-			user = repository.findByUsernameAndPassword(userName, password);
+			user = repository.findByUsernameAndPassword(requestedUser.getUserName(), requestedUser.getPassword());
 		} catch (NoSuchElementException ex) {
-			
+			throw new ResourceNotFoundException(requestedUser.getUserName());
 		}
 		
-		return user;
+		if (user != null) {
+			return user;
+		}
+		
+		throw new ResourceNotFoundException(requestedUser.getUserName());
 	}
 
 }
