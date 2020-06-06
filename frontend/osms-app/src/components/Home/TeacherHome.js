@@ -1,10 +1,11 @@
 import React from 'react';
 import { withRouter } from "react-router-dom";
+import TeacherTabs from '../Tabs/TeacherTabs';
 
 function TeacherHome(props) {
     return(
-        <div className="mt-2">
-            Teacher Home page content
+        <div className="mt-5">
+            <TeacherTabs />
         </div>
     )
 }

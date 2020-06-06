@@ -23,18 +23,23 @@ public class QuestionPaperController {
 		this.repository = questionPaperRepository;
 	}
 	
+	@GetMapping("/questionpapers/{teacherId}")
+	List<QuestionPaper> getAllQuestionPaperForATeacher(@PathVariable Integer teacherId) {
+		return (List<QuestionPaper>) repository.findAllQuestionPaperForATeacher(teacherId);
+	}
+	
 	@GetMapping("/questionpapers")
-	List<QuestionPaper> getAllQuestionPaper() {
+	List<QuestionPaper> getAllQuestionPapers() {
 		return (List<QuestionPaper>) repository.findAll();
 	}
 	
-	@PostMapping("/questionpapers")
+	@PostMapping("/questionpaper")
 	QuestionPaper newQuestionPaper(@RequestBody QuestionPaper questionPaper) {
 		questionPaper.setStatus("Complete");
 		return repository.save(questionPaper);
 	}
 	
-	@GetMapping("/questionpapers/{id}")
+	@GetMapping("/questionpaper/{id}")
 	QuestionPaper getQuestionPaper(@PathVariable Integer id) {
 		QuestionPaper oldQuestionPaper = null;
 		try {
@@ -51,7 +56,7 @@ public class QuestionPaperController {
 		
 	}
 	
-	@PutMapping("/questionpapers/{id}")
+	@PutMapping("/questionpaper/{id}")
 	QuestionPaper updateQuestionPaper(@RequestBody QuestionPaper newQuestionPaper, @PathVariable Integer id) {
 		
 		QuestionPaper oldQuestionPaper = null;

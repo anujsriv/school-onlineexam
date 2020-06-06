@@ -16,7 +16,7 @@ public class QuestionPaper {
     private Integer id;
 	
 	@Column(name = "CREATED_BY")
-	private String teacherID;;
+	private Integer teacherID;
 	
 	@Column(name = "SUBJECT")
 	private String subject;
@@ -61,18 +61,18 @@ public class QuestionPaper {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	
+
 	/**
 	 * @return the teacherID
 	 */
-	public String getTeacherID() {
+	public Integer getTeacherID() {
 		return teacherID;
 	}
 
 	/**
 	 * @param teacherID the teacherID to set
 	 */
-	public void setTeacherID(String teacherID) {
+	public void setTeacherID(Integer teacherID) {
 		this.teacherID = teacherID;
 	}
 
