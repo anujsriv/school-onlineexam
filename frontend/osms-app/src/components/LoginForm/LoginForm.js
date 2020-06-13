@@ -96,7 +96,7 @@ function LoginForm(props) {
                 {state.successMessage}
             </div>
             <div className="registerMessage">
-                <span>Dont have an account? </span>
+                <span>Don't have an account? </span>
                 <span className="loginText" onClick={() => redirectToRegister()}>Register</span> 
             </div>
         </div>

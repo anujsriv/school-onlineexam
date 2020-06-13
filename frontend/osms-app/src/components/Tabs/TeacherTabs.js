@@ -1,10 +1,13 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import { withRouter } from "react-router-dom";
 import QuestionPapers from '../QuestionPaper/QuestionPapers';
+import CreateEditQuestionPaper from '../QuestionPaper/CreateEditQuestionPaper';
+import AlertComponent from '../AlertComponent/AlertComponent';
 
 function TeacherTabs(props) {
+   const [errorMessage, updateErrorMessage] = useState(null);
    return (
         <Tabs>
             <TabList>
@@ -16,7 +19,8 @@ function TeacherTabs(props) {
                 <QuestionPapers />
             </TabPanel>
             <TabPanel>
-                <h2>Any content 2</h2>
+                <CreateEditQuestionPaper showError={updateErrorMessage} />
+                <AlertComponent errorMessage={errorMessage} hideError={updateErrorMessage}/>
             </TabPanel>
         </Tabs>
     )
