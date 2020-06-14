@@ -13,7 +13,7 @@ function QuestionPaperForm(props) {
         fullMarks : "",
         passMarks : "",
         duration : "",
-        evaluationType : "",
+        evaluationType : "manual",
         instructions : "",
         teacherID : "",
         successMessage: ""
@@ -37,7 +37,7 @@ function QuestionPaperForm(props) {
             fullMarks : "",
             passMarks : "",
             duration : "",
-            evaluationType : "",
+            evaluationType : "manual",
             instructions : "",
             teacherID : "",
             successMessage: ""
@@ -88,7 +88,7 @@ function QuestionPaperForm(props) {
     }
 
     return(
-        <div className="card col-12 col-lg-30 login-card mt-2 hv-center">
+        <div className="card col-12 col-lg-30 hv-center">
             <form>
                 <div className="form-group text-left">
                 <label htmlFor="subjectInput">Subject</label>
@@ -165,6 +165,15 @@ function QuestionPaperForm(props) {
                     <option value="mixed">Mixed</option>
                 </select>
                 </div>
+                <div className="form-group text-left">
+                <label htmlFor="instructionsInput">Instructions</label>
+                <textarea 
+                       className="form-control" 
+                       id="instructions" 
+                       placeholder="Enter instructions to be followed during Examination." 
+                       value={state.instructions}
+                       onChange={handleChange} />
+                </div>
                 <div className="form-group form-inline">
                 <button
                     type="submit" 
@@ -172,13 +181,14 @@ function QuestionPaperForm(props) {
                     onClick={handleResetClick}>
                     Reset
                 </button>
-                <label>                                                </label>
-                <button
-                    type="submit" 
-                    className="btn btn-primary" 
-                    onClick={handleSubmitClick}>
-                    Save
-                </button>
+                <div style={{paddingLeft: '71%'}} >
+                    <button
+                        type="submit" 
+                        className="btn btn-primary" 
+                        onClick={handleSubmitClick}>
+                        Save
+                    </button>
+                </div>
                 </div>
             </form>
             <div className="alert alert-success mt-2" style={{display: state.successMessage ? 'block' : 'none' }} role="alert">
