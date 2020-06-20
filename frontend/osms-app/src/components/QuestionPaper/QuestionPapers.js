@@ -18,6 +18,9 @@ function QuestionTable (props) {
     }
 
     const editData = (id) => {
+    }
+
+    const deleteData = (id) => {
 
         axios.delete(`${API_BASE_URL}/${id}`).then(res => {
             const del = questionPapers.filter(questionPaper => id !== questionPaper.id)

@@ -16,7 +16,8 @@ function QuestionPaperForm(props) {
         evaluationType : "manual",
         instructions : "",
         teacherID : "",
-        successMessage: ""
+        successMessage: "",
+        questionPaperID : ""
     })
     
     const handleChange = (e) => {
@@ -40,13 +41,19 @@ function QuestionPaperForm(props) {
             evaluationType : "manual",
             instructions : "",
             teacherID : "",
-            successMessage: ""
+            successMessage: "",
+            questionPaperID : ""
         });
     }
 
     const handleSubmitClick = (e) => {
         e.preventDefault();
         sendDetailsToServer();
+    }
+
+    const handleAddEditClick = (e) => {
+        e.preventDefault();
+        console.log(state.questionPaperID);
     }
 
     const sendDetailsToServer = () => {
@@ -69,10 +76,10 @@ function QuestionPaperForm(props) {
                     if(response.status === 200){
                         setState(prevState => ({
                             ...prevState,
+                            'questionPaperID' : response.data.id,
                             'successMessage' : 'Question paper created/ edited successfully.'
                         }))
-                        //redirectToHome(response.data);
-                        props.showError(null)
+                        props.showError(null);
                     } else{
                         props.showError("Some error ocurred");
                     }
@@ -181,12 +188,20 @@ function QuestionPaperForm(props) {
                     onClick={handleResetClick}>
                     Reset
                 </button>
-                <div style={{paddingLeft: '71%'}} >
+                <div style={{paddingLeft: '15%'}} >
                     <button
                         type="submit" 
                         className="btn btn-primary" 
                         onClick={handleSubmitClick}>
                         Save
+                    </button>
+                </div>
+                <div style={{display: state.successMessage ? 'block' : 'none', paddingLeft: '19%'}} >
+                    <button
+                        type="submit" 
+                        className="btn btn-primary" 
+                        onClick={handleAddEditClick}>
+                        Add/ Edit Question(s)
                     </button>
                 </div>
                 </div>

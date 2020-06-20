@@ -1,8 +1,17 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { withRouter } from "react-router-dom";
 import { isNullOrUndefined } from 'util';
 
 function Header(props) {
+
+    useEffect(() => {
+        getData()
+    }, [])
+
+    const getData = async () => {
+        props.updateTitle('Login')
+    }
+
     const capitalize = (s) => {
         if (typeof s !== 'string') return ''
         return s.charAt(0).toUpperCase() + s.slice(1)
