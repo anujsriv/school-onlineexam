@@ -22,17 +22,17 @@ public class QuestionController {
 		this.repository = questionrepository;
 	}
 	
-	@PostMapping("/questions")
+	@PostMapping("/question")
 	Question saveQuestion(@RequestBody Question newQuestion) {
 		return repository.save(newQuestion);
 	}
 	
-	@GetMapping("/questions/{questionPaperID}")
+	@GetMapping("/question/{questionPaperID}")
 	List<Question> getAllQuestionsForQuestionPaper(@PathVariable Integer questionPaperID) {
 		return repository.getAllQuestionsForQuestionPaper(questionPaperID);
 	}
 	
-	@PutMapping("/questions/{id}")
+	@PutMapping("/question/{id}")
 	Integer updateQuestion(@RequestBody Question newQuestion, @PathVariable Integer id) {
 		
 		Question oldQuestion = null;

@@ -19,7 +19,7 @@ public class Question {
 	private Integer questionPaperID;
 	
 	@Column(name = "TYPE")
-	private Integer type;
+	private String type;
 	
 	@Column(name = "QUESTION")
 	private String question;
@@ -64,14 +64,14 @@ public class Question {
 	/**
 	 * @return the type
 	 */
-	public Integer getType() {
+	public String getType() {
 		return type;
 	}
 
 	/**
 	 * @param type the type to set
 	 */
-	public void setType(Integer type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 
