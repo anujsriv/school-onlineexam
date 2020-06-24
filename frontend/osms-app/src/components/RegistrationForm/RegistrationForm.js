@@ -6,10 +6,13 @@ import { withRouter } from "react-router-dom";
 
 function RegistrationForm(props) {
     const [state , setState] = useState({
-        email : "",
+        fullName : "",
+        userName : "",
         password : "",
         confirmPassword: "",
         type : "teacher",
+        className : "",
+        section : "",
         successMessage: null
     })
     const handleChange = (e) => {
@@ -20,11 +23,14 @@ function RegistrationForm(props) {
         }))
     }
     const sendDetailsToServer = () => {
-        if(state.email.length && state.password.length) {
+        if(state.userName.length && state.password.length) {
             props.showError(null);
             const payload={
-                "userName":state.email,
+                "fullName":state.fullName,
+                "userName":state.userName,
                 "password":state.password,
+                "className" : state.className,
+                "section" : state.section,
                 "type":state.type
             }
             axios.post(API_BASE_URL+'users', payload)
@@ -74,16 +80,26 @@ function RegistrationForm(props) {
         <div className="card col-12 col-lg-4 login-card mt-2 hv-center">
             <form>
                 <div className="form-group text-left">
-                <label htmlFor="exampleInputEmail1">Email address</label>
-                <input type="email" 
+                    <label htmlFor="userNameInput">Full Name</label>
+                    <input type="text" 
+                        className="form-control" 
+                        id="fullName"
+                        aria-describedby="fullNameHelp"  
+                        placeholder="Enter Full Name" 
+                        value={state.fullName}
+                        onChange={handleChange} 
+                    />
+                    <small id="fullNameHelp" className="form-text text-muted">Please enter full name as: [FIRST NAME] [MIDDLE NAME] [LAST NAME]</small>
+                </div>
+                <div className="form-group text-left">
+                <label htmlFor="exampleInputEmail1">User Name</label>
+                <input type="text" 
                        className="form-control" 
-                       id="email" 
-                       aria-describedby="emailHelp" 
-                       placeholder="Enter email" 
-                       value={state.email}
+                       id="userName" 
+                       placeholder="Enter user name" 
+                       value={state.userName}
                        onChange={handleChange}
                 />
-                <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
                 </div>
                 <div className="form-group text-left">
                     <label htmlFor="userTypeDropDown">User Type</label>
@@ -95,6 +111,24 @@ function RegistrationForm(props) {
                         <option value="teacher">Teacher</option>
                         <option value="student">Student</option>
                     </select>
+                </div>
+                <div className="form-group text-left">
+                    <label htmlFor="classNameInput">Class</label>
+                    <input type="text" 
+                        className="form-control" 
+                        id="className" 
+                        placeholder="Enter Class" 
+                        value={state.className}
+                        onChange={handleChange} />
+                </div>
+                    <div className="form-group text-left">
+                    <label htmlFor="sectionInput">Section</label>
+                    <input type="text" 
+                        className="form-control" 
+                        id="section" 
+                        placeholder="Enter Section" 
+                        value={state.section}
+                        onChange={handleChange} />
                 </div>
                 <div className="form-group text-left">
                     <label htmlFor="exampleInputPassword1">Password</label>

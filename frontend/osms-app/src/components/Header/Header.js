@@ -27,7 +27,7 @@ function Header(props) {
         <nav className="navbar navbar-dark bg-primary">
             {!isNullOrUndefined(props.location.state) &&
             <div className="row col-11 d-flex justify-content-left text-white">
-                Welcome {props.location.state.userName} !
+                Welcome {props.location.state.fullName} !
             </div>}
             <div className="row col-12 d-flex justify-content-center text-white">
                 <span className="h3">{props.title || title}</span>

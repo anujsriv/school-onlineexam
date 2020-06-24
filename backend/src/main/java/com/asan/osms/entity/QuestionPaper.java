@@ -42,7 +42,7 @@ public class QuestionPaper {
 	@Column(name = "EVALUATION_TYPE")
 	private String evaluationType;
 	
-	@Column(name = "INSTRUCTIONS")
+	@Column(name = "INSTRUCTIONS", columnDefinition = "ntext")
 	private String instructions;
 	
 	@Column(name = "STATUS")

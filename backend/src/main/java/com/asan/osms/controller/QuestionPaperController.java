@@ -16,29 +16,35 @@ import com.asan.osms.repository.QuestionPaperRepository;
 
 @RestController
 public class QuestionPaperController {
-	
+
 	private final QuestionPaperRepository repository;
-	
+
 	QuestionPaperController(QuestionPaperRepository questionPaperRepository) {
 		this.repository = questionPaperRepository;
 	}
-	
+
 	@GetMapping("/questionpapers/{teacherId}")
 	List<QuestionPaper> getAllQuestionPaperForATeacher(@PathVariable Integer teacherId) {
 		return (List<QuestionPaper>) repository.findAllQuestionPaperForATeacher(teacherId);
 	}
-	
+
+	@PostMapping("/questionpapers")
+	List<QuestionPaper> getAllQuestionPaperForAClass(@RequestBody QuestionPaper questionPaper) {
+		return (List<QuestionPaper>) repository.findAllQuestionPaperForAClass(questionPaper.getClassName(),
+				questionPaper.getSection());
+	}
+
 	@GetMapping("/questionpapers")
 	List<QuestionPaper> getAllQuestionPapers() {
 		return (List<QuestionPaper>) repository.findAll();
 	}
-	
+
 	@PostMapping("/questionpaper")
 	QuestionPaper newQuestionPaper(@RequestBody QuestionPaper questionPaper) {
 		questionPaper.setStatus("Complete");
 		return repository.save(questionPaper);
 	}
-	
+
 	@GetMapping("/questionpaper/{id}")
 	QuestionPaper getQuestionPaper(@PathVariable Integer id) {
 		QuestionPaper oldQuestionPaper = null;
@@ -47,18 +53,18 @@ public class QuestionPaperController {
 		} catch (NoSuchElementException ex) {
 			throw new ResourceNotFoundException(String.valueOf(id));
 		}
-		
+
 		if (oldQuestionPaper != null) {
 			return oldQuestionPaper;
 		}
-		
+
 		throw new ResourceNotFoundException(String.valueOf(id));
-		
+
 	}
-	
+
 	@PutMapping("/questionpaper/{id}")
 	QuestionPaper updateQuestionPaper(@RequestBody QuestionPaper newQuestionPaper, @PathVariable Integer id) {
-		
+
 		QuestionPaper oldQuestionPaper = null;
 		try {
 			oldQuestionPaper = repository.findById(id).get();
@@ -66,7 +72,7 @@ public class QuestionPaperController {
 			newQuestionPaper.setId(id);
 			return repository.save(newQuestionPaper);
 		}
-		
+
 		oldQuestionPaper.setClassName(newQuestionPaper.getClassName());
 		oldQuestionPaper.setDuration(newQuestionPaper.getDuration());
 		oldQuestionPaper.setEvaluationType(newQuestionPaper.getEvaluationType());
@@ -75,9 +81,9 @@ public class QuestionPaperController {
 		oldQuestionPaper.setPassMarks(newQuestionPaper.getPassMarks());
 		oldQuestionPaper.setSection(newQuestionPaper.getSection());
 		oldQuestionPaper.setStatus("Complete");
-		
+
 		return repository.save(oldQuestionPaper);
-		
+
 	}
 
 }

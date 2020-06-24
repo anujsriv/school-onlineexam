@@ -11,6 +11,7 @@ import {
   Route
 } from "react-router-dom";
 import AlertComponent from './components/AlertComponent/AlertComponent';  
+import StartExam from './components/Exam/StartExam';
 function App() {
   const [title, updateTitle] = useState(null);
   const [errorMessage, updateErrorMessage] = useState(null);
@@ -34,6 +35,9 @@ function App() {
             </Route>
             <Route path="/studenthome" >
               <StudentHome />
+            </Route>
+            <Route path="/studentstartexam" >
+              <StartExam />
             </Route>
           </Switch>
           <AlertComponent errorMessage={errorMessage} hideError={updateErrorMessage}/>
