@@ -35,7 +35,7 @@ function QuestionPaperForm(props) {
     })
     
     const handleChange = (e) => {
-        const {id , value} = e.target   
+        const {id , value} = e.target;   
         
         if (id === 'questionType') {
             if (value === 'subjective') {

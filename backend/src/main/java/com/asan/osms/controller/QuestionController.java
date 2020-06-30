@@ -39,7 +39,7 @@ public class QuestionController {
 	@GetMapping("/question/{questionPaperID}/{pageNumber}")
 	Page<Question> getQuestionByQuestionPaperId(@PathVariable Integer questionPaperID,
 			@PathVariable Integer pageNumber) {
-		Pageable pageable = PageRequest.of(pageNumber, 1, Sort.by("id"));
+		Pageable pageable = PageRequest.of(pageNumber, 1, Sort.by("id").ascending());
 		return repository.getQuestionByQuestionPaperId(questionPaperID, pageable);
 	}
 	

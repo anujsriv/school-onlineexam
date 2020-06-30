@@ -4,7 +4,7 @@ import java.util.NoSuchElementException;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,7 +21,7 @@ public class AnswerController {
 		this.repository = answerRepository;
 	}
 	
-	@PutMapping("/answers")
+	@PostMapping("/answers")
 	Answer saveAnswer(@RequestBody Answer answer) {
 		return repository.save(answer);
 	}

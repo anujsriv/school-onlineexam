@@ -26,17 +26,8 @@ function AnswerTable(props) {
             "questionPaperID":id,
             "studentID":props.location.state.id
         }
-        axios.post(API_BASE_URL+'answerpapers', payload)
-            .then(function (response) {
-                if(response.status === 200){
-                    redirectToStartExam(response.data);
-                } else{
-                    console.log("Some error occured");
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+
+        redirectToStartExam(payload);
     }
 
     const redirectToStartExam = (data) => {
@@ -61,7 +52,7 @@ function AnswerTable(props) {
                     <td>{fullMarks}</td>
                     <td>{status}</td>
                     <td className='opration'>
-                        <button className='button' title='Click to Start the Exam.' onClick={() => startExam(id)}>Start</button>
+                        <button className='button' title='Click to Start the Exam.' onClick={() => startExam(id)}>Take Exam</button>
                     </td>
                 </tr>
             )
@@ -70,7 +61,7 @@ function AnswerTable(props) {
 
     return (
         <>
-            <h5 id='title'>To Start an exam click the <button className='button'>Start</button> button. Please note that clicking on <button className='button'>Start</button> will start your exam in a new Window.<br></br>Please DO NOT close the new window during the entirity of the exam.</h5>
+            <h5 id='title'>To Start an exam click the <button className='button'>Take Exam</button> button. Please note that clicking on <button className='button'>Take Exam</button> will start your exam in a new Window.<br></br>Please DO NOT close or refresh the new window during the entirity of the exam.</h5>
             <table id='answerPaper'>
                 <thead>
                     <tr>{renderHeader()}</tr>

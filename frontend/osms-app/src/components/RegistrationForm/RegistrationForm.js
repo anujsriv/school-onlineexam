@@ -88,6 +88,7 @@ function RegistrationForm(props) {
                         placeholder="Enter Full Name" 
                         value={state.fullName}
                         onChange={handleChange} 
+                        required
                     />
                     <small id="fullNameHelp" className="form-text text-muted">Please enter full name as: [FIRST NAME] [MIDDLE NAME] [LAST NAME]</small>
                 </div>
@@ -99,6 +100,7 @@ function RegistrationForm(props) {
                        placeholder="Enter user name" 
                        value={state.userName}
                        onChange={handleChange}
+                       required
                 />
                 </div>
                 <div className="form-group text-left">
@@ -119,7 +121,8 @@ function RegistrationForm(props) {
                         id="className" 
                         placeholder="Enter Class" 
                         value={state.className}
-                        onChange={handleChange} />
+                        onChange={handleChange} 
+                        required />
                 </div>
                     <div className="form-group text-left">
                     <label htmlFor="sectionInput">Section</label>
@@ -128,7 +131,8 @@ function RegistrationForm(props) {
                         id="section" 
                         placeholder="Enter Section" 
                         value={state.section}
-                        onChange={handleChange} />
+                        onChange={handleChange} 
+                        required />
                 </div>
                 <div className="form-group text-left">
                     <label htmlFor="exampleInputPassword1">Password</label>
@@ -138,6 +142,7 @@ function RegistrationForm(props) {
                         placeholder="Password"
                         value={state.password}
                         onChange={handleChange} 
+                        required
                     />
                 </div>
                 <div className="form-group text-left">
@@ -148,6 +153,7 @@ function RegistrationForm(props) {
                         placeholder="Confirm Password"
                         value={state.confirmPassword}
                         onChange={handleChange} 
+                        required
                     />
                 </div>
                 <button 
