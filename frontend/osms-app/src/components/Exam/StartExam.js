@@ -10,7 +10,9 @@ function StartExam(props) {
     const [state, setState] = useState({
         multiChoice: [],
         singleChoice: "",
-        answerText: ""
+        answerText: "",
+        successMessage: null,
+        disabled: "false"
     })
 
     const [pagable, setPagable] = useState({
@@ -90,7 +92,11 @@ function StartExam(props) {
                 axios.post(API_BASE_URL+'answers', payload)
                     .then(function (response) {
                         if(response.status === 200){
-                           
+                            setState(prevState => ({
+                                ...prevState,
+                                'successMessage' : 'Answers submitted Successfully !!!',
+                                'disabled' : 'disabled'
+                            }))
                         } else{
                             console.log("Some error occured");
                         }
@@ -207,8 +213,12 @@ function StartExam(props) {
 
     return(
         <div className="card w-75 text-left">
+            <div className="alert alert-success" style={{display: state.successMessage ? 'block' : 'none' }} role="alert">
+                {state.successMessage}
+                <p>For security purposes, please close the Browser Window.</p>
+            </div>
             { question.type ?
-                <div className="card text-left">
+                <div style={{display: state.disabled === 'disabled' ? 'none' : 'block' }} className="card text-left">
                 <h5 className="card-header ">{question.question}</h5>
                     <div className="card-body">
                         <div style={{display: question.type === 'multi' ? 'block' : 'none' }} className="form-group">
