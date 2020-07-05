@@ -3,6 +3,7 @@ package com.asan.osms.controller;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,7 +44,7 @@ public class QuestionPaperController {
 
 	@PostMapping("/questionpaper")
 	QuestionPaper newQuestionPaper(@RequestBody QuestionPaper questionPaper) {
-		questionPaper.setStatus("Complete");
+		questionPaper.setStatus("Created");
 		return repository.save(questionPaper);
 	}
 
@@ -82,10 +83,19 @@ public class QuestionPaperController {
 		oldQuestionPaper.setNumberOfQuestions(newQuestionPaper.getNumberOfQuestions());
 		oldQuestionPaper.setPassMarks(newQuestionPaper.getPassMarks());
 		oldQuestionPaper.setSection(newQuestionPaper.getSection());
-		oldQuestionPaper.setStatus("Complete");
+		oldQuestionPaper.setStatus(newQuestionPaper.getStatus());
 
 		return repository.save(oldQuestionPaper);
 
+	}
+	
+	@DeleteMapping("/questionpaper/{id}")
+	void deleteQuestionPaper(@PathVariable Integer id) {
+		try {
+			repository.deleteById(id);
+		} catch (NoSuchElementException ex) {
+			
+		}
 	}
 
 }

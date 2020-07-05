@@ -20,9 +20,20 @@ function QuestionTable (props) {
     const editData = (id) => {
     }
 
-    const deleteData = (id) => {
+    const startExam = (id) => {
+        axios.get(API_BASE_URL+'questionpaper/'+id).then(response => {
+            let newQuestion = response.data;
+            newQuestion.status = 'Started';
+            axios.put(API_BASE_URL+'questionpaper/'+id, newQuestion).then(res => {
+                axios.get(API_BASE_URL+'questionpapers/'+props.location.state.id).then(response =>{
+                    setQuestionPapers(response.data);
+                });
+            });
+        });
+    }
 
-        axios.delete(`${API_BASE_URL}/${id}`).then(res => {
+    const deleteData = (id) => {
+        axios.delete(API_BASE_URL+'questionpaper/'+id).then(res => {
             const del = questionPapers.filter(questionPaper => id !== questionPaper.id)
             setQuestionPapers(del)
         })
@@ -48,7 +59,11 @@ function QuestionTable (props) {
                     <td>{fullMarks}</td>
                     <td>{status}</td>
                     <td className='opration'>
-                        <button className='button' title='Click to edit this Question Paper or add/ remove questions from it.' onClick={() => editData(id)}>Edit</button>
+                        <div class="btn-group" role="group" aria-label="Action Buttons">
+                            <button className='button' title='Click here to edit this Question Paper or add/ remove questions from it.' onClick={() => editData(id)}>Edit</button> |
+                            <button className='button' title='Click here to delete this Question Paper.' onClick={() => deleteData(id)}>Delete</button> |
+                            <button className='button' title='Click here to start the Exam.' onClick={() => startExam(id)}>Start</button>
+                        </div>
                     </td>
                 </tr>
             )
