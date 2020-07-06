@@ -35,11 +35,9 @@ function StartExam(props) {
         answerString : ""
     });
 
-    const [states, setStates] = useState({
-        answerArray: []
+    const[states, setStates] = useState({
+        answerMap: new Map()
     });
-
-    let answerMap = new Map();
 
     useEffect(() => {
         getData()
@@ -57,6 +55,7 @@ function StartExam(props) {
         let pageNumber = 0;
 
         if (id === 'next' || id === 'submit') {
+            handleAnswerState();
             pageNumber = pagable.currentPageNumber + 1;
         } else if (id === 'previous') {
             pageNumber = pagable.currentPageNumber - 1;
@@ -70,10 +69,9 @@ function StartExam(props) {
             axios.post(API_BASE_URL+'answerpapers', payload)
                 .then(function (response) {
                     if(response.status === 200){
-                        setAnswer(prevState=> ({
-                            ...prevState,
+                        setAnswer({
                             'answerPaperID':response.data.id
-                        }));
+                        });
                     } else{
                         console.log("Some error occured");
                     }
@@ -84,7 +82,8 @@ function StartExam(props) {
         } 
         
         if (id === 'submit') {
-            answerMap.values(eachAnswer => {
+            let allSuccess = true;
+            states.answerMap.forEach(function(eachAnswer, key) {
                 const payload = {
                     "answerPaperID": eachAnswer.answerPaperID,
                     "questionID": eachAnswer.questionID,
@@ -94,12 +93,9 @@ function StartExam(props) {
                 axios.post(API_BASE_URL+'answers', payload)
                     .then(function (response) {
                         if(response.status === 200){
-                            setState(prevState => ({
-                                ...prevState,
-                                'successMessage' : 'Answers submitted Successfully !!!',
-                                'disabled' : 'disabled'
-                            }))
+                            
                         } else{
+                            allSuccess = false;
                             console.log("Some error occured");
                         }
                     })
@@ -108,6 +104,20 @@ function StartExam(props) {
                     });
             });
 
+            if (allSuccess) {
+                setState(prevState => ({
+                    ...prevState,
+                    'successMessage' : 'Answers submitted Successfully !!!',
+                    'disabled' : 'disabled'
+                }));
+            } else {
+                setState(prevState => ({
+                    ...prevState,
+                    'successMessage' : 'Some problem occured. Please try again.',
+                    'disabled' : 'disabled'
+                }))
+            }
+            
         } else {
             axios.get(API_BASE_URL+'question/'+props.location.state.questionPaperID+'/'+pageNumber)
                 .then(res =>{
@@ -116,11 +126,26 @@ function StartExam(props) {
                         ...prevState,
                         'questionID' : response.data.content[0].id
                     }));
-                    handleAnswerState(id, response.data.content[0].id);
+
+                    if (states.answerMap.has(response.data.content[0].id)) {
+                        const eachAnswer = states.answerMap.get(response.data.content[0].id);
+
+                        if (eachAnswer.type === 'multi') {
+                            state.multiChoice = eachAnswer.answerString.split(',');
+                        }
+
+                        if (eachAnswer.type === 'single') {
+                            state.singleChoice = eachAnswer.answerString;
+                        }
+
+                        if (eachAnswer.type === 'subjective') {
+                            state.answerText = eachAnswer.answerString;
+                        }
+                    }
                     displayQuestion(response.data);
                 });
-            }
         }
+    }
 
     const displayQuestion = (data) => {
         setPagable({
@@ -162,78 +187,86 @@ function StartExam(props) {
                 ...prevState,
                 [id] : values
             }))
+
+            if (states.answerMap.has(answer.questionID)) {
+                const eachAnswer = states.answerMap.get(answer.questionID);
+                eachAnswer.answerString = values.toString();
+                states.answerMap.set(answer.questionID, eachAnswer);
+            }
+
         } else {
             setState(prevState => ({
                 ...prevState,
                 [id] : value
             }))
+
+            if (states.answerMap.has(answer.questionID)) {
+                const eachAnswer = states.answerMap.get(answer.questionID);
+                eachAnswer.answerString = value;
+                states.answerMap.set(answer.questionID, eachAnswer);
+            }
         }
     }
 
-    const handleAnswerState = (id, questionId) => {
-       if (id === 'next') {
-           if (answerMap.has(questionId)) {
-               const tempAnswer = answerMap.get(questionId);
+    const handleAnswerState = () => {
+        if (states.answerMap.has(answer.questionID)) {
+            const eachAnswer = states.answerMap.get(answer.questionID);
 
-               if (tempAnswer.type === 'multi') {
-                state.multiChoice = tempAnswer.answerString.split(',');
-                }
+            if (eachAnswer.type === 'multi') {
+                state.multiChoice = eachAnswer.answerString.split(',');
+            }
 
-                if (tempAnswer.type === 'single') {
-                    state.singleChoice = tempAnswer.answerString;
-                }
+            if (eachAnswer.type === 'single') {
+                state.singleChoice = eachAnswer.answerString;
+            }
 
-                if (tempAnswer.type === 'subjective') {
-                    state.answerText = tempAnswer.answerString;
-                }
-           }
+            if (eachAnswer.type === 'subjective') {
+                state.answerText = eachAnswer.answerString;
+            }
 
-           if (question.type === 'multi') {
+            if (question.type === 'multi') {
                 answer.answerString = state.multiChoice.toString();
                 answer.type = 'multi';
             }
-
+    
             if (question.type === 'single') {
                 answer.answerString = state.singleChoice;
                 answer.type = 'single';
             }
-
+    
             if (question.type === 'subjective') {
                 answer.answerString = state.answerText
                 answer.type = 'subjective';
             }
-
-            answerMap.set(questionId, answer);
-            console.log(answerMap);
+        } else {
+            if (question.type === 'multi') {
+                answer.answerString = state.multiChoice.toString();
+                answer.type = 'multi';
+            }
+    
+            if (question.type === 'single') {
+                answer.answerString = state.singleChoice;
+                answer.type = 'single';
+            }
+    
+            if (question.type === 'subjective') {
+                answer.answerString = state.answerText
+                answer.type = 'subjective';
+            }
+    
             setAnswer(prevState=> ({
                 ...prevState,
                 'questionID' : "",
-                'answerString': "",
-                'type': ""
+                'answerString': ""
             }));
             setState({
                 'multiChoice': [],
                 'singleChoice': "",
                 'answerText': ""
             });
+        }
 
-       } else if (id === 'previous') {
-            if (answerMap.has(questionId)) {
-                const tempAnswer = answerMap.get(questionId);
-
-                if (tempAnswer.type === 'multi') {
-                    state.multiChoice = tempAnswer.answerString.split(',');
-                }
-
-                if (tempAnswer.type === 'single') {
-                    state.singleChoice = tempAnswer.answerString;
-                }
-
-                if (tempAnswer.type === 'subjective') {
-                    state.answerText = tempAnswer.answerString;
-                }
-            }
-       }
+        states.answerMap.set(answer.questionID, answer);
     }
 
     return(
