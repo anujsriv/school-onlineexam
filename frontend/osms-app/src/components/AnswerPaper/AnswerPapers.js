@@ -8,6 +8,10 @@ function AnswerTable(props) {
 
     const [questionPapers, setQuestionPapers] = useState([]);
 
+    const [state, setState] = useState({
+        successMessage: null
+    })
+
     useEffect(() => {
         getData()
     }, [])
@@ -26,8 +30,20 @@ function AnswerTable(props) {
             "questionPaperID":id,
             "studentID":props.location.state.id
         }
-
-        redirectToStartExam(payload);
+        axios.get(API_BASE_URL+'answerpapers/'+id+'/'+props.location.state.id)
+            .then(function (response) {
+                if (response.status === 200) {
+                    setState({
+                        'successMessage' : 'You have already attempted this Exam/ Paper.'
+                    });
+                } else {
+                    redirectToStartExam(payload);
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+                redirectToStartExam(payload);
+            });
     }
 
     const redirectToStartExam = (data) => {
@@ -35,7 +51,7 @@ function AnswerTable(props) {
     }
 
     const renderHeader = () => {
-        let headerElement = ['id', 'subject', 'duration (mins)', 'full marks', 'status', 'action']
+        let headerElement = ['id', 'subject', 'duration (mins)', 'full marks', 'action']
 
         return headerElement.map((key, index) => {
             return <th key={index}>{key.toUpperCase()}</th>
@@ -43,14 +59,13 @@ function AnswerTable(props) {
     }
 
     const renderBody = () => {
-        return questionPapers && questionPapers.map(({ id, subject, duration, fullMarks, status}) => {
+        return questionPapers && questionPapers.map(({ id, subject, duration, fullMarks}) => {
             return (
                 <tr key={id}>
                     <td>{id}</td>
                     <td>{subject}</td>
                     <td>{duration}</td>
                     <td>{fullMarks}</td>
-                    <td>{status}</td>
                     <td className='opration'>
                         <button className='button' title='Click to Start the Exam.' onClick={() => startExam(id)}>Take Exam</button>
                     </td>
@@ -70,6 +85,9 @@ function AnswerTable(props) {
                     {renderBody()}
                 </tbody>
             </table>
+            <div className="alert alert-success" style={{display: state.successMessage ? 'block' : 'none' }} role="alert">
+                {state.successMessage}
+            </div>
         </>
     )
 }

@@ -32,6 +32,9 @@ public class User {
 	
 	@Column(name = "TYPE")
 	private String type;
+	
+	@Column(name = "LOGGED_IN")
+	private Boolean loggedIn = false;
 
 	/**
 	 * @return the id
@@ -129,6 +132,20 @@ public class User {
 	 */
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	/**
+	 * @return the loggedIn
+	 */
+	public Boolean getLoggedIn() {
+		return loggedIn;
+	}
+
+	/**
+	 * @param loggedIn the loggedIn to set
+	 */
+	public void setLoggedIn(Boolean loggedIn) {
+		this.loggedIn = loggedIn;
 	}
 
 }

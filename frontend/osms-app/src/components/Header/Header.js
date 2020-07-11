@@ -1,6 +1,8 @@
 import React, {useEffect} from 'react';
 import { withRouter } from "react-router-dom";
 import { isNullOrUndefined } from 'util';
+import axios from 'axios';
+import {API_BASE_URL} from '../../constants/apiContants';
 
 function Header(props) {
 
@@ -18,25 +20,37 @@ function Header(props) {
     }
 
     const redirectToLogin = () => {
+        const payload={
+            "userName":props.location.state.userName,
+            "password":props.location.state.password,
+        }
+        axios.post(API_BASE_URL+'logout', payload);
+        
         props.updateTitle('Login')
-        props.history.push('/login'); 
+        props.history.push('/login');
     }
 
     const title = capitalize(props.location.pathname.substring(1,props.location.pathname.length))
     return(
-        <nav className="navbar navbar-dark bg-primary">
-            {!isNullOrUndefined(props.location.state) &&
-            <div className="row col-11 d-flex justify-content-left text-white">
-                Welcome {props.location.state.fullName} !
-            </div>}
-            <div className="row col-12 d-flex justify-content-center text-white">
-                <span className="h3">{props.title || title}</span>
+        <div className="d-flex flex-row justify-content-around bd-highlight mb-3 bg-primary">
+            <div className="p-2 bd-highlight text-white">
+                {!isNullOrUndefined(props.location.state) &&
+                    <div>
+                        Welcome {props.location.state.fullName} !
+                    </div>
+                }
             </div>
-            {!isNullOrUndefined(props.location.state) &&
-            <div className="row col-13 d-flex justify-content-right text-white" onClick={() => redirectToLogin()}>
-                Logout
-            </div>}
-        </nav>
+            <div className="p-2 bd-highlight">
+                <div className="text-white">
+                    <span className="h3">{props.title || title}</span>
+                </div>
+            </div>
+            <div className="p-2 bd-highlight">
+                {!isNullOrUndefined(props.location.state) &&
+                    <button type="button" onClick={redirectToLogin} className="btn text-white btn-link">Logout</button>
+                }
+            </div>
+        </div>
     )
 }
 export default withRouter(Header);

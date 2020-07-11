@@ -64,7 +64,8 @@ function StartExam(props) {
         if (id === 'start') {
             const payload={
                 "questionPaperID":props.location.state.questionPaperID,
-                "studentID":props.location.state.studentID
+                "studentID":props.location.state.studentID,
+                "status":"in-progress"
             }
             axios.post(API_BASE_URL+'answerpapers', payload)
                 .then(function (response) {

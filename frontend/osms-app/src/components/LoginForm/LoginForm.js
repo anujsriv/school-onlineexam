@@ -37,13 +37,13 @@ function LoginForm(props) {
                 else if(response.status === 404){
                     props.showError("Login failed: Invalid username or password.");
                 }
-                else{
-                    props.showError("Login failed: Invalid username or password.");
+                else if(response.status === 403){
+                    props.showError(response.message);
                 }
             })
             .catch(function (error) {
-                props.showError("Login failed: Invalid username or password.");
-                console.log(error);
+                console.log(error.response);
+                props.showError(error.response.data);
             });
     }
     const redirectToHome = (data) => {

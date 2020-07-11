@@ -32,6 +32,15 @@ function QuestionTable (props) {
         });
     }
 
+    const invigilateExam = (id) => {
+        const payload = {
+            "questionPaperID": id,
+            "teacherID": props.location.state.id
+        }
+
+        props.history.push('/invigilation', payload);
+    }
+
     const deleteData = (id) => {
         axios.delete(API_BASE_URL+'questionpaper/'+id).then(res => {
             const del = questionPapers.filter(questionPaper => id !== questionPaper.id)
@@ -59,11 +68,17 @@ function QuestionTable (props) {
                     <td>{fullMarks}</td>
                     <td>{status}</td>
                     <td className='opration'>
-                        <div class="btn-group" role="group" aria-label="Action Buttons">
-                            <button className='button' title='Click here to edit this Question Paper or add/ remove questions from it.' onClick={() => editData(id)}>Edit</button> |
-                            <button className='button' title='Click here to delete this Question Paper.' onClick={() => deleteData(id)}>Delete</button> |
-                            <button className='button' title='Click here to start the Exam.' onClick={() => startExam(id)}>Start</button>
-                        </div>
+                            {status === 'Started' ?
+                                <div className="btn-group" role="group" aria-label="Action Buttons">
+                                    <button className='button btn-outline-success' title='Click here to start monitoring the Exam.' onClick={() => invigilateExam(id)}>Invigilate</button>
+                                </div>
+                                 :
+                                 <div className="btn-group" role="group" aria-label="Action Buttons">
+                                     <button className='button' title='Click here to edit this Question Paper or add/ remove questions from it.' onClick={() => editData(id)}>Edit</button> |
+                                     <button className='button' title='Click here to delete this Question Paper.' onClick={() => deleteData(id)}>Delete</button> | 
+                                     <button className='button' title='Click here to start the Exam.' onClick={() => startExam(id)}>Start</button>
+                                 </div>
+                            }
                     </td>
                 </tr>
             )

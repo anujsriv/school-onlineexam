@@ -20,6 +20,9 @@ public class AnswerPaper {
 	
 	@Column(name = "STUDENT_ID")
 	private Integer studentID;
+	
+	@Column(name = "STATUS")
+	private String status;
 
 	/**
 	 * @return the id
@@ -61,6 +64,20 @@ public class AnswerPaper {
 	 */
 	public void setStudentID(Integer studentID) {
 		this.studentID = studentID;
+	}
+
+	/**
+	 * @return the status
+	 */
+	public String getStatus() {
+		return status;
+	}
+
+	/**
+	 * @param status the status to set
+	 */
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }

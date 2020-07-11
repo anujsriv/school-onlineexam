@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.asan.osms.entity.User;
 import com.asan.osms.exception.ResourceNotFoundException;
+import com.asan.osms.exception.UserAlreadyLoggedInException;
+import com.asan.osms.exception.UserAlreadyLoggedOutException;
 import com.asan.osms.repository.UserRepository;
 
 @RestController
@@ -55,7 +57,35 @@ public class UserController {
 		}
 		
 		if (user != null) {
-			return user;
+			if (!user.getLoggedIn()) {
+				user.setLoggedIn(true);
+				repository.save(user);
+				return user;
+			} else {
+				throw new UserAlreadyLoggedInException(user.getUserName());
+			}
+		}
+		
+		throw new ResourceNotFoundException(requestedUser.getUserName());
+	}
+	
+	@PostMapping("/logout")
+	void updateUserLoggedInFlag(@RequestBody User requestedUser) {
+		User user = null;
+		
+		try {
+			user = repository.findByUsernameAndPassword(requestedUser.getUserName(), requestedUser.getPassword());
+		} catch (NoSuchElementException ex) {
+			throw new ResourceNotFoundException(requestedUser.getUserName());
+		}
+		
+		if (user != null) {
+			if (user.getLoggedIn()) {
+				user.setLoggedIn(false);
+				repository.save(user);
+			} else {
+				throw new UserAlreadyLoggedOutException(user.getUserName());
+			}
 		}
 		
 		throw new ResourceNotFoundException(requestedUser.getUserName());
