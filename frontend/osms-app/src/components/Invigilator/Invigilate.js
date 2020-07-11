@@ -27,15 +27,8 @@ function Invigilate(props) {
         })
     }
 
-    const startFeed = (id) => {
-        props.history.push('/studentstartexam');
-    }
-
     const startFeedAll = () => {
-        const allId = students.map(function (eachStudent){
-            return eachStudent.id;
-        });
-        alert("Hi " +allId);
+        props.history.push('/studentstartexam');
     }
 
     const renderBody = () => {
