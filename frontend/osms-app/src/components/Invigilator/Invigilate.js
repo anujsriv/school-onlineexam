@@ -3,7 +3,8 @@ import axios from 'axios';
 import {API_BASE_URL} from '../../constants/apiContants';
 import { withRouter } from "react-router-dom";
 import './Invigilate.css';
-import WebCam from '../Images/webcam-icon.png';
+import WebCamIcon from '../Images/webcam-icon.png';
+import Bulb from 'react-bulb';
 
 function Invigilate(props) {
 
@@ -19,11 +20,22 @@ function Invigilate(props) {
     }
 
     const renderHeader = () => {
-        let headerElement = ['id', 'Name', 'class', 'section', 'status', 'view camera']
+        let headerElement = ['id', 'Name', 'class', 'section', 'status']
 
         return headerElement.map((key, index) => {
             return <th key={index}>{key.toUpperCase()}</th>
         })
+    }
+
+    const startFeed = (id) => {
+        props.history.push('/studentstartexam');
+    }
+
+    const startFeedAll = () => {
+        const allId = students.map(function (eachStudent){
+            return eachStudent.id;
+        });
+        alert("Hi " +allId);
     }
 
     const renderBody = () => {
@@ -35,9 +47,7 @@ function Invigilate(props) {
                     <td>{fullName}</td>
                     <td>{className}</td>
                     <td>{section}</td>
-                    <td>{loggedIn}</td>
-                    <td className='opration'><img src={WebCam} width="30" height="40" />
-                    </td>
+                    <td>{loggedIn ? <Bulb size={10} color="green"/> : <Bulb size={10} color="red"/> }</td>
                 </tr>
             )
         })
@@ -46,6 +56,7 @@ function Invigilate(props) {
     return (
         <>
             <h5 id='title'>Following people are taking the Exam !</h5>
+            <img src={WebCamIcon} width="30" height="40" onClick={() => startFeedAll()} title="Click here to see 30 student's feed." />
             <table id='students'>
                 <thead>
                     <tr>{renderHeader()}</tr>

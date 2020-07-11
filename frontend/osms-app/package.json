@@ -9,10 +9,12 @@
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.19.2",
     "react": "^16.13.1",
+    "react-bulb": "0.0.2",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
-    "react-tabs": "^3.1.1"
+    "react-tabs": "^3.1.1",
+    "react-webcam": "^5.2.0"
   },
   "scripts": {
     "start": "react-scripts start",

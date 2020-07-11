@@ -2,10 +2,16 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {API_BASE_URL} from '../../constants/apiContants';
 import { withRouter } from "react-router-dom";
+import Webcam from "react-webcam";
+import { isNullOrUndefined } from 'util';
 
 function StartExam(props) {
 
     const [questionPaper, setQuestionPaper] = useState([]);
+
+    const [webCamState, setWebCamState] = useState({
+        showWebCam: 'false'
+    })
 
     const [state, setState] = useState({
         multiChoice: [],
@@ -44,8 +50,14 @@ function StartExam(props) {
     }, [])
 
     const getData = async () => {
-        const response = await axios.get(API_BASE_URL+'questionpaper/'+props.location.state.questionPaperID);
-        setQuestionPaper(response.data);
+        if (!isNullOrUndefined(props.location.state)) {
+            const response = await axios.get(API_BASE_URL+'questionpaper/'+props.location.state.questionPaperID)
+            setQuestionPaper(response.data)
+        } else {
+            setWebCamState(prevState => ({
+                'showWebCam' : 'true'
+            }));
+        }
     }
 
     const handleNextClick = (e) => {
@@ -272,47 +284,54 @@ function StartExam(props) {
 
     return(
         <div className="card w-75 text-left">
-            <div className="alert alert-success" style={{display: state.successMessage ? 'block' : 'none' }} role="alert">
-                {state.successMessage}
-                <p>For security purposes, please close the Browser Window.</p>
-            </div>
-            { question.type ?
-                <div style={{display: state.disabled === 'disabled' ? 'none' : 'block' }} className="card text-left">
-                <h5 className="card-header ">{question.question}</h5>
-                    <div className="card-body">
-                        <div style={{display: question.type === 'multi' ? 'block' : 'none' }} className="form-group">
-                            <label htmlFor="multi">Choose the correct option(s). There can be more than 1 correct answer. Press 'Ctrl' and click to select multiple options.</label>
-                            <select multiple className="form-control" id="multiChoice" value={state.multiChoice} onChange={handleChange} >
-                                {renderOptions()}
-                            </select>
-                        </div>
-
-                        <div style={{display: question.type === 'single' ? 'block' : 'none' }} className="form-group">
-                            <label htmlFor="single">Choose the correct option.</label>
-                            <select className="form-control" id="singleChoice" value={state.singleChoice} onChange={handleChange} >
-                                {renderOptions()}
-                            </select>
-                        </div>
-
-                        <div style={{display: question.type === 'subjective' ? 'block' : 'none' }} className="form-group">
-                                <textarea className="form-control" rows="5" id="answerText" value={state.answerText} onChange={handleChange} placeholder="Type your answer here."/>
-                        </div>
-                        <div className="form-group form-inline">
-                            <div style={{display: pagable.currentPageNumber !== 0 ? 'block' : 'none', paddingRight: '15%' }}>
-                                <button id='previous' type="submit" className="btn btn-primary" onClick={handleNextClick} >Previous</button>
+            { webCamState.showWebCam === 'false' ?
+            <div className="card w-75 text-left">
+                <div className="alert alert-success" style={{display: state.successMessage ? 'block' : 'none' }} role="alert">
+                    {state.successMessage}
+                    <p>For security purposes, please close the Browser Window.</p>
+                </div>
+                { question.type ?
+                    <div style={{display: state.disabled === 'disabled' ? 'none' : 'block' }} className="card text-left">
+                    <h5 className="card-header ">{question.question}</h5>
+                        <div className="card-body">
+                            <div style={{display: question.type === 'multi' ? 'block' : 'none' }} className="form-group">
+                                <label htmlFor="multi">Choose the correct option(s). There can be more than 1 correct answer. Press 'Ctrl' and click to select multiple options.</label>
+                                <select multiple className="form-control" id="multiChoice" value={state.multiChoice} onChange={handleChange} >
+                                    {renderOptions()}
+                                </select>
                             </div>
-                            <button id='next' style={{display: pagable.currentPageNumber !== pagable.totalNumberOfPages -1 ? 'block' : 'none'}} type="submit" className="btn btn-primary" onClick={handleNextClick} >Next</button>
-                            <button id='submit' style={{display: pagable.currentPageNumber === pagable.totalNumberOfPages -1 ? 'block' : 'none'}} type="submit" className="btn btn-primary" onClick={handleNextClick} >Submit</button>
+
+                            <div style={{display: question.type === 'single' ? 'block' : 'none' }} className="form-group">
+                                <label htmlFor="single">Choose the correct option.</label>
+                                <select className="form-control" id="singleChoice" value={state.singleChoice} onChange={handleChange} >
+                                    {renderOptions()}
+                                </select>
+                            </div>
+
+                            <div style={{display: question.type === 'subjective' ? 'block' : 'none' }} className="form-group">
+                                    <textarea className="form-control" rows="5" id="answerText" value={state.answerText} onChange={handleChange} placeholder="Type your answer here."/>
+                            </div>
+                            <div className="form-group form-inline">
+                                <div style={{display: pagable.currentPageNumber !== 0 ? 'block' : 'none', paddingRight: '15%' }}>
+                                    <button id='previous' type="submit" className="btn btn-primary" onClick={handleNextClick} >Previous</button>
+                                </div>
+                                <button id='next' style={{display: pagable.currentPageNumber !== pagable.totalNumberOfPages -1 ? 'block' : 'none'}} type="submit" className="btn btn-primary" onClick={handleNextClick} >Next</button>
+                                <button id='submit' style={{display: pagable.currentPageNumber === pagable.totalNumberOfPages -1 ? 'block' : 'none'}} type="submit" className="btn btn-primary" onClick={handleNextClick} >Submit</button>
+                            </div>
                         </div>
-                    </div>
-                </div> : 
-                <div style={{display: question.type ? 'none' : 'block' }} className="card text-left">
-                    <h5 className="card-header ">General Instructions</h5>
-                    <div className="card-body">
-                        <p className="card-text">{questionPaper.instructions} Please click on 'Start' to start your exam.</p>
-                        <button id='start' type="submit" className="btn btn-primary" onClick={handleNextClick} >Start</button>
-                    </div>
-                </div> 
+                    </div> : 
+                    <div style={{display: question.type ? 'none' : 'block' }} className="card text-left">
+                        <h5 className="card-header ">General Instructions</h5>
+                        <div className="card-body">
+                            <p className="card-text">{questionPaper.instructions} Please click on 'Start' to start your exam.</p>
+                            <button id='start' type="submit" className="btn btn-primary" onClick={handleNextClick} >Start</button>
+                        </div>
+                    </div> 
+                }
+            </div> :
+            <div>
+                <Webcam />
+            </div>
             }
         </div>
     )
