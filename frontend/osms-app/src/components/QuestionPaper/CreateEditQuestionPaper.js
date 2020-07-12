@@ -26,6 +26,7 @@ function QuestionPaperForm(props) {
     const [questionState , setQuestionState] = useState({
         questionType : "subjective",
         question : "",
+        marks : "",
         options : "",
         answers : "",
         questionPaperID : state.questionPaper.id,
@@ -85,6 +86,7 @@ function QuestionPaperForm(props) {
         setQuestionState({
             questionType : "subjective",
             question : "",
+            marks : "",
             options : "",
             answers : "",
             questionPaperID : state.questionPaper.id,
@@ -137,6 +139,7 @@ function QuestionPaperForm(props) {
         setQuestionState({
             questionType : "subjective",
             question : "",
+            marks : "",
             options : "",
             answers : "",
             questionPaperID : state.questionPaper.id,
@@ -158,6 +161,7 @@ function QuestionPaperForm(props) {
             const payload={
                 "type" : questionState.questionType,
                 "question" : questionState.question,
+                "marks" : questionState.marks,
                 "options": questionState.options,
                 "rightAnswers" : questionState.answers,
                 "questionPaperID" : state.questionPaper.id
@@ -168,6 +172,7 @@ function QuestionPaperForm(props) {
                         setQuestionState({
                             questionType : "subjective",
                             question : "",
+                            marks : "",
                             options : "",
                             answers : "",
                             questionPaperID : state.questionPaper.id,
@@ -223,13 +228,22 @@ function QuestionPaperForm(props) {
                                 value={questionState.question}
                                 onChange={handleChange} />
                         </div>
+                        <div className="form-group text-left">
+                            <label htmlFor="marksInput">Marks</label>
+                            <input type="text" 
+                                className="form-control" 
+                                id="marks" 
+                                placeholder="Enter the total marks for this question." 
+                                value={questionState.marks}
+                                onChange={handleChange} />
+                        </div>
                         <div style={{display: showMultiBlock ? 'block' : 'none' }} >
                             <div className="form-group text-left">
                                 <label htmlFor="optionsInput">Options</label>
                                 <textarea 
                                     className="form-control" 
                                     id="options" 
-                                    placeholder="Enter the options. Each option should be separated by a ," 
+                                    placeholder="Enter the options. Each option should be separated by a ','" 
                                     value={questionState.options}
                                     onChange={handleChange} />
                             </div>

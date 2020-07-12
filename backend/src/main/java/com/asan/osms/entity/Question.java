@@ -24,6 +24,9 @@ public class Question {
 	@Column(name = "QUESTION")
 	private String question;
 	
+	@Column(name = "MARKS")
+	private String marks;
+	
 	@Column(name = "OPTIONS")
 	private String options;
 	
@@ -87,6 +90,20 @@ public class Question {
 	 */
 	public void setQuestion(String question) {
 		this.question = question;
+	}
+
+	/**
+	 * @return the marks
+	 */
+	public String getMarks() {
+		return marks;
+	}
+
+	/**
+	 * @param marks the marks to set
+	 */
+	public void setMarks(String marks) {
+		this.marks = marks;
 	}
 
 	/**

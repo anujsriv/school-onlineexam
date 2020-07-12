@@ -35,7 +35,18 @@ function QuestionTable (props) {
     const invigilateExam = (id) => {
         const payload = {
             "questionPaperID": id,
-            "teacherID": props.location.state.id
+            "teacherID": props.location.state.id,
+            "action": 'invigilate'
+        }
+
+        props.history.push('/invigilation', payload);
+    }
+
+    const evaluateExam = (id) => {
+        const payload = {
+            "questionPaperID": id,
+            "teacherID": props.location.state.id,
+            "action": 'evaluate'
         }
 
         props.history.push('/invigilation', payload);
@@ -72,12 +83,15 @@ function QuestionTable (props) {
                                 <div className="btn-group" role="group" aria-label="Action Buttons">
                                     <button className='button btn-outline-success' title='Click here to start monitoring the Exam.' onClick={() => invigilateExam(id)}>Invigilate</button>
                                 </div>
-                                 :
-                                 <div className="btn-group" role="group" aria-label="Action Buttons">
-                                     <button className='button' title='Click here to edit this Question Paper or add/ remove questions from it.' onClick={() => editData(id)}>Edit</button> |
-                                     <button className='button' title='Click here to delete this Question Paper.' onClick={() => deleteData(id)}>Delete</button> | 
-                                     <button className='button' title='Click here to start the Exam.' onClick={() => startExam(id)}>Start</button>
-                                 </div>
+                                 : 'Complete' ?
+                                        <div className="btn-group" role="group" aria-label="Action Buttons">
+                                            <button className='button' title='Click here to start monitoring the Exam.' onClick={() => evaluateExam(id)}>Evaluate</button>
+                                        </div>
+                                    :<div className="btn-group" role="group" aria-label="Action Buttons">
+                                        <button className='button' title='Click here to edit this Question Paper or add/ remove questions from it.' onClick={() => editData(id)}>Edit</button> |
+                                        <button className='button' title='Click here to delete this Question Paper.' onClick={() => deleteData(id)}>Delete</button> | 
+                                        <button className='button' title='Click here to start the Exam.' onClick={() => startExam(id)}>Start</button>
+                                    </div>
                             }
                     </td>
                 </tr>

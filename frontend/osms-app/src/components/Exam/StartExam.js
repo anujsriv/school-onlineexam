@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {API_BASE_URL} from '../../constants/apiContants';
 import { withRouter } from "react-router-dom";
-import Webcam from "react-webcam";
 import { isNullOrUndefined } from 'util';
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
 
 function StartExam(props) {
+
+    const { transcript, resetTranscript } = useSpeechRecognition()
 
     const [questionPaper, setQuestionPaper] = useState([]);
 
@@ -30,6 +32,7 @@ function StartExam(props) {
         questionPaperID : "",
         type: "",
         question: "",
+        marks: "",
         options: "",
         imagePath: ""
     });
@@ -170,6 +173,7 @@ function StartExam(props) {
             'questionPaperID' : data.content[0].questionPaperID,
             'type': data.content[0].type,
             'question': data.content[0].question,
+            'marks': data.content[0].marks,
             'options': data.content[0].options,
             'imagePath': data.content[0].imagePath
         });
@@ -283,8 +287,6 @@ function StartExam(props) {
     }
 
     return(
-        <div className="card w-75 text-left">
-            { webCamState.showWebCam === 'false' ?
             <div className="card w-75 text-left">
                 <div className="alert alert-success" style={{display: state.successMessage ? 'block' : 'none' }} role="alert">
                     {state.successMessage}
@@ -292,7 +294,7 @@ function StartExam(props) {
                 </div>
                 { question.type ?
                     <div style={{display: state.disabled === 'disabled' ? 'none' : 'block' }} className="card text-left">
-                    <h5 className="card-header ">{question.question}</h5>
+                    <h5 className="card-header ">{question.question} Marks{question.marks}</h5>
                         <div className="card-body">
                             <div style={{display: question.type === 'multi' ? 'block' : 'none' }} className="form-group">
                                 <label htmlFor="multi">Choose the correct option(s). There can be more than 1 correct answer. Press 'Ctrl' and click to select multiple options.</label>
@@ -309,7 +311,10 @@ function StartExam(props) {
                             </div>
 
                             <div style={{display: question.type === 'subjective' ? 'block' : 'none' }} className="form-group">
-                                    <textarea className="form-control" rows="5" id="answerText" value={state.answerText} onChange={handleChange} placeholder="Type your answer here."/>
+                                    <textarea className="form-control" rows="5" id="answerText" value={state.answerText} onChange={handleChange} placeholder="Type your answer here. If you have difficulty in typing, please use the Start/ Stop button to record your answer and copy paste here.."/>
+                                    <br></br>
+                                    <button className="btn btn-secondary btn-sm" onClick={SpeechRecognition.startListening}>Start</button> | <button className="btn btn-secondary btn-sm" onClick={SpeechRecognition.stopListening}>Stop</button> | <button className="btn btn-secondary btn-sm" onClick={resetTranscript}>Reset</button>
+                                    <p>{transcript}</p>
                             </div>
                             <div className="form-group form-inline">
                                 <div style={{display: pagable.currentPageNumber !== 0 ? 'block' : 'none', paddingRight: '15%' }}>
@@ -328,12 +333,7 @@ function StartExam(props) {
                         </div>
                     </div> 
                 }
-            </div> :
-            <div>
-                <Webcam />
             </div>
-            }
-        </div>
     )
 }
 
