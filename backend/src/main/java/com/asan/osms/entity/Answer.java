@@ -21,7 +21,7 @@ public class Answer {
 	@Column(name = "QUESTION_ID")
 	private Integer questionID;
 	
-	@Column(name = "ANSWER")
+	@Column(name = "ANSWER", columnDefinition = "ntext")
 	private String answer;
 
 	/**

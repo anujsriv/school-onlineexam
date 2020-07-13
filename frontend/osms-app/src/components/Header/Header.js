@@ -41,11 +41,6 @@ function Header(props) {
                 }
             </div>
             <div className="p-2 bd-highlight">
-                <div className="text-white">
-                    <span className="h3">{props.title || title}</span>
-                </div>
-            </div>
-            <div className="p-2 bd-highlight">
                 {!isNullOrUndefined(props.location.state) &&
                     <button type="button" onClick={redirectToLogin} className="btn text-white btn-link">Logout</button>
                 }

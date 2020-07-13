@@ -76,7 +76,7 @@ function AnswerTable(props) {
 
     return (
         <>
-            <h5 id='title'>To Start an exam click the <button className='button'>Take Exam</button> button. Please note that clicking on <button className='button'>Take Exam</button> will start your exam in a new Window.<br></br>Please DO NOT close or refresh the new window during the entirity of the exam.</h5>
+            <h5 id='title'>To Start an exam click the <label style={{cursor: 'auto'}} className='button'>Take Exam</label> button. Please note that clicking on <label style={{cursor: 'auto'}} className='button'>Take Exam</label> will start your exam in a new Window.<br></br>Please DO NOT close or refresh the new window during the entirety of the exam.</h5>
             <table id='answerPaper'>
                 <thead>
                     <tr>{renderHeader()}</tr>

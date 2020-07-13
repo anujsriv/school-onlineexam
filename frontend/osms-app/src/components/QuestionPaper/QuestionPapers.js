@@ -32,6 +32,18 @@ function QuestionTable (props) {
         });
     }
 
+    const stopExam = (id) => {
+        axios.get(API_BASE_URL+'questionpaper/'+id).then(response => {
+            let newQuestion = response.data;
+            newQuestion.status = 'Stopped';
+            axios.put(API_BASE_URL+'questionpaper/'+id, newQuestion).then(res => {
+                axios.get(API_BASE_URL+'questionpapers/'+props.location.state.id).then(response =>{
+                    setQuestionPapers(response.data);
+                });
+            });
+        });
+    }
+
     const invigilateExam = (id) => {
         const payload = {
             "questionPaperID": id,
@@ -67,6 +79,43 @@ function QuestionTable (props) {
         })
     }
 
+    const renderButtons = (status, id) => {
+        if (status === 'Started') {
+            return (
+                <div className="btn-group" role="group" aria-label="Action Buttons">
+                    <button className='button btn-outline-success' title='Click here to start monitoring the Exam.' onClick={() => invigilateExam(id)}>Invigilate</button> | 
+                    <button className='button btn-outline-warning' title='Click here to stop the Exam.' onClick={() => stopExam(id)}>Stop</button>
+                </div>
+            )
+        }
+
+        if (status === 'Stopped') {
+            return (
+                <div className="btn-group" role="group" aria-label="Action Buttons">
+                    <button className='button' title='Click here to start monitoring the Exam.' onClick={() => evaluateExam(id)}>Evaluate</button>
+                </div>
+            )
+        }
+
+        if (status === 'Created') {
+            return (
+                <div className="btn-group" role="group" aria-label="Action Buttons">
+                    <button className='button' title='Click here to edit this Question Paper or add/ remove questions from it.' onClick={() => editData(id)}>Edit</button> |
+                    <button className='button' title='Click here to delete this Question Paper.' onClick={() => deleteData(id)}>Delete</button> | 
+                    <button className='button' title='Click here to start the Exam.' onClick={() => startExam(id)}>Start</button>
+                </div>
+            )
+        }
+
+        if (status === 'Complete') {
+            return (
+                <div className="btn-group" role="group" aria-label="Action Buttons">
+                    Paper has ended.
+                </div>
+            )
+        }
+    }
+
     const renderBody = () => {
         return questionPapers && questionPapers.map(({ id, subject, className, section, duration, fullMarks, status}) => {
             return (
@@ -79,20 +128,7 @@ function QuestionTable (props) {
                     <td>{fullMarks}</td>
                     <td>{status}</td>
                     <td className='opration'>
-                            {status === 'Started' ?
-                                <div className="btn-group" role="group" aria-label="Action Buttons">
-                                    <button className='button btn-outline-success' title='Click here to start monitoring the Exam.' onClick={() => invigilateExam(id)}>Invigilate</button>
-                                </div>
-                                 : 'Complete' ?
-                                        <div className="btn-group" role="group" aria-label="Action Buttons">
-                                            <button className='button' title='Click here to start monitoring the Exam.' onClick={() => evaluateExam(id)}>Evaluate</button>
-                                        </div>
-                                    :<div className="btn-group" role="group" aria-label="Action Buttons">
-                                        <button className='button' title='Click here to edit this Question Paper or add/ remove questions from it.' onClick={() => editData(id)}>Edit</button> |
-                                        <button className='button' title='Click here to delete this Question Paper.' onClick={() => deleteData(id)}>Delete</button> | 
-                                        <button className='button' title='Click here to start the Exam.' onClick={() => startExam(id)}>Start</button>
-                                    </div>
-                            }
+                        {renderButtons(status, id)}
                     </td>
                 </tr>
             )

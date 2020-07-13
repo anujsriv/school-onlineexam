@@ -249,10 +249,10 @@ function QuestionPaperForm(props) {
                             </div>
                             <div className="form-group text-left">
                                 <label htmlFor="answersInput">Answer(s) for Multiple choice questions.</label>
-                                <input type="text" 
+                                <textarea 
                                     className="form-control" 
                                     id="answers" 
-                                    placeholder="Enter the option number of each answer. In case of multiple answers separate by a ," 
+                                    placeholder="Enter the option number of each answer. In case of multiple answers separate by a ','" 
                                     value={questionState.answers}
                                     onChange={handleChange} />
                             </div>

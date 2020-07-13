@@ -294,7 +294,7 @@ function StartExam(props) {
                 </div>
                 { question.type ?
                     <div style={{display: state.disabled === 'disabled' ? 'none' : 'block' }} className="card text-left">
-                    <h5 className="card-header ">{question.question} Marks{question.marks}</h5>
+                        <h5 className="card-header">{question.question} ({question.marks})</h5>
                         <div className="card-body">
                             <div style={{display: question.type === 'multi' ? 'block' : 'none' }} className="form-group">
                                 <label htmlFor="multi">Choose the correct option(s). There can be more than 1 correct answer. Press 'Ctrl' and click to select multiple options.</label>
@@ -311,8 +311,12 @@ function StartExam(props) {
                             </div>
 
                             <div style={{display: question.type === 'subjective' ? 'block' : 'none' }} className="form-group">
-                                    <textarea className="form-control" rows="5" id="answerText" value={state.answerText} onChange={handleChange} placeholder="Type your answer here. If you have difficulty in typing, please use the Start/ Stop button to record your answer and copy paste here.."/>
+                                    <textarea className="form-control" rows="5" id="answerText" value={state.answerText} onChange={handleChange} placeholder="Type your answer here. If you have difficulty in typing, please use the Start/ Stop button to record your answer and copy paste here."/>
                                     <br></br>
+                                    <p>If you have difficulty in typing or your speed is slow, please use the  below 'Start' button to start recording your answer and convert it to text. 
+                                        Once done, please click on 'Stop' button. Then copy and paste the transcript in the above area. If you want to make any changes, please click on 'Reset' button
+                                        and try again. 
+                                    </p>
                                     <button className="btn btn-secondary btn-sm" onClick={SpeechRecognition.startListening}>Start</button> | <button className="btn btn-secondary btn-sm" onClick={SpeechRecognition.stopListening}>Stop</button> | <button className="btn btn-secondary btn-sm" onClick={resetTranscript}>Reset</button>
                                     <p>{transcript}</p>
                             </div>

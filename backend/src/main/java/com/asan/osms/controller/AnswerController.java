@@ -1,5 +1,6 @@
 package com.asan.osms.controller;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +41,23 @@ public class AnswerController {
 		
 		if (answer != null) {
 			return answer;
+		}
+		
+		throw new ResourceNotFoundException(String.valueOf(answerPaperID));
+	}
+	
+	@GetMapping("/answers/{answerPaperID}")
+	List<Answer> gtAnswersByAnswerPaperID(@PathVariable Integer answerPaperID) {
+		List<Answer> answers = null;
+		
+		try {
+			answers = repository.findByAnswerPaper(answerPaperID);
+		} catch (NoSuchElementException ex) {
+			throw new ResourceNotFoundException(String.valueOf(answerPaperID));
+		}
+		
+		if (answers != null) {
+			return answers;
 		}
 		
 		throw new ResourceNotFoundException(String.valueOf(answerPaperID));
