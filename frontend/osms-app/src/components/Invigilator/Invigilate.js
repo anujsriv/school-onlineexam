@@ -123,11 +123,11 @@ function Invigilate(props) {
                         <label className="font-weight-bold">Evaluation : </label>
                         <div className="custom-control custom-radio custom-control-inline">
                             <input type="radio" id="customRadioInline1" name="customRadioInline1" className="custom-control-input" />
-                            <label className="custom-control-label" htmlFor="customRadioInline1">Wright</label>
+                            <label className="custom-control-label" htmlFor="customRadioInline1">Correct</label>
                         </div>
                         <div className="custom-control custom-radio custom-control-inline">
                             <input type="radio" id="customRadioInline2" name="customRadioInline1" className="custom-control-input" />
-                            <label className="custom-control-label" htmlFor="customRadioInline2">Wrong</label>
+                            <label className="custom-control-label" htmlFor="customRadioInline2">Incorrect</label>
                         </div>
                         <label className="font-weight-bold">Marks: </label>
                         <div className="form-group mx-sm-2 mb-2">
