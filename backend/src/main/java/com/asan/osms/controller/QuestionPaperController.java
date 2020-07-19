@@ -83,6 +83,7 @@ public class QuestionPaperController {
 		oldQuestionPaper.setNumberOfQuestions(newQuestionPaper.getNumberOfQuestions());
 		oldQuestionPaper.setPassMarks(newQuestionPaper.getPassMarks());
 		oldQuestionPaper.setSection(newQuestionPaper.getSection());
+		oldQuestionPaper.setLanguage(newQuestionPaper.getLanguage());
 		oldQuestionPaper.setStatus(newQuestionPaper.getStatus());
 
 		return repository.save(oldQuestionPaper);

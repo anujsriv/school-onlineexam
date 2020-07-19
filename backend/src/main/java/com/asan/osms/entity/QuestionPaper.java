@@ -47,6 +47,9 @@ public class QuestionPaper {
 	
 	@Column(name = "STATUS")
 	private String status;
+	
+	@Column(name = "LANGUAGE")
+	private String language;
 
 	/**
 	 * @return the id
@@ -214,6 +217,20 @@ public class QuestionPaper {
 	 */
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	/**
+	 * @return the language
+	 */
+	public String getLanguage() {
+		return language;
+	}
+
+	/**
+	 * @param language the language to set
+	 */
+	public void setLanguage(String language) {
+		this.language = language;
 	}
 	
 }

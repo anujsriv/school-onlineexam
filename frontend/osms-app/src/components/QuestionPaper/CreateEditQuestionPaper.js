@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import axios from 'axios';
 import {API_BASE_URL} from '../../constants/apiContants';
 import { withRouter } from "react-router-dom";
+import TranslateIcon from '../Images/translate.png';
 
 function QuestionPaperForm(props) {
     const [showMultiBlock, setShowMultiBlock] = useState(false)
@@ -16,6 +17,7 @@ function QuestionPaperForm(props) {
         fullMarks : "",
         passMarks : "",
         duration : "",
+        language : "en",
         evaluationType : "manual",
         instructions : "",
         teacherID : "",
@@ -34,6 +36,51 @@ function QuestionPaperForm(props) {
         currentQuestion : 1,
         successMessage: ""
     })
+
+    const translate = (fieldName) => {
+        if (fieldName === 'question') {
+            const payload = {
+                "q" : questionState.question,
+                "source" : "en",
+                "target" : state.questionPaper.language,
+                "format" : "text"
+            }
+
+            axios.post(API_BASE_URL+'translate', payload)
+            .then(function (response) {
+                if (response.status === 200) {
+                    setQuestionState(prevState => ({
+                        ...prevState,
+                        question : response.data + " "
+                    }))
+                }
+            })
+            .catch(function (error){
+                console.log(error);
+            })
+        }
+        if (fieldName === 'options') {
+            const payload = {
+                "q" : questionState.options,
+                "source" : "en",
+                "target" : state.questionPaper.language,
+                "format" : "text"
+            }
+
+            axios.post(API_BASE_URL+'translate', payload)
+            .then(function (response) {
+                if (response.status === 200) {
+                    setQuestionState(prevState => ({
+                        ...prevState,
+                        options : response.data
+                    }))
+                }
+            })
+            .catch(function (error){
+                console.log(error);
+            })
+        }
+    }
     
     const handleChange = (e) => {
         const {id , value} = e.target;   
@@ -67,6 +114,7 @@ function QuestionPaperForm(props) {
             fullMarks : "",
             passMarks : "",
             duration : "",
+            language : "en",
             evaluationType : "manual",
             instructions : "",
             teacherID : "",
@@ -107,6 +155,7 @@ function QuestionPaperForm(props) {
                 "fullMarks" : state.fullMarks,
                 "passMarks" : state.passMarks,
                 "duration" : state.duration,
+                "language" : state.language,
                 "evaluationType" : state.evaluationType,
                 "instructions" : state.instructions,
                 "teacherID" : props.location.state.id
@@ -221,6 +270,15 @@ function QuestionPaperForm(props) {
                         </div>
                         <div className="form-group text-left">
                             <label htmlFor="questionInput">Question</label>
+                            {state.questionPaper.language !== 'en' ?
+                                <div>
+                                <p>Instructions: Please note to write your 'question' and 'options' (in case of multiple choice)
+                                <br></br>in any langauge other than 'English', please type in English and click 
+                                <br></br>the button below to convert it into selected language.</p>
+                                <img src={TranslateIcon} alt='' width="30" height="30" onClick={() => translate('question')} title="Click here to translate the above text." />
+                                </div>
+                                : <p></p>
+                            }
                             <textarea 
                                 className="form-control" 
                                 id="question" 
@@ -240,6 +298,10 @@ function QuestionPaperForm(props) {
                         <div style={{display: showMultiBlock ? 'block' : 'none' }} >
                             <div className="form-group text-left">
                                 <label htmlFor="optionsInput">Options</label>
+                                {state.questionPaper.language !== 'en' ?
+                                    <img src={TranslateIcon} alt='' width="30" height="30" onClick={() => translate('options')} title="Click here to translate the above text." />
+                                    : <p></p>
+                                }
                                 <textarea 
                                     className="form-control" 
                                     id="options" 
@@ -308,6 +370,27 @@ function QuestionPaperForm(props) {
                             placeholder="Enter Section" 
                             value={state.section}
                             onChange={handleChange} />
+                        </div>
+                        <div className="form-group text-left">
+                            <label htmlFor="languageDropDown">Language</label>
+                            <select name="languageDropDown" 
+                                    id="language"
+                                    className="form-control"
+                                    value={state.language}
+                                    onChange={handleChange}>
+                                <option value="bn">Bengali</option>
+                                <option value="en">English (Default)</option>
+                                <option value="gu">Gujrati</option>
+                                <option value="hi">Hindi</option>
+                                <option value="kn">Kannada</option>
+                                <option value="ml">Malayalam</option>
+                                <option value="mr">Marathi</option>
+                                <option value="or">Odia (Oriya)</option>
+                                <option value="pa">Punjabi</option>
+                                <option value="ta">Tamil</option>
+                                <option value="te">Telegu</option>
+                                <option value="ur">Urdu</option>
+                            </select>
                         </div>
                         <div className="form-group text-left">
                         <label htmlFor="numberOfQuestionsInput">Total Questions</label>
@@ -381,7 +464,7 @@ function QuestionPaperForm(props) {
                                 Save
                             </button>
                         </div>
-                        <div style={{display: state.successMessage ? 'block' : 'none', paddingLeft: '19%'}} >
+                        <div style={{display: state.successMessage ? 'block' : 'none', paddingLeft: '15%'}} >
                             <button
                                 type="submit" 
                                 className="btn btn-primary" 

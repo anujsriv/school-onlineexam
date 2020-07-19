@@ -4,6 +4,7 @@ import {API_BASE_URL} from '../../constants/apiContants';
 import { withRouter } from "react-router-dom";
 import { isNullOrUndefined } from 'util';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
+import TranslateIcon from '../Images/translate.png';
 
 function StartExam(props) {
 
@@ -60,6 +61,30 @@ function StartExam(props) {
             setWebCamState(prevState => ({
                 'showWebCam' : 'true'
             }));
+        }
+    }
+
+    const translate = (fieldName) => {
+        if (fieldName === 'answerText') {
+            const payload = {
+                "q" : state.answerText,
+                "source" : "en",
+                "target" : questionPaper.language,
+                "format" : "text"
+            }
+
+            axios.post(API_BASE_URL+'translate', payload)
+            .then(function (response) {
+                if (response.status === 200) {
+                    setState(prevState => ({
+                        ...prevState,
+                        answerText : response.data
+                    }))
+                }
+            })
+            .catch(function (error){
+                console.log(error);
+            })
         }
     }
 
@@ -311,6 +336,15 @@ function StartExam(props) {
                             </div>
 
                             <div style={{display: question.type === 'subjective' ? 'block' : 'none' }} className="form-group">
+                                    {questionPaper.language !== 'en' ?
+                                        <div>
+                                        <p>Instructions: Please note to write your 'answer' in any langauge other than 'English', 
+                                        <br></br>please type in English (or the text copied from speech converter) and click 
+                                        <br></br>the button below to convert it into selected language.</p>
+                                        <img src={TranslateIcon} alt='' width="30" height="30" onClick={() => translate('answerText')} title="Click here to translate the above text." />
+                                        </div>
+                                        : <p></p>
+                                    }
                                     <textarea className="form-control" rows="5" id="answerText" value={state.answerText} onChange={handleChange} placeholder="Type your answer here. If you have difficulty in typing, please use the Start/ Stop button to record your answer and copy paste here."/>
                                     <br></br>
                                     <p>If you have difficulty in typing or your speed is slow, please use the  below 'Start' button to start recording your answer and convert it to text. 

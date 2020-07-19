@@ -21,13 +21,13 @@ public class Question {
 	@Column(name = "TYPE")
 	private String type;
 	
-	@Column(name = "QUESTION")
+	@Column(name = "QUESTION", columnDefinition = "ntext")
 	private String question;
 	
 	@Column(name = "MARKS")
 	private String marks;
 	
-	@Column(name = "OPTIONS")
+	@Column(name = "OPTIONS", columnDefinition = "ntext")
 	private String options;
 	
 	@Column(name = "RIGHT_ANSWERS")

@@ -3,6 +3,7 @@ import axios from 'axios';
 import './LoginForm.css';
 import {API_BASE_URL} from '../../constants/apiContants';
 import { withRouter } from "react-router-dom";
+import UserProfile from '../../closure/UserProfile';
 
 function LoginForm(props) {
     const [state , setState] = useState({
@@ -31,6 +32,7 @@ function LoginForm(props) {
                         ...prevState,
                         'successMessage' : 'Login successful. Redirecting to home page..'
                     }))
+                    saveUserData(response.data);
                     redirectToHome(response.data);
                     props.showError(null)
                 }
@@ -46,6 +48,14 @@ function LoginForm(props) {
                 props.showError(error.response.data);
             });
     }
+
+    const saveUserData = (user) => {
+        UserProfile.setFullName(user.fullName);
+        UserProfile.setUserName(user.userName);
+        UserProfile.setPassword(user.password);
+        UserProfile.setId(user.id);
+    }
+
     const redirectToHome = (data) => {
         if(data.type === 'teacher'){
             props.updateTitle('Home')
@@ -55,10 +65,12 @@ function LoginForm(props) {
             props.history.push('/studenthome', data);
         }
     }
+
     const redirectToRegister = () => {
         props.history.push('/register'); 
         props.updateTitle('Register');
     }
+
     return(
         <div className="card col-12 col-lg-4 login-card mt-2 hv-center">
             <form>

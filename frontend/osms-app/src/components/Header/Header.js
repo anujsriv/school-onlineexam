@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import { withRouter } from "react-router-dom";
-import { isNullOrUndefined } from 'util';
 import axios from 'axios';
 import {API_BASE_URL} from '../../constants/apiContants';
+import UserProfile from '../../closure/UserProfile';
 
 function Header(props) {
 
@@ -21,27 +21,50 @@ function Header(props) {
 
     const redirectToLogin = () => {
         const payload={
-            "userName":props.location.state.userName,
-            "password":props.location.state.password,
+            "userName":UserProfile.getUserName(),
+            "password":UserProfile.getPassword()
         }
-        axios.post(API_BASE_URL+'logout', payload);
+        axios.post(API_BASE_URL+'logout', payload)
+            .then(response => {
+                if (response.status === 200) {
+                    updateUserData();
+                    props.updateTitle('Login')
+                    props.history.push('/login');
+                }
+        })
+        .catch( function (error){
+            console.log(error);
+        });
         
+        updateUserData();
         props.updateTitle('Login')
         props.history.push('/login');
+    }
+
+    const updateUserData = () => {
+        UserProfile.setFullName("");
+        UserProfile.setUserName("");
+        UserProfile.setPassword("");
+        UserProfile.setId("");
     }
 
     const title = capitalize(props.location.pathname.substring(1,props.location.pathname.length))
     return(
         <div className="d-flex flex-row justify-content-around bd-highlight mb-3 bg-primary">
             <div className="p-2 bd-highlight text-white">
-                {!isNullOrUndefined(props.location.state) &&
+                {!!UserProfile.getFullName() &&
                     <div>
-                        Welcome {props.location.state.fullName} !
+                        Welcome {UserProfile.getFullName()} !
                     </div>
                 }
             </div>
             <div className="p-2 bd-highlight">
-                {!isNullOrUndefined(props.location.state) &&
+                <div className="text-white">
+                    <span className="h3">{props.title || title}</span>
+                </div>
+            </div>
+            <div className="p-2 bd-highlight">
+                {!!(UserProfile.getFullName()) &&
                     <button type="button" onClick={redirectToLogin} className="btn text-white btn-link">Logout</button>
                 }
             </div>

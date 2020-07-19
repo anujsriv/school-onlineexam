@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "online-exam-management-system",
+  "private_key_id": "a6a650df776991a9d76034f17fb041fa906851f0",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDNX9dwVB29E/ua\nLO+Kks7sDNFDzDOAu+TsFJeJShH8d6I5C0P1M4M89rf4gIZETiqnS7ASCoAhz6x3\nHREzxcvxq+HHP17zKPJVkWlTcfyOQcoddUXBaaIzsOiT1HR5AEsKFK4i69qZhFsu\nK2WPTt+vb4PFlW7isQZYX60lMVs2yDm9pcZNx43D2sAtvw56WfwN3+ZhdD2zQ73n\nEQb77YgCvTGbNYJBaIgHQBo+abHYxQBx7HTuSfA5JRD0bqxQ9duVV3varDKPlFJK\n+czbBl9wd8nC1TCu7g3T2ftJBC1AcIAoJ41Hku6PaUZPVQ5C3aTKsryAk3KZ+m56\n4r/zPa19AgMBAAECggEAEEqZxbKagFD5PLfzUZAHQ5DZudHVRRFCndqdUbnzNs6L\nqxBCdg09zCR7IAacAAeeWRKHN0sncmcttG41GuEGJlfe62YSw2G8ZX7JNuIcKXG9\nFXyjya22PPj73hw0mBOmoDhXPvRsLRDjhcRSBF36nwlOz+nkd62YxgJi8wgZBv2T\nGQWyCRzaSEbGFMtlzXVzDtYvIUYI/AgRnlZtngq+DnyXyXqmsllaWr5baiejafCk\nIXKHLsTSbb++NZf1bZwNncaZXEfe0vIm+aJ5LlsKJghsPeBbbIbdVnNlp75/Jhct\nv6U1XgVI2kQCtgy3wJZZ5CROpbpn4nVwncACG8etqQKBgQD6GRrqcrr1Tlb+AHfQ\nKEDtGUorfoJbwQYiGqbvJkJdLlUySpDrGmLDKjbD83n7WyvUnMaX6XUyxf+KkrLS\nXyTyEgjOxNyB6w4l8QS2liNNc1BwepGbluUd8Z5ghlUqKyxb5I0EPDf5ln4HKgG6\nDlUSXlQ7nMp3haTxAR6qk9h2ZQKBgQDSOI0fAeUSOspEw9BhGvh+9Lh/OAcnrszf\nYFMZWa7B1UwskL9eqKnfTUyYPYPhZtVOJn0m2xkBU8VFHmYIYIOtIzlyIqogA40b\nqAWRVbRszQ1vAhaiPC1VgUM4OBU1Qco8uMEBaBilS5qgFtbgw/jbxUEtdXEs+Acw\n0fc0S4x9OQKBgQCMLZgdgnLx3Zf6xE5jeLxzaHJfEIiGXxlN8jxQ3NPjoH2WM58o\nd2CV3UpW6Fgdn4tgnwLc0Lik3b+Obw0VxshRefQ/2K1zkEkc0QuAP4TH+3NBqCGG\n4LvI3c2Ucpa3jP1PADpd/lataUF4SH4xR6k9I2v5Abel6F17y9Hhb/6q1QKBgEyG\ne5DLDslpD1Ki+Ysv1z/X9AWTrr8aWcgC950l0YEMFXOvqYpa2aPJLtXIpuZ5mbKe\nPjbT0TFzfj9gBoKMJ8LyLKpIxidrQ4XKz2QNj+V/a6F6YCTkxRf4OzEO8WF2tpkO\nJGxPqZEaiYo3Zjdh/4h5MPXMZ8uX6n4yIMwvqE+5AoGBAIgFqFZ6V2b40v1YlH3L\nHPdY2Wg9hxwRDjcpUy2HBl+mpowM2CNKKNNkpGt2el6O6FlL4OBOJhM+NnybUPcz\nTMdQ9qx+5hdLmjYUTO5KfwmMEY6xqRrnUbFJFZ08DFNNE1A4zyk+4SUrtgrFZkbB\nI13b7WxIdLMlI5mN90IYxsvo\n-----END PRIVATE KEY-----\n",
+  "client_email": "cloudapi-test@online-exam-management-system.iam.gserviceaccount.com",
+  "client_id": "112137199434024064569",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/cloudapi-test%40online-exam-management-system.iam.gserviceaccount.com"
+}
