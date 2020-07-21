@@ -1,8 +1,10 @@
 package com.asan.osms.controller;
 
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -67,6 +69,22 @@ public class ProctingController {
 		}
 
 		throw new ResourceNotFoundException(String.valueOf(userName));
+	}
+	
+	@DeleteMapping("/procting/{className}/{section}")
+	void deletePRoctingURLByClassNameAndSection(@PathVariable String className, @PathVariable String section) {
+		List<Procting> proctingList = null;
+		try {
+			proctingList = repository.findByClassNameAndSection(className, section);
+		} catch (NoSuchElementException ex) {
+			throw new ResourceNotFoundException(String.valueOf(className));
+		}
+
+		if (proctingList != null) {
+			repository.deleteAll(proctingList);
+		}
+
+		throw new ResourceNotFoundException(String.valueOf(className));
 	}
 
 }

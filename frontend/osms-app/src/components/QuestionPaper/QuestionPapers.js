@@ -88,6 +88,19 @@ function QuestionTable (props) {
                     setQuestionPapers(response.data);
                 });
             });
+
+            let className = newQuestion.className;
+            let section = newQuestion.section;
+
+            axios.delete(API_BASE_URL+'procting/'+className+'/'+section)
+                .then(function (response) {
+                    if (response.status === 200) {
+                        console.log("Procting URL removed.");
+                    }
+                })
+                .catch(function (error){
+                    console.log(error);
+                })
         });
     }
 
