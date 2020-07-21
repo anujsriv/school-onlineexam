@@ -3,6 +3,7 @@ import axios from 'axios';
 import {API_BASE_URL} from '../../constants/apiContants';
 import { withRouter } from "react-router-dom";
 import './QuestionPapers.css';
+import UserProfile from '../../closure/UserProfile';
 
 function QuestionTable (props) {
     
@@ -28,6 +29,52 @@ function QuestionTable (props) {
                 axios.get(API_BASE_URL+'questionpapers/'+props.location.state.id).then(response =>{
                     setQuestionPapers(response.data);
                 });
+            });
+            
+            let className = newQuestion.className;
+            let section = newQuestion.section;
+
+            const teacherPayload = {
+                "className": className,
+                "section": section,
+                "userName": UserProfile.getUserName()
+            }
+
+            axios.post(API_BASE_URL+'procting', teacherPayload)
+                .then(function (response){
+                    if (response.status === 200) {
+                        console.log("Teacher Procting URL Generated.");
+                    }
+                })
+                .catch(function (error){
+                    console.log(error);
+            })
+
+            axios.get(API_BASE_URL+'users/'+className+'/'+section)
+                .then(function (response) {
+                    if (response.status === 200) {
+                        const students = response.data;
+                        students.forEach(eachStudent => {
+                            const payload = {
+                                "className": eachStudent.className,
+                                "section": eachStudent.section,
+                                "userName": eachStudent.userName
+                            }
+
+                            axios.post(API_BASE_URL+'procting', payload)
+                                .then(function (response){
+                                    if (response.status === 200) {
+                                        console.log("Procting URL Generated.");
+                                    }
+                                })
+                                .catch(function (error){
+                                    console.log(error);
+                                })
+                        })
+                    }
+                })
+                .catch(function (error){
+                    console.log(error);
             });
         });
     }

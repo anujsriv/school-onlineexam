@@ -6,6 +6,7 @@ import './Invigilate.css';
 import WebCamIcon from '../Images/webcam-icon.png';
 import EvaluateIcon from '../Images/evaluate.png';
 import Bulb from 'react-bulb';
+import UserProfile from '../../closure/UserProfile';
 
 function Invigilate(props) {
 
@@ -40,7 +41,17 @@ function Invigilate(props) {
     }
 
     const startFeedAll = () => {
-        alert("Page under Construction");
+        let userName = UserProfile.getUserName();
+        axios.get(API_BASE_URL+'procting/'+userName)
+            .then(function (response){
+                if (response.status === 200) {
+                    const proctingURL = response.data.videoURL;
+                    window.open(proctingURL, "_blank");
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+        })
     }
 
     const saveMarks = () => {

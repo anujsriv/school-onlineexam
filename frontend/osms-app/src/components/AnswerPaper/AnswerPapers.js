@@ -13,7 +13,10 @@ function AnswerTable(props) {
     })
 
     useEffect(() => {
-        getData()
+        const interval = setInterval(() => {
+            getData()
+          }, 10000);
+          return () => clearInterval(interval);
     }, [])
 
     const getData = async () => {

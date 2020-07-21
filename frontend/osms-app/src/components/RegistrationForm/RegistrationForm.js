@@ -3,6 +3,7 @@ import axios from 'axios';
 import './RegistrationForm.css';
 import {API_BASE_URL} from '../../constants/apiContants';
 import { withRouter } from "react-router-dom";
+import UserProfile from '../../closure/UserProfile';
 
 function RegistrationForm(props) {
     const [state , setState] = useState({
@@ -33,28 +34,64 @@ function RegistrationForm(props) {
                 "section" : state.section,
                 "type":state.type
             }
-            axios.post(API_BASE_URL+'users', payload)
+            axios.get(API_BASE_URL+'users'+'/'+state.userName)
                 .then(function (response) {
-                    if(response.status === 200){
-                        setState(prevState => ({
-                            ...prevState,
-                            'successMessage' : 'Registration successful. Redirecting to home page..'
-                        }))
-                        redirectToHome(response.data);
-                        props.showError(null)
-                    } else{
-                        props.showError("Some error ocurred");
+                    if (response.status === 200) {
+                        props.showError("User name "+state.userName+" already taken.");
+                    } else {
+                        axios.post(API_BASE_URL+'users', payload)
+                            .then(function (response) {
+                                if(response.status === 200){
+                                    setState(prevState => ({
+                                        ...prevState,
+                                        'successMessage' : 'Registration successful. Redirecting to home page..'
+                                    }))
+                                    saveUserData(response.data);
+                                    redirectToHome(response.data);
+                                    props.showError(null)
+                                } else{
+                                    props.showError("Some error ocurred");
+                                }
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                                props.showError("Some error ocurred");
+                            });
                     }
                 })
                 .catch(function (error) {
-                    console.log(error);
-                    props.showError("Some error ocurred");
-                });    
+                    axios.post(API_BASE_URL+'users', payload)
+                        .then(function (response) {
+                            if(response.status === 200){
+                                setState(prevState => ({
+                                    ...prevState,
+                                    'successMessage' : 'Registration successful. Redirecting to home page..'
+                                }))
+                                saveUserData(response.data);
+                                redirectToHome(response.data);
+                                props.showError(null)
+                            } else{
+                                props.showError("Some error ocurred");
+                            }
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                            props.showError("Some error ocurred");
+                        });
+                })    
         } else {
             props.showError('Please enter valid Username, Password and/ or User Type')    
         }
         
     }
+
+    const saveUserData = (user) => {
+        UserProfile.setFullName(user.fullName);
+        UserProfile.setUserName(user.userName);
+        UserProfile.setPassword(user.password);
+        UserProfile.setId(user.id);
+    }
+
     const redirectToHome = (data) => {
         if(state.type === 'teacher'){
             props.updateTitle('Home')

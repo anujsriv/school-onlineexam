@@ -19,7 +19,6 @@ public class TranslationBO {
 		String sourceLanguage = translateRequest.getSource();
 		String targetLanguage = translateRequest.getTarget();
 		String format = translateRequest.getFormat();
-		String model = "nmt";
 
 		Translation translation = translate.translate(textToTranslate, TranslateOption.format(format),
 				TranslateOption.sourceLanguage(sourceLanguage),

@@ -3,18 +3,13 @@ import axios from 'axios';
 import {API_BASE_URL} from '../../constants/apiContants';
 import { withRouter } from "react-router-dom";
 import { isNullOrUndefined } from 'util';
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
 import TranslateIcon from '../Images/translate.png';
+import Dictaphone from '../SpeechRecognition/Dictaphone';
+import UserProfile from '../../closure/UserProfile';
 
 function StartExam(props) {
 
-    const { transcript, resetTranscript } = useSpeechRecognition()
-
     const [questionPaper, setQuestionPaper] = useState([]);
-
-    const [webCamState, setWebCamState] = useState({
-        showWebCam: 'false'
-    })
 
     const [state, setState] = useState({
         multiChoice: [],
@@ -57,10 +52,6 @@ function StartExam(props) {
         if (!isNullOrUndefined(props.location.state)) {
             const response = await axios.get(API_BASE_URL+'questionpaper/'+props.location.state.questionPaperID)
             setQuestionPaper(response.data)
-        } else {
-            setWebCamState(prevState => ({
-                'showWebCam' : 'true'
-            }));
         }
     }
 
@@ -120,6 +111,18 @@ function StartExam(props) {
             .catch(function (error) {
                     console.log(error);
             });
+
+            let userName = UserProfile.getUserName();
+            axios.get(API_BASE_URL+'procting/'+userName)
+                .then(function (response){
+                    if (response.status === 200) {
+                        const proctingURL = response.data.videoURL;
+                        window.open(proctingURL, "_blank");
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+            })
         } 
         
         if (id === 'submit') {
@@ -345,14 +348,8 @@ function StartExam(props) {
                                         </div>
                                         : <p></p>
                                     }
-                                    <textarea className="form-control" rows="5" id="answerText" value={state.answerText} onChange={handleChange} placeholder="Type your answer here. If you have difficulty in typing, please use the Start/ Stop button to record your answer and copy paste here."/>
-                                    <br></br>
-                                    <p>If you have difficulty in typing or your speed is slow, please use the  below 'Start' button to start recording your answer and convert it to text. 
-                                        Once done, please click on 'Stop' button. Then copy and paste the transcript in the above area. If you want to make any changes, please click on 'Reset' button
-                                        and try again. 
-                                    </p>
-                                    <button className="btn btn-secondary btn-sm" onClick={SpeechRecognition.startListening}>Start</button> | <button className="btn btn-secondary btn-sm" onClick={SpeechRecognition.stopListening}>Stop</button> | <button className="btn btn-secondary btn-sm" onClick={resetTranscript}>Reset</button>
-                                    <p>{transcript}</p>
+                                    <textarea className="form-control" rows="5" id="answerText" value={state.answerText} onChange={handleChange} placeholder="Type your answer here."/>
+                                    <Dictaphone />
                             </div>
                             <div className="form-group form-inline">
                                 <div style={{display: pagable.currentPageNumber !== 0 ? 'block' : 'none', paddingRight: '15%' }}>

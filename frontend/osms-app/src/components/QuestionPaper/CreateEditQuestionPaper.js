@@ -3,8 +3,10 @@ import axios from 'axios';
 import {API_BASE_URL} from '../../constants/apiContants';
 import { withRouter } from "react-router-dom";
 import TranslateIcon from '../Images/translate.png';
+import Dictaphone from '../SpeechRecognition/Dictaphone';
 
 function QuestionPaperForm(props) {
+
     const [showMultiBlock, setShowMultiBlock] = useState(false)
 
     const [showQuestions, setShowQuestions] = useState(false)
@@ -256,6 +258,14 @@ function QuestionPaperForm(props) {
             <div style={{display: showQuestions ? 'block' : 'none' }} >
                 <div className="card col-12 col-lg-30 hv-center">Question - {questionState.currentQuestion} Of {questionState.totalQuestions}
                     <form>
+                        {state.questionPaper.language !== 'en' ?
+                                <div className="form-group text-left">
+                                <p>Instructions: 
+                                <br></br>Please note to write your 'question' and 'options' (in case of multiple choice) in any langauge other than 'English', 
+                                <br></br>please type in English and click the button <img src={TranslateIcon} alt='' width="30" height="30" /> to convert it into selected language.</p>
+                                </div>
+                                : <p></p>
+                        }
                         <div className="form-group text-left">
                             <label htmlFor="questionTypeDropDown">Question Type</label>
                             <select name="questionTypeDropDown" 
@@ -271,20 +281,16 @@ function QuestionPaperForm(props) {
                         <div className="form-group text-left">
                             <label htmlFor="questionInput">Question</label>
                             {state.questionPaper.language !== 'en' ?
-                                <div>
-                                <p>Instructions: Please note to write your 'question' and 'options' (in case of multiple choice)
-                                <br></br>in any langauge other than 'English', please type in English and click 
-                                <br></br>the button below to convert it into selected language.</p>
-                                <img src={TranslateIcon} alt='' width="30" height="30" onClick={() => translate('question')} title="Click here to translate the above text." />
-                                </div>
+                                <img src={TranslateIcon} style={{cursor: "pointer"}} className="form-group text-right" alt='Click Here to translate' width="30" height="30" onClick={() => translate('question')} title="Click here to translate the below text." />
                                 : <p></p>
-                            }
+                                }
                             <textarea 
                                 className="form-control" 
                                 id="question" 
                                 placeholder="Enter the question." 
                                 value={questionState.question}
                                 onChange={handleChange} />
+                            <Dictaphone />
                         </div>
                         <div className="form-group text-left">
                             <label htmlFor="marksInput">Marks</label>
@@ -299,7 +305,7 @@ function QuestionPaperForm(props) {
                             <div className="form-group text-left">
                                 <label htmlFor="optionsInput">Options</label>
                                 {state.questionPaper.language !== 'en' ?
-                                    <img src={TranslateIcon} alt='' width="30" height="30" onClick={() => translate('options')} title="Click here to translate the above text." />
+                                    <img src={TranslateIcon} style={{cursor: "pointer"}} className="form-group text-right" alt='Click Here to translate' width="30" height="30" onClick={() => translate('options')} title="Click here to translate the below text." />
                                     : <p></p>
                                 }
                                 <textarea 
