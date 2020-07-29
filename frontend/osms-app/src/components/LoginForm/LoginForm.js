@@ -1,14 +1,26 @@
-import React, {useState} from 'react';
-import axios from 'axios';
+import React, {useState, useEffect} from 'react';
+import axios from '../CustomAxios/Axios';
 import './LoginForm.css';
-import {API_BASE_URL} from '../../constants/apiContants';
 import { withRouter } from "react-router-dom";
 import UserProfile from '../../closure/UserProfile';
 
 function LoginForm(props) {
+
+    const [schools, setSchools] = useState([]);
+
+    useEffect(() => {
+        getData()
+    }, [])
+
+    const getData = async () => {
+        const response = await axios.get('schools/');
+        setSchools(response.data);
+    }
+
     const [state , setState] = useState({
         email : "",
         password : "",
+        school: "",
         successMessage: null
     })
     const handleChange = (e) => {
@@ -21,11 +33,12 @@ function LoginForm(props) {
 
     const handleSubmitClick = (e) => {
         e.preventDefault();
+        setTenantID();
         const payload={
             "userName":state.email,
             "password":state.password,
         }
-        axios.post(API_BASE_URL+'login', payload)
+        axios.post('login', payload)
             .then(function (response) {
                 if(response.status === 200){
                     setState(prevState => ({
@@ -49,6 +62,14 @@ function LoginForm(props) {
             });
     }
 
+    const setTenantID = () => {
+        schools.forEach(function (eachSchool) {
+            if (state.school === eachSchool.schoolName) {
+                localStorage.setItem('tenantID', eachSchool.tenantID);
+            }
+        });
+    }
+
     const saveUserData = (user) => {
         UserProfile.setFullName(user.fullName);
         UserProfile.setUserName(user.userName);
@@ -69,6 +90,17 @@ function LoginForm(props) {
     const redirectToRegister = () => {
         props.history.push('/register'); 
         props.updateTitle('Register');
+    }
+
+    const renderOptions = () => {
+        let schoolNames = [];
+        schools.forEach(function (eachSchool) {
+            schoolNames.push(eachSchool.schoolName);
+        });
+
+        return schoolNames.map((key, index) => {
+            return <option key={index} value={key}>{key}</option>
+        })
     }
 
     return(
@@ -96,6 +128,16 @@ function LoginForm(props) {
                        onChange={handleChange} 
                        required
                 />
+                </div>
+                <div className="form-group text-left">
+                    <label htmlFor="schoolsDropDown">School</label>
+                    <select name="schoolsDropDown" 
+                            id="school"
+                            className="form-control"
+                            value={state.school}
+                            onChange={handleChange}>
+                        {renderOptions()}
+                    </select>
                 </div>
                 <div className="form-check">
                 </div>

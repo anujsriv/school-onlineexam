@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
-import axios from 'axios';
-import {API_BASE_URL} from '../../constants/apiContants';
+import axios from '../CustomAxios/Axios';
 import { withRouter } from "react-router-dom";
 import TranslateIcon from '../Images/translate.png';
 import Dictaphone from '../SpeechRecognition/Dictaphone';
@@ -48,7 +47,7 @@ function QuestionPaperForm(props) {
                 "format" : "text"
             }
 
-            axios.post(API_BASE_URL+'translate', payload)
+            axios.post('translate', payload)
             .then(function (response) {
                 if (response.status === 200) {
                     setQuestionState(prevState => ({
@@ -69,7 +68,7 @@ function QuestionPaperForm(props) {
                 "format" : "text"
             }
 
-            axios.post(API_BASE_URL+'translate', payload)
+            axios.post('translate', payload)
             .then(function (response) {
                 if (response.status === 200) {
                     setQuestionState(prevState => ({
@@ -162,7 +161,7 @@ function QuestionPaperForm(props) {
                 "instructions" : state.instructions,
                 "teacherID" : props.location.state.id
             }
-            axios.post(API_BASE_URL+'questionpaper', payload)
+            axios.post('questionpaper', payload)
                 .then(function (response) {
                     if(response.status === 200){
                         setState(prevState => ({
@@ -217,7 +216,7 @@ function QuestionPaperForm(props) {
                 "rightAnswers" : questionState.answers,
                 "questionPaperID" : state.questionPaper.id
             }
-            axios.post(API_BASE_URL+'question', payload)
+            axios.post('question', payload)
                 .then(function (response) {
                     if(response.status === 200){
                         setQuestionState({

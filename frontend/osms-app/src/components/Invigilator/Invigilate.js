@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
-import {API_BASE_URL} from '../../constants/apiContants';
 import { withRouter } from "react-router-dom";
 import './Invigilate.css';
 import WebCamIcon from '../Images/webcam-icon.png';
@@ -21,7 +20,7 @@ function Invigilate(props) {
     }, [])
 
     const getData = async () => {
-        const response = await axios.get(API_BASE_URL+'answerpapers/'+props.location.state.questionPaperID);
+        const response = await axios.get('answerpapers/'+props.location.state.questionPaperID);
         setStudents(response.data);
     }
 
@@ -42,7 +41,7 @@ function Invigilate(props) {
 
     const startFeedAll = () => {
         let userName = UserProfile.getUserName();
-        axios.get(API_BASE_URL+'procting/'+userName)
+        axios.get('procting/'+userName)
             .then(function (response){
                 if (response.status === 200) {
                     const proctingURL = response.data.videoURL;
@@ -71,7 +70,7 @@ function Invigilate(props) {
             }
         })
 
-        axios.get(API_BASE_URL+'question/'+props.location.state.questionPaperID)
+        axios.get('question/'+props.location.state.questionPaperID)
             .then(questionsResponse => {
                 if (questionsResponse.status === 200) {
                     questionArray = questionsResponse.data;
@@ -81,12 +80,12 @@ function Invigilate(props) {
                 console.log(error);
         })
 
-        axios.get(API_BASE_URL+'answerpapers/'+props.location.state.questionPaperID+'/'+id)
+        axios.get('answerpapers/'+props.location.state.questionPaperID+'/'+id)
             .then(answerPaperResponse => {
                 if (answerPaperResponse.status === 200) {
                     anspaperID = answerPaperResponse.data.id;
 
-                    axios.get(API_BASE_URL+'answers/'+anspaperID)
+                    axios.get('answers/'+anspaperID)
                         .then(response => {
                             if (response.status === 200) {
                                 answerArray = response.data;

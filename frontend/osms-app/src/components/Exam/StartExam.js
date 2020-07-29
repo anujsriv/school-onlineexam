@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import {API_BASE_URL} from '../../constants/apiContants';
+import axios from '../CustomAxios/Axios';
 import { withRouter } from "react-router-dom";
 import { isNullOrUndefined } from 'util';
 import TranslateIcon from '../Images/translate.png';
@@ -50,7 +49,7 @@ function StartExam(props) {
 
     const getData = async () => {
         if (!isNullOrUndefined(props.location.state)) {
-            const response = await axios.get(API_BASE_URL+'questionpaper/'+props.location.state.questionPaperID)
+            const response = await axios.get('questionpaper/'+props.location.state.questionPaperID)
             setQuestionPaper(response.data)
         }
     }
@@ -64,7 +63,7 @@ function StartExam(props) {
                 "format" : "text"
             }
 
-            axios.post(API_BASE_URL+'translate', payload)
+            axios.post('translate', payload)
             .then(function (response) {
                 if (response.status === 200) {
                     setState(prevState => ({
@@ -98,7 +97,7 @@ function StartExam(props) {
                 "studentID":props.location.state.studentID,
                 "status":"in-progress"
             }
-            axios.post(API_BASE_URL+'answerpapers', payload)
+            axios.post('answerpapers', payload)
                 .then(function (response) {
                     if(response.status === 200){
                         setAnswer({
@@ -113,7 +112,7 @@ function StartExam(props) {
             });
 
             let userName = UserProfile.getUserName();
-            axios.get(API_BASE_URL+'procting/'+userName)
+            axios.get('procting/'+userName)
                 .then(function (response){
                     if (response.status === 200) {
                         const proctingURL = response.data.videoURL;
@@ -134,7 +133,7 @@ function StartExam(props) {
                     "answer": eachAnswer.answerString
                 }
 
-                axios.post(API_BASE_URL+'answers', payload)
+                axios.post('answers', payload)
                     .then(function (response) {
                         if(response.status === 200){
                             
@@ -163,7 +162,7 @@ function StartExam(props) {
             }
             
         } else {
-            axios.get(API_BASE_URL+'question/'+props.location.state.questionPaperID+'/'+pageNumber)
+            axios.get('question/'+props.location.state.questionPaperID+'/'+pageNumber)
                 .then(res =>{
                     const response = res;
                     setAnswer(prevState=> ({

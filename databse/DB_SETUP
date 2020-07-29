@@ -1,0 +1,10 @@
+NEW DB setup steps:-
+
+	1) Create common Database and Table - COMMON_TABLE.sql
+	
+NEW Tenant addition:-
+
+	1) Insert new entry in COMMON Table - INSERT_NEW_TENANT.sql
+	2) Create new Database(Schema) for new tenant with Name as given to the above new Tenant - CREATE_NEW_DB.sql
+	3) Create application specific tables in the new DB - INITIAL_SETUP_FOR_TENANT.sql
+	4) Create hibernate sequence table(auto generation of Ids) -  CREATE_HB_SEQUENCE.sql

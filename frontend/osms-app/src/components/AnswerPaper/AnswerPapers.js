@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import {API_BASE_URL} from '../../constants/apiContants';
+import axios from '../CustomAxios/Axios';
 import { withRouter } from "react-router-dom";
 import './AnswerPapers.css';
 
@@ -24,7 +23,7 @@ function AnswerTable(props) {
             "className" : props.location.state.className,
             "section": props.location.state.section
         }
-        const response = await axios.post(API_BASE_URL+'questionpapers/', payload);
+        const response = await axios.post('questionpapers/', payload);
         setQuestionPapers(response.data);
     }
 
@@ -33,7 +32,7 @@ function AnswerTable(props) {
             "questionPaperID":id,
             "studentID":props.location.state.id
         }
-        axios.get(API_BASE_URL+'answerpapers/'+id+'/'+props.location.state.id)
+        axios.get('answerpapers/'+id+'/'+props.location.state.id)
             .then(function (response) {
                 if (response.status === 200) {
                     setState({

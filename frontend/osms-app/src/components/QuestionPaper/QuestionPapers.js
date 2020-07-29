@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import {API_BASE_URL} from '../../constants/apiContants';
+import axios from '../CustomAxios/Axios';
 import { withRouter } from "react-router-dom";
 import './QuestionPapers.css';
 import UserProfile from '../../closure/UserProfile';
@@ -14,7 +13,7 @@ function QuestionTable (props) {
     }, [])
 
     const getData = async () => {
-        const response = await axios.get(API_BASE_URL+'questionpapers/'+props.location.state.id);
+        const response = await axios.get('questionpapers/'+props.location.state.id);
         setQuestionPapers(response.data);
     }
 
@@ -22,11 +21,11 @@ function QuestionTable (props) {
     }
 
     const startExam = (id) => {
-        axios.get(API_BASE_URL+'questionpaper/'+id).then(response => {
+        axios.get('questionpaper/'+id).then(response => {
             let newQuestion = response.data;
             newQuestion.status = 'Started';
-            axios.put(API_BASE_URL+'questionpaper/'+id, newQuestion).then(res => {
-                axios.get(API_BASE_URL+'questionpapers/'+props.location.state.id).then(response =>{
+            axios.put('questionpaper/'+id, newQuestion).then(res => {
+                axios.get('questionpapers/'+props.location.state.id).then(response =>{
                     setQuestionPapers(response.data);
                 });
             });
@@ -40,7 +39,7 @@ function QuestionTable (props) {
                 "userName": UserProfile.getUserName()
             }
 
-            axios.post(API_BASE_URL+'procting', teacherPayload)
+            axios.post('procting', teacherPayload)
                 .then(function (response){
                     if (response.status === 200) {
                         console.log("Teacher Procting URL Generated.");
@@ -50,7 +49,7 @@ function QuestionTable (props) {
                     console.log(error);
             })
 
-            axios.get(API_BASE_URL+'users/'+className+'/'+section)
+            axios.get('users/'+className+'/'+section)
                 .then(function (response) {
                     if (response.status === 200) {
                         const students = response.data;
@@ -61,7 +60,7 @@ function QuestionTable (props) {
                                 "userName": eachStudent.userName
                             }
 
-                            axios.post(API_BASE_URL+'procting', payload)
+                            axios.post('procting', payload)
                                 .then(function (response){
                                     if (response.status === 200) {
                                         console.log("Procting URL Generated.");
@@ -80,11 +79,11 @@ function QuestionTable (props) {
     }
 
     const stopExam = (id) => {
-        axios.get(API_BASE_URL+'questionpaper/'+id).then(response => {
+        axios.get('questionpaper/'+id).then(response => {
             let newQuestion = response.data;
             newQuestion.status = 'Stopped';
-            axios.put(API_BASE_URL+'questionpaper/'+id, newQuestion).then(res => {
-                axios.get(API_BASE_URL+'questionpapers/'+props.location.state.id).then(response =>{
+            axios.put('questionpaper/'+id, newQuestion).then(res => {
+                axios.get('questionpapers/'+props.location.state.id).then(response =>{
                     setQuestionPapers(response.data);
                 });
             });
@@ -92,7 +91,7 @@ function QuestionTable (props) {
             let className = newQuestion.className;
             let section = newQuestion.section;
 
-            axios.delete(API_BASE_URL+'procting/'+className+'/'+section)
+            axios.delete('procting/'+className+'/'+section)
                 .then(function (response) {
                     if (response.status === 200) {
                         console.log("Procting URL removed.");
@@ -125,7 +124,7 @@ function QuestionTable (props) {
     }
 
     const deleteData = (id) => {
-        axios.delete(API_BASE_URL+'questionpaper/'+id).then(res => {
+        axios.delete('questionpaper/'+id).then(res => {
             const del = questionPapers.filter(questionPaper => id !== questionPaper.id)
             setQuestionPapers(del)
         })

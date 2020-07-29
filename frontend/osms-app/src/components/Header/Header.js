@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { withRouter } from "react-router-dom";
-import axios from 'axios';
-import {API_BASE_URL} from '../../constants/apiContants';
+import axios from '../CustomAxios/Axios';
 import UserProfile from '../../closure/UserProfile';
 
 function Header(props) {
@@ -24,7 +23,7 @@ function Header(props) {
             "userName":UserProfile.getUserName(),
             "password":UserProfile.getPassword()
         }
-        axios.post(API_BASE_URL+'logout', payload)
+        axios.post('logout', payload)
             .then(response => {
                 if (response.status === 200) {
                     updateUserData();
@@ -46,6 +45,7 @@ function Header(props) {
         UserProfile.setUserName("");
         UserProfile.setPassword("");
         UserProfile.setId("");
+        localStorage.removeItem('tenantID');
     }
 
     const title = capitalize(props.location.pathname.substring(1,props.location.pathname.length))

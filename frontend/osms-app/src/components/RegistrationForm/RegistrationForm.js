@@ -1,11 +1,22 @@
-import React, {useState} from 'react';
-import axios from 'axios';
+import React, {useState, useEffect} from 'react';
+import axios from '../CustomAxios/Axios';
 import './RegistrationForm.css';
-import {API_BASE_URL} from '../../constants/apiContants';
 import { withRouter } from "react-router-dom";
 import UserProfile from '../../closure/UserProfile';
 
 function RegistrationForm(props) {
+
+    const [schools, setSchools] = useState([]);
+
+    useEffect(() => {
+        getData()
+    }, [])
+
+    const getData = async () => {
+        const response = await axios.get('schools/');
+        setSchools(response.data);
+    }
+
     const [state , setState] = useState({
         fullName : "",
         userName : "",
@@ -14,8 +25,10 @@ function RegistrationForm(props) {
         type : "teacher",
         className : "",
         section : "",
+        school: "",
         successMessage: null
     })
+
     const handleChange = (e) => {
         const {id , value} = e.target   
         setState(prevState => ({
@@ -23,9 +36,11 @@ function RegistrationForm(props) {
             [id] : value
         }))
     }
+
     const sendDetailsToServer = () => {
         if(state.userName.length && state.password.length) {
             props.showError(null);
+            setTenantID();
             const payload={
                 "fullName":state.fullName,
                 "userName":state.userName,
@@ -34,12 +49,12 @@ function RegistrationForm(props) {
                 "section" : state.section,
                 "type":state.type
             }
-            axios.get(API_BASE_URL+'users'+'/'+state.userName)
+            axios.get('users/'+state.userName)
                 .then(function (response) {
                     if (response.status === 200) {
                         props.showError("User name "+state.userName+" already taken.");
                     } else {
-                        axios.post(API_BASE_URL+'users', payload)
+                        axios.post('users', payload)
                             .then(function (response) {
                                 if(response.status === 200){
                                     setState(prevState => ({
@@ -60,7 +75,7 @@ function RegistrationForm(props) {
                     }
                 })
                 .catch(function (error) {
-                    axios.post(API_BASE_URL+'users', payload)
+                    axios.post('users', payload)
                         .then(function (response) {
                             if(response.status === 200){
                                 setState(prevState => ({
@@ -85,6 +100,14 @@ function RegistrationForm(props) {
         
     }
 
+    const setTenantID = () => {
+        schools.forEach(function (eachSchool) {
+            if (state.school === eachSchool.schoolName) {
+                localStorage.setItem('tenantID', eachSchool.tenantID);
+            }
+        });
+    }
+
     const saveUserData = (user) => {
         UserProfile.setFullName(user.fullName);
         UserProfile.setUserName(user.userName);
@@ -101,10 +124,12 @@ function RegistrationForm(props) {
             props.history.push('/studenthome', data);
         }
     }
+
     const redirectToLogin = () => {
         props.updateTitle('Login')
         props.history.push('/login'); 
     }
+
     const handleSubmitClick = (e) => {
         e.preventDefault();
         if(state.password === state.confirmPassword) {
@@ -113,6 +138,18 @@ function RegistrationForm(props) {
             props.showError('Passwords do not match');
         }
     }
+
+    const renderOptions = () => {
+        let schoolNames = [];
+        schools.forEach(function (eachSchool) {
+            schoolNames.push(eachSchool.schoolName);
+        });
+
+        return schoolNames.map((key, index) => {
+            return <option key={index} value={key}>{key}</option>
+        })
+    }
+
     return(
         <div className="card col-12 col-lg-4 login-card mt-2 hv-center">
             <form>
@@ -139,6 +176,16 @@ function RegistrationForm(props) {
                        onChange={handleChange}
                        required
                 />
+                </div>
+                <div className="form-group text-left">
+                    <label htmlFor="schoolsDropDown">School</label>
+                    <select name="schoolsDropDown" 
+                            id="school"
+                            className="form-control"
+                            value={state.school}
+                            onChange={handleChange}>
+                        {renderOptions()}
+                    </select>
                 </div>
                 <div className="form-group text-left">
                     <label htmlFor="userTypeDropDown">User Type</label>

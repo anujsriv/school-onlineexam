@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableAutoConfiguration
-@ComponentScan(basePackages = {"com.asan.osms.bo"})
+@ComponentScan(basePackages = {"com.asan.osms"})
 @EntityScan(basePackages = {"com.asan.osms.entity"})
 @EnableJpaRepositories(basePackages = {"com.asan.osms.repository"})
 @EnableTransactionManagement
