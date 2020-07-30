@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import { withRouter } from "react-router-dom";
 import axios from '../CustomAxios/Axios';
 import UserProfile from '../../closure/UserProfile';
@@ -45,7 +45,6 @@ function Header(props) {
         UserProfile.setUserName("");
         UserProfile.setPassword("");
         UserProfile.setId("");
-        localStorage.removeItem('tenantID');
     }
 
     const title = capitalize(props.location.pathname.substring(1,props.location.pathname.length))

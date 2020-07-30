@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import axios from 'axios';
+import axios from '../CustomAxios/Axios';
 import { withRouter } from "react-router-dom";
 import './Invigilate.css';
 import WebCamIcon from '../Images/webcam-icon.png';
@@ -8,6 +8,8 @@ import Bulb from 'react-bulb';
 import UserProfile from '../../closure/UserProfile';
 
 function Invigilate(props) {
+
+    const [result, setResult] = useState([]);
 
     const [students, setStudents] = useState([]);
 
@@ -54,7 +56,13 @@ function Invigilate(props) {
     }
 
     const saveMarks = () => {
-        
+        questions.map(function (eachQuestion){
+            const correct = "correct"+eachQuestion.id;
+            const incorrect = "incorrect"+eachQuestion.id;
+            const marks = "marksObtained"+eachQuestion.id;
+
+            console.log(correct, incorrect, marks);
+        })
     }
 
     const getStudentAndAnswerDetails = (id) => {
@@ -129,19 +137,19 @@ function Invigilate(props) {
                     <br></br>
                     <label className="font-weight-normal">{eachQuestion.answer}</label>
                     <br></br>
-                    <form class="form-inline">
+                    <form className="form-inline">
                         <label className="font-weight-bold">Evaluation : </label>
                         <div className="custom-control custom-radio custom-control-inline">
-                            <input type="radio" id="customRadioInline1" name="customRadioInline1" className="custom-control-input" />
-                            <label className="custom-control-label" htmlFor="customRadioInline1">Correct</label>
+                            <input type="radio" value={"correct"+eachQuestion.id} id={"correct"+eachQuestion.id} name="customRadioInline1" className="custom-control-input" />
+                            <label className="custom-control-label" htmlFor={"correct"+eachQuestion.id}>Correct</label>
                         </div>
                         <div className="custom-control custom-radio custom-control-inline">
-                            <input type="radio" id="customRadioInline2" name="customRadioInline1" className="custom-control-input" />
-                            <label className="custom-control-label" htmlFor="customRadioInline2">Incorrect</label>
+                            <input type="radio" value={"incorrect"+eachQuestion.id} id={"incorrect"+eachQuestion.id} name="customRadioInline1" className="custom-control-input" />
+                            <label className="custom-control-label" htmlFor={"incorrect"+eachQuestion.id}>Incorrect</label>
                         </div>
                         <label className="font-weight-bold">Marks: </label>
                         <div className="form-group mx-sm-2 mb-2">
-                            <input type="text" id="marksObtained" placeholder="Marks" />
+                            <input type="text" value={"marksObtained"+eachQuestion.id} id={"marksObtained"+eachQuestion.id} placeholder="Marks" />
                         </div>
                         <label className="font-weight-bold">Total Marks : {eachQuestion.marks}</label>
                     </form>

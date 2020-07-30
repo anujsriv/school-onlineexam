@@ -1,3 +1,4 @@
+USE [osms_eci]
 CREATE SEQUENCE hibernate_sequence  
 AS int  
 START WITH 1  

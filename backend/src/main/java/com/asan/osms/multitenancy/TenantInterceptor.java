@@ -14,19 +14,24 @@ public class TenantInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
     	String requestURI = request.getRequestURI();
-        String tenantID = request.getHeader("X-TenantID");
+    	String tenantID = null;
+    	
+    	if (requestURI.contains("/api")) {
+    		tenantID = request.getHeader("X-TenantID");
+            
+            if (requestURI.equalsIgnoreCase("/api/schools/")) {
+            	tenantID = "osms_common";
+            }
+            
+            if (tenantID == null) {
+                response.getWriter().write("X-TenantID not present in the Request Header");
+                response.setStatus(400);
+                return false;
+            }
+            
+            TenantContext.setCurrentTenant(tenantID);
+    	}
         
-        if (requestURI.equalsIgnoreCase("/api/schools/")) {
-        	tenantID = "osms_common";
-        }
-        
-        if (tenantID == null) {
-            response.getWriter().write("X-TenantID not present in the Request Header");
-            response.setStatus(400);
-            return false;
-        }
-        
-        TenantContext.setCurrentTenant(tenantID);
         return true;
     }
 

@@ -33,7 +33,7 @@ public class ProctingController {
 	void saveProcting(@RequestBody Procting procting) {
 		
 		try {
-			String scheme = "http://139.59.7.122:8080/proctor/proctor.html?";
+			String scheme = "https://prarat-oems.com/proctor/proctor.html?";
 			String key = "9b1e20e3c88a44e2b827db0c2f3ee0d2";
 			String userName = procting.getUserName();
 			String appID = "6da13d.vidyo.io";

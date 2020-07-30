@@ -12,7 +12,7 @@ function TeacherTabs(props) {
         <Tabs>
             <TabList>
                 <Tab>Submitted Question Paper(s)</Tab>
-                <Tab>Create/ Edit - Question Paper</Tab>
+                <Tab>Create - Question Paper</Tab>
             </TabList>
 
             <TabPanel>
