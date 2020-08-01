@@ -3,6 +3,7 @@ var UserProfile = (function() {
     var userName = "";
     var password = "";
     var id = "";
+    var schoolName = "";
   
     var getFullName = function() {
       return localStorage.getItem('fullName') || '';
@@ -39,6 +40,15 @@ var UserProfile = (function() {
       id = name;     
       localStorage.setItem('id', id);
     };
+
+    var getSchoolName = function() {
+      return localStorage.getItem('schoolName ') || '';
+    };
+    
+    var setSchoolName = function(name) {
+      schoolName = name;     
+      localStorage.setItem('schoolName', schoolName);
+    };
   
     return {
       getFullName: getFullName,
@@ -48,7 +58,9 @@ var UserProfile = (function() {
       getPassword: getPassword,
       setPassword: setPassword,
       getId: getId,
-      setId: setId
+      setId: setId,
+      getSchoolName: getSchoolName,
+      setSchoolName: setSchoolName
     }
   
   })();

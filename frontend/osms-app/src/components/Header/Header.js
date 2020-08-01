@@ -45,6 +45,7 @@ function Header(props) {
         UserProfile.setUserName("");
         UserProfile.setPassword("");
         UserProfile.setId("");
+        UserProfile.setSchoolName("");
     }
 
     const title = capitalize(props.location.pathname.substring(1,props.location.pathname.length))
@@ -59,7 +60,7 @@ function Header(props) {
             </div>
             <div className="p-2 bd-highlight">
                 <div className="text-white">
-                    <span className="h3">{props.title || title}</span>
+                    <span className="h3">{UserProfile.getSchoolName()}</span>
                 </div>
             </div>
             <div className="p-2 bd-highlight">

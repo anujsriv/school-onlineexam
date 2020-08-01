@@ -2,9 +2,13 @@ import React, {useState, useEffect} from 'react';
 import axios from '../CustomAxios/Axios';
 import './RegistrationForm.css';
 import { withRouter } from "react-router-dom";
-import UserProfile from '../../closure/UserProfile';
 
 function RegistrationForm(props) {
+
+    const [fullNameColor, setFullNameColor] = useState();
+    const [userNameColor, setUserNameColor] = useState();
+    const [passwordColor, setPasswordColor] = useState();
+    const [confirmColor, setConfirmColor] = useState();
 
     const [schools, setSchools] = useState([]);
 
@@ -23,8 +27,8 @@ function RegistrationForm(props) {
         password : "",
         confirmPassword: "",
         type : "teacher",
-        className : "",
-        section : "",
+        className : "LKG",
+        section : "A",
         school: "",
         successMessage: null
     })
@@ -35,6 +39,21 @@ function RegistrationForm(props) {
             ...prevState,
             [id] : value
         }))
+
+        switch(id) {
+            case 'fullName':
+                setFullNameColor();
+                break;
+            case 'userName':
+                setUserNameColor();
+                break;
+            case  'password' :
+                setPasswordColor()
+                break;
+            case  'confirmPassword' :
+                setConfirmColor()
+                break;
+        }
     }
 
     const sendDetailsToServer = () => {
@@ -61,8 +80,7 @@ function RegistrationForm(props) {
                                         ...prevState,
                                         'successMessage' : 'Registration successful. Redirecting to home page..'
                                     }))
-                                    saveUserData(response.data);
-                                    redirectToHome(response.data);
+                                    redirectToLogin();
                                     props.showError(null)
                                 } else{
                                     props.showError("Some error ocurred");
@@ -82,8 +100,7 @@ function RegistrationForm(props) {
                                     ...prevState,
                                     'successMessage' : 'Registration successful. Redirecting to home page..'
                                 }))
-                                saveUserData(response.data);
-                                redirectToHome(response.data);
+                                redirectToLogin();
                                 props.showError(null)
                             } else{
                                 props.showError("Some error ocurred");
@@ -108,32 +125,41 @@ function RegistrationForm(props) {
         });
     }
 
-    const saveUserData = (user) => {
-        UserProfile.setFullName(user.fullName);
-        UserProfile.setUserName(user.userName);
-        UserProfile.setPassword(user.password);
-        UserProfile.setId(user.id);
-    }
-
-    const redirectToHome = (data) => {
-        if(state.type === 'teacher'){
-            props.updateTitle('Home')
-            props.history.push('/teacherhome', data);
-        } else{
-            props.updateTitle('Home')
-            props.history.push('/studenthome', data);
-        }
-    }
-
     const redirectToLogin = () => {
-        props.updateTitle('Login')
         props.history.push('/login'); 
     }
 
     const handleSubmitClick = (e) => {
-        e.preventDefault();
         if(state.password === state.confirmPassword) {
-            sendDetailsToServer()    
+            let oneFailure = false;
+            e.preventDefault();
+            Array.prototype.forEach.call(e.target.elements, (element) => {
+                if (element.checkValidity() === false) {
+                    oneFailure = true;
+                    switch(element.id) {
+                        case 'fullName':
+                            setFullNameColor("red");
+                            break;
+                        case 'userName':
+                            setUserNameColor("red");
+                            break;
+                        case  'password' :
+                            setPasswordColor("red")
+                            break;
+                        case  'confirmPassword' :
+                            setConfirmColor("red")
+                            break;
+                    }
+                }
+            })
+
+            if (oneFailure) {
+                e.stopPropagation();
+                props.showError('Field(s) highlighted in red are mandatory.');
+            } else {
+                sendDetailsToServer();
+            }
+
         } else {
             props.showError('Passwords do not match');
         }
@@ -152,10 +178,11 @@ function RegistrationForm(props) {
 
     return(
         <div className="card col-12 col-lg-4 login-card mt-2 hv-center">
-            <form>
+            <form noValidate onSubmit={handleSubmitClick}>
                 <div className="form-group text-left">
                     <label htmlFor="userNameInput">Full Name</label>
                     <input type="text" 
+                        style={{borderColor:fullNameColor}}
                         className="form-control" 
                         id="fullName"
                         aria-describedby="fullNameHelp"  
@@ -169,6 +196,7 @@ function RegistrationForm(props) {
                 <div className="form-group text-left">
                 <label htmlFor="exampleInputEmail1">User Name</label>
                 <input type="text" 
+                       style={{borderColor:userNameColor}}
                        className="form-control" 
                        id="userName" 
                        placeholder="Enter user name" 
@@ -199,28 +227,55 @@ function RegistrationForm(props) {
                     </select>
                 </div>
                 <div className="form-group text-left">
-                    <label htmlFor="classNameInput">Class</label>
-                    <input type="text" 
-                        className="form-control" 
-                        id="className" 
-                        placeholder="Enter Class" 
-                        value={state.className}
-                        onChange={handleChange} 
-                        required />
+                    <label htmlFor="classNameDropDown">Class</label>
+                    <select name="classNameDropDown" 
+                            id="className"
+                            className="form-control"
+                            value={state.className}
+                            onChange={handleChange}>
+                        <option value="LKG">LKG</option>
+                        <option value="UKG">UKG</option>
+                        <option value="I">I</option>
+                        <option value="II">II</option>
+                        <option value="III">III</option>
+                        <option value="IV">IV</option>
+                        <option value="V">V</option>
+                        <option value="VI">VI</option>
+                        <option value="VII">VII</option>
+                        <option value="VIII">VIII</option>
+                        <option value="IX">IX</option>
+                        <option value="X">X</option>
+                        <option value="XI">XI</option>
+                        <option value="XII">XII</option>
+                    </select>
                 </div>
                     <div className="form-group text-left">
                     <label htmlFor="sectionInput">Section</label>
-                    <input type="text" 
-                        className="form-control" 
-                        id="section" 
-                        placeholder="Enter Section" 
-                        value={state.section}
-                        onChange={handleChange} 
-                        required />
+                    <select name="languageDropDown" 
+                            id="section"
+                            className="form-control"
+                            value={state.section}
+                            onChange={handleChange}>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                        <option value="H">H</option>
+                        <option value="I">I</option>
+                        <option value="J">J</option>
+                        <option value="K">K</option>
+                        <option value="L">L</option>
+                        <option value="M">M</option>
+                        <option value="N">N</option>
+                    </select>
                 </div>
                 <div className="form-group text-left">
                     <label htmlFor="exampleInputPassword1">Password</label>
                     <input type="password" 
+                        style={{borderColor:passwordColor}}
                         className="form-control" 
                         id="password" 
                         placeholder="Password"
@@ -232,6 +287,7 @@ function RegistrationForm(props) {
                 <div className="form-group text-left">
                     <label htmlFor="exampleInputPassword1">Confirm Password</label>
                     <input type="password" 
+                        style={{borderColor:confirmColor}}
                         className="form-control" 
                         id="confirmPassword" 
                         placeholder="Confirm Password"
@@ -242,9 +298,7 @@ function RegistrationForm(props) {
                 </div>
                 <button 
                     type="submit" 
-                    className="btn btn-primary"
-                    onClick={handleSubmitClick}
-                >
+                    className="btn btn-primary">
                     Register
                 </button>
             </form>

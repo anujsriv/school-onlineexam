@@ -8,6 +8,10 @@ function LoginForm(props) {
 
     const [schools, setSchools] = useState([]);
 
+    const [userColor, setUserColor] = useState();
+
+    const [passwordColor, setPasswordColor] = useState();
+
     useEffect(() => {
         getData()
     }, [])
@@ -29,43 +33,73 @@ function LoginForm(props) {
             ...prevState,
             [id] : value
         }))
+
+        switch(id) {
+            case 'email':
+                setUserColor();
+                break;
+            case  'password' :
+                setPasswordColor()
+                break;
+        }
     }
 
     const handleSubmitClick = (e) => {
+        let oneFailure = false;
         e.preventDefault();
-        setTenantID();
-        const payload={
-            "userName":state.email,
-            "password":state.password,
-        }
-        axios.post('login', payload)
-            .then(function (response) {
-                if(response.status === 200){
-                    setState(prevState => ({
-                        ...prevState,
-                        'successMessage' : 'Login successful. Redirecting to home page..'
-                    }))
-                    saveUserData(response.data);
-                    redirectToHome(response.data);
-                    props.showError(null)
+        Array.prototype.forEach.call(e.target.elements, (element) => {
+            if (element.checkValidity() === false) {
+                oneFailure = true;
+                switch(element.id) {
+                    case 'email':
+                        setUserColor("red");
+                        break;
+                    case  'password' :
+                        setPasswordColor("red")
+                        break;
                 }
-                else if(response.status === 404){
-                    props.showError("Login failed: Invalid username or password.");
-                }
-                else if(response.status === 403){
-                    props.showError(response.message);
-                }
-            })
-            .catch(function (error) {
-                console.log(error.response);
-                props.showError(error.response.data);
-            });
+            }
+        })
+
+        if (oneFailure) {
+            e.stopPropagation();
+            props.showError('Field(s) highlighted in red are mandatory.');
+        } else {
+            setTenantID();
+            const payload={
+                "userName":state.email,
+                "password":state.password,
+            }
+            axios.post('login', payload)
+                .then(function (response) {
+                    if(response.status === 200){
+                        setState(prevState => ({
+                            ...prevState,
+                            'successMessage' : 'Login successful. Redirecting to home page..'
+                        }))
+                        saveUserData(response.data);
+                        redirectToHome(response.data);
+                        props.showError(null)
+                    }
+                    else if(response.status === 404){
+                        props.showError("Login failed: Invalid username or password.");
+                    }
+                    else if(response.status === 403){
+                        props.showError(response.message);
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                    props.showError(error.response.data);
+                });
+            }
     }
 
     const setTenantID = () => {
         schools.forEach(function (eachSchool) {
             if (state.school === eachSchool.schoolName) {
                 localStorage.setItem('tenantID', eachSchool.tenantID);
+                UserProfile.setSchoolName(state.school);
             }
         });
     }
@@ -105,10 +139,11 @@ function LoginForm(props) {
 
     return(
         <div className="card col-12 col-lg-4 login-card mt-2 hv-center">
-            <form>
+            <form noValidate onSubmit={handleSubmitClick}>
                 <div className="form-group text-left">
                 <label htmlFor="exampleInputEmail1">User Name</label>
-                <input type="email" 
+                <input type="text" 
+                       style={{borderColor:userColor}}
                        className="form-control" 
                        id="email" 
                        aria-describedby="emailHelp" 
@@ -121,6 +156,7 @@ function LoginForm(props) {
                 <div className="form-group text-left">
                 <label htmlFor="exampleInputPassword1">Password</label>
                 <input type="password" 
+                       style={{borderColor:passwordColor}}
                        className="form-control" 
                        id="password" 
                        placeholder="Password"
@@ -144,7 +180,6 @@ function LoginForm(props) {
                 <button 
                     type="submit" 
                     className="btn btn-primary"
-                    onClick={handleSubmitClick}
                 >Submit</button>
             </form>
             <div className="alert alert-success mt-2" style={{display: state.successMessage ? 'block' : 'none' }} role="alert">

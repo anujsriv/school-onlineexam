@@ -164,7 +164,7 @@ function CreateEditQuestionPaper(props) {
         let oneFailure = false;
         e.preventDefault();
         Array.prototype.forEach.call(e.target.elements, (element) => {
-            if (element.type === "text" && element.checkValidity() === false) {
+            if (element.checkValidity() === false) {
                 oneFailure = true;
                 switch(element.id) {
                     case 'subject':
