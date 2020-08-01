@@ -54,10 +54,10 @@ function AnswerTable(props) {
     }
 
     const renderHeader = () => {
-        let headerElement = ['id', 'subject', 'duration (mins)', 'full marks', 'action']
+        let headerElement = ['#', 'subject', 'duration (mins)', 'full marks', 'action']
 
         return headerElement.map((key, index) => {
-            return <th key={index}>{key.toUpperCase()}</th>
+            return <th scope="col" key={index}>{key.toUpperCase()}</th>
         })
     }
 
@@ -65,7 +65,7 @@ function AnswerTable(props) {
         return questionPapers && questionPapers.map(({ id, subject, duration, fullMarks}) => {
             return (
                 <tr key={id}>
-                    <td>{id}</td>
+                    <th scope="row">{id}</th>
                     <td>{subject}</td>
                     <td>{duration}</td>
                     <td>{fullMarks}</td>
@@ -80,14 +80,17 @@ function AnswerTable(props) {
     return (
         <>
             <h5 id='title'>To Start an exam click the <label style={{cursor: 'auto'}} className='button'>Take Exam</label> button. Please note that clicking on <label style={{cursor: 'auto'}} className='button'>Take Exam</label> will start your exam in a new Window.<br></br>Please DO NOT close or refresh the new window during the entirety of the exam.</h5>
-            <table id='answerPaper'>
-                <thead>
-                    <tr>{renderHeader()}</tr>
-                </thead>
-                <tbody>
-                    {renderBody()}
-                </tbody>
-            </table>
+            <div className="card-body text-center">
+                <h4 />
+                <table className="table table-hover">
+                    <thead>
+                        <tr className="table-primary">{renderHeader()}</tr>
+                    </thead>
+                    <tbody>
+                        {renderBody()}
+                    </tbody>
+                </table>
+            </div>
             <div className="alert alert-success" style={{display: state.successMessage ? 'block' : 'none' }} role="alert">
                 {state.successMessage}
             </div>

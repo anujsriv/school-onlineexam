@@ -52,6 +52,23 @@ public class AnswerPaperController {
 		throw new ResourceNotFoundException(String.valueOf(questionPaperID));
 	}
 	
+	@GetMapping("/answerpaper/{studentID}")
+	List<AnswerPaper> getAnswerPapersForAStudent(@PathVariable Integer studentID) {
+		List<AnswerPaper> answerPapers = null;
+		
+		try {
+			answerPapers = repository.findByStudent(studentID);
+		} catch (NoSuchElementException ex) {
+			throw new ResourceNotFoundException(String.valueOf(studentID));
+		}
+		
+		if (answerPapers != null) {
+			return answerPapers;
+		}
+		
+		throw new ResourceNotFoundException(String.valueOf(studentID));
+	}
+	
 	@GetMapping("/answerpapers/{questionPaperID}")
 	List<User> getAnswerPapersForQuestionpapers(@PathVariable Integer questionPaperID) {
 		List<AnswerPaper> answerPapers = null;

@@ -15,4 +15,7 @@ public interface AnswerPaperRepository extends CrudRepository<AnswerPaper, Integ
 	@Query(value = "SELECT ap FROM AnswerPaper ap WHERE ap.questionPaperID = ?1")
 	List<AnswerPaper> findByQuestionPaper(Integer questionPaperID);
 
+	@Query(value = "SELECT ap FROM AnswerPaper ap WHERE ap.studentID = ?1 AND ap.status != 'Submitted' ")
+	List<AnswerPaper> findByStudent(Integer studentID);
+
 }

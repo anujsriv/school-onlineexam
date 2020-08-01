@@ -3,6 +3,7 @@ import axios from '../CustomAxios/Axios';
 import { withRouter } from "react-router-dom";
 import UserProfile from '../../closure/UserProfile';
 import EvaluateIcon from '../Images/evaluate.png';
+import './QuestionPapers.css';
 
 function QuestionTable (props) {
 
