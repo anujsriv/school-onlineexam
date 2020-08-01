@@ -12,6 +12,7 @@ function AnswerTable(props) {
     })
 
     useEffect(() => {
+        getData()
         const interval = setInterval(() => {
             getData()
           }, 10000);

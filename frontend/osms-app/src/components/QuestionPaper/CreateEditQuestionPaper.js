@@ -2,9 +2,16 @@ import React, {useState} from 'react';
 import axios from '../CustomAxios/Axios';
 import { withRouter } from "react-router-dom";
 import TranslateIcon from '../Images/translate.png';
-import Dictaphone from '../SpeechRecognition/Dictaphone';
 
-function QuestionPaperForm(props) {
+function CreateEditQuestionPaper(props) {
+
+    const [subjectColor, setSubjectColor] = useState()
+    const [numberOfQuestionsColor, seNnumberOfQuestionscolor] = useState()
+    const [fullMarksColor, setFullMarksColor] = useState()
+    const [passMarksColor, setPassMarksColor] = useState()
+    const [durationColor, setDurationColor] = useState()
+    const [questionColor, setQuestionColor] = useState()
+    const [marksColor, setMarksColor] = useState()
 
     const [showMultiBlock, setShowMultiBlock] = useState(false)
 
@@ -12,8 +19,8 @@ function QuestionPaperForm(props) {
 
     const [state , setState] = useState({
         subject : "",
-        className : "",
-        section: "",
+        className : "LKG",
+        section: "A",
         numberOfQuestions : "",
         fullMarks : "",
         passMarks : "",
@@ -103,14 +110,38 @@ function QuestionPaperForm(props) {
             ...prevState,
             [id] : value
         }))
+
+        switch(id) {
+            case 'subject':
+                setSubjectColor();
+                break;
+            case  'numberOfQuestions' :
+                seNnumberOfQuestionscolor()
+                break;
+            case  'fullMarks' :
+                setFullMarksColor()
+                break;
+            case  'passMarks' :
+                setPassMarksColor()
+                break;
+            case  'duration' :
+                setDurationColor()
+                break;
+            case 'question':
+                setQuestionColor();
+                break;
+            case 'marks':
+                setMarksColor();
+                break;
+        }
     }
 
     const handleResetClick = (e) => {
         e.preventDefault();
         setState({
             subject : "",
-            className : "",
-            section: "",
+            className : "LKG",
+            section: "A",
             numberOfQuestions : "",
             fullMarks : "",
             passMarks : "",
@@ -122,11 +153,44 @@ function QuestionPaperForm(props) {
             successMessage: "",
             questionPaper : ""
         });
+        setSubjectColor();
+        seNnumberOfQuestionscolor()
+        setFullMarksColor()
+        setPassMarksColor()
+        setDurationColor()
     }
 
     const handleSubmitClick = (e) => {
+        let oneFailure = false;
         e.preventDefault();
-        sendDetailsToServer();
+        Array.prototype.forEach.call(e.target.elements, (element) => {
+            if (element.type === "text" && element.checkValidity() === false) {
+                oneFailure = true;
+                switch(element.id) {
+                    case 'subject':
+                        setSubjectColor("red");
+                        break;
+                    case  'numberOfQuestions' :
+                        seNnumberOfQuestionscolor("red")
+                        break;
+                    case  'fullMarks' :
+                        setFullMarksColor("red")
+                        break;
+                    case  'passMarks' :
+                        setPassMarksColor("red")
+                        break;
+                    case  'duration' :
+                        setDurationColor("red")   
+                }
+            }
+        })
+        
+        if (oneFailure) {
+            e.stopPropagation();
+            props.showError('Field(s) highlighted in red are mandatory.');
+        } else {
+            sendDetailsToServer();
+        }
     }
 
     const handleAddEditClick = (e) => {
@@ -146,7 +210,7 @@ function QuestionPaperForm(props) {
     }
 
     const sendDetailsToServer = () => {
-        if(state.subject.length && state.className.length) {
+        //if(state.subject.length && state.className.length) {
             props.showError(null);
             const payload={
                 "subject" : state.subject,
@@ -178,9 +242,9 @@ function QuestionPaperForm(props) {
                     console.log(error);
                     props.showError("Some error ocurred");
                 });    
-        } else {
-            props.showError('Please enter all the fields marked with *.')    
-        }
+        //} else {
+            //props.showError('Please enter all the fields marked with *.')    
+        //}
         
     }
 
@@ -198,15 +262,37 @@ function QuestionPaperForm(props) {
             successMessage: ""
         });
         setShowMultiBlock(false);
+        setQuestionColor();
+        setMarksColor();
     }
 
     const handleQuestionSubmitClick = (e) => {
+        let oneFailure = false;
         e.preventDefault();
-        sendQuestionDetailsToServer();
+        Array.prototype.forEach.call(e.target.elements, (element) => {
+            if (element.checkValidity() === false) {
+                oneFailure = true;
+                switch(element.id) {
+                    case 'question':
+                        setQuestionColor("red");
+                        break;
+                    case 'marks':
+                        setMarksColor("red");
+                        break;
+                }
+            }
+        })
+        
+        if (oneFailure) {
+            e.stopPropagation();
+            props.showError('Field(s) highlighted in red are mandatory.')
+        } else {
+            sendQuestionDetailsToServer();
+        }
     }
 
     const sendQuestionDetailsToServer = () => {
-        if(questionState.question.length && questionState.questionType.length) {
+        //if(questionState.question.length && questionState.questionType.length) {
             props.showError(null);
             const payload={
                 "type" : questionState.questionType,
@@ -246,17 +332,18 @@ function QuestionPaperForm(props) {
                     console.log(error);
                     props.showError("Some error ocurred");
                 });    
-        } else {
-            props.showError('Please enter all the fields marked with *.')    
-        }
+        //} else {
+            //props.showError('Please enter all the fields marked with *.')    
+        //}
         
     }
 
     return(
-        <div>
-            <div style={{display: showQuestions ? 'block' : 'none' }} >
+        <div className="card-body" >
+            <h4 className="card-title">Create a New Question Paper</h4>
+            { showQuestions ? 
                 <div className="card col-12 col-lg-30 hv-center">Question - {questionState.currentQuestion} Of {questionState.totalQuestions}
-                    <form>
+                    <form noValidate onSubmit={handleQuestionSubmitClick}>
                         {state.questionPaper.language !== 'en' ?
                                 <div className="form-group text-left">
                                 <p>Instructions: 
@@ -284,21 +371,24 @@ function QuestionPaperForm(props) {
                                 : <p></p>
                                 }
                             <textarea 
+                                style={{borderColor:questionColor}}
                                 className="form-control" 
                                 id="question" 
                                 placeholder="Enter the question." 
                                 value={questionState.question}
-                                onChange={handleChange} />
-                            <Dictaphone />
+                                onChange={handleChange}
+                                required />
                         </div>
                         <div className="form-group text-left">
                             <label htmlFor="marksInput">Marks</label>
                             <input type="text" 
+                                style={{borderColor:marksColor}}
                                 className="form-control" 
                                 id="marks" 
                                 placeholder="Enter the total marks for this question." 
                                 value={questionState.marks}
-                                onChange={handleChange} />
+                                onChange={handleChange}
+                                required />
                         </div>
                         <div style={{display: showMultiBlock ? 'block' : 'none' }} >
                             <div className="form-group text-left">
@@ -334,8 +424,7 @@ function QuestionPaperForm(props) {
                             <div style={{paddingLeft: '71%'}} >
                                 <button
                                     type="submit" 
-                                    className="btn btn-primary" 
-                                    onClick={handleQuestionSubmitClick}>
+                                    className="btn btn-primary">
                                     Save
                                 </button>
                             </div>
@@ -345,38 +434,21 @@ function QuestionPaperForm(props) {
                         {questionState.successMessage}
                     </div>
                 </div>
-            </div>
-            <div style={{display: !showQuestions ? 'block' : 'none' }} >
-                <div className="card col-12 col-lg-30 hv-center">
-                    <form>
-                        <div className="form-group text-left">
-                        <label htmlFor="subjectInput">Subject</label>
-                        <input type="text" 
-                            className="form-control" 
-                            id="subject" 
-                            placeholder="Enter Subject" 
-                            value={state.subject}
-                            onChange={handleChange} />
+                : <div >
+                <form noValidate onSubmit={handleSubmitClick}>
+                    <div className="form-row">
+                        <div className="form-group col-md-6">
+                            <label htmlFor="subjectInput">Subject</label>
+                            <input type="text" 
+                                style={{borderColor:subjectColor}}
+                                className="form-control" 
+                                id="subject" 
+                                placeholder="Enter Subject" 
+                                value={state.subject}
+                                onChange={handleChange} 
+                                required />
                         </div>
-                        <div className="form-group text-left">
-                        <label htmlFor="classNameInput">Class</label>
-                        <input type="text" 
-                            className="form-control" 
-                            id="className" 
-                            placeholder="Enter Class" 
-                            value={state.className}
-                            onChange={handleChange} />
-                        </div>
-                        <div className="form-group text-left">
-                        <label htmlFor="sectionInput">Section</label>
-                        <input type="text" 
-                            className="form-control" 
-                            id="section" 
-                            placeholder="Enter Section" 
-                            value={state.section}
-                            onChange={handleChange} />
-                        </div>
-                        <div className="form-group text-left">
+                        <div className="form-group col-md-6">
                             <label htmlFor="languageDropDown">Language</label>
                             <select name="languageDropDown" 
                                     id="language"
@@ -397,95 +469,155 @@ function QuestionPaperForm(props) {
                                 <option value="ur">Urdu</option>
                             </select>
                         </div>
-                        <div className="form-group text-left">
-                        <label htmlFor="numberOfQuestionsInput">Total Questions</label>
-                        <input type="text" 
-                            className="form-control" 
-                            id="numberOfQuestions" 
-                            placeholder="Enter total number of questions" 
-                            value={state.numberOfQuestions}
-                            onChange={handleChange} />
+                    </div>
+                    <div className="form-row">
+                        <div className="form-group col-md-6">
+                            <label htmlFor="classNameInput">Class</label>
+                            <select name="languageDropDown" 
+                                    id="className"
+                                    className="form-control"
+                                    value={state.className}
+                                    onChange={handleChange}>
+                                <option value="LKG">LKG</option>
+                                <option value="UKG">UKG</option>
+                                <option value="I">I</option>
+                                <option value="II">II</option>
+                                <option value="III">III</option>
+                                <option value="IV">IV</option>
+                                <option value="V">V</option>
+                                <option value="VI">VI</option>
+                                <option value="VII">VII</option>
+                                <option value="VIII">VIII</option>
+                                <option value="IX">IX</option>
+                                <option value="X">X</option>
+                                <option value="XI">XI</option>
+                                <option value="XII">XII</option>
+                            </select>
                         </div>
-                        <div className="form-group text-left">
-                        <label htmlFor="fullMarksInput">Full Marks</label>
-                        <input type="text" 
-                            className="form-control" 
-                            id="fullMarks" 
-                            placeholder="Enter full marks" 
-                            value={state.fullMarks}
-                            onChange={handleChange} />
+                        <div className="form-group col-md-6">
+                            <label htmlFor="sectionInput">Section</label>
+                            <select name="languageDropDown" 
+                                    id="section"
+                                    className="form-control"
+                                    value={state.section}
+                                    onChange={handleChange}>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                                <option value="E">E</option>
+                                <option value="F">F</option>
+                                <option value="G">G</option>
+                                <option value="H">H</option>
+                                <option value="I">I</option>
+                                <option value="J">J</option>
+                                <option value="K">K</option>
+                                <option value="L">L</option>
+                                <option value="M">M</option>
+                                <option value="N">N</option>
+                            </select>
                         </div>
-                        <div className="form-group text-left">
-                        <label htmlFor="passMarksInput">Pass Marks</label>
-                        <input type="text" 
-                            className="form-control" 
-                            id="passMarks" 
-                            placeholder="Enter passing marks" 
-                            value={state.passMarks}
-                            onChange={handleChange} />
+                    </div>
+                    <div className="form-row">
+                        <div className="form-group col-md-6">
+                            <label htmlFor="numberOfQuestionsInput">Total Questions</label>
+                            <input type="text" 
+                                style={{borderColor:numberOfQuestionsColor}}
+                                className="form-control" 
+                                id="numberOfQuestions" 
+                                placeholder="Enter total number of questions" 
+                                value={state.numberOfQuestions}
+                                onChange={handleChange}
+                                required />
                         </div>
-                        <div className="form-group text-left">
-                        <label htmlFor="durationInput">Duration (in minutes)</label>
-                        <input type="text" 
-                            className="form-control" 
-                            id="duration" 
-                            placeholder="Enter duration in minutes" 
-                            value={state.duration}
-                            onChange={handleChange} />
+                        <div className="form-group col-md-6">
+                            <label htmlFor="evaluationTypeDropDown">Evaluation Type</label>
+                            <select name="evaluationTypeDropDown" 
+                                    id="evaluationType"
+                                    className="form-control"
+                                    value={state.evaluationType}
+                                    onChange={handleChange}>
+                                <option value="manual">Manual</option>
+                                <option value="automated">Automated</option>
+                                <option value="mixed">Mixed</option>
+                            </select>
                         </div>
-                        <div className="form-group text-left">
-                        <label htmlFor="evaluationTypeDropDown">Evaluation Type</label>
-                        <select name="evaluationTypeDropDown" 
-                                id="evaluationType"
-                                className="form-control"
-                                value={state.evaluationType}
-                                onChange={handleChange}>
-                            <option value="manual">Manual</option>
-                            <option value="automated">Automated</option>
-                            <option value="mixed">Mixed</option>
-                        </select>
+                    </div>
+                    <div className="form-row">
+                        <div className="form-group col-md-4">
+                            <label htmlFor="fullMarksInput">Full Marks</label>
+                            <input type="text" 
+                                style={{borderColor:fullMarksColor}}
+                                className="form-control" 
+                                id="fullMarks" 
+                                placeholder="Enter full marks" 
+                                value={state.fullMarks}
+                                onChange={handleChange}
+                                required />
                         </div>
-                        <div className="form-group text-left">
-                        <label htmlFor="instructionsInput">Instructions</label>
-                        <textarea 
-                            className="form-control" 
-                            id="instructions" 
-                            placeholder="Enter instructions to be followed during Examination." 
-                            value={state.instructions}
-                            onChange={handleChange} />
+                        <div className="form-group col-md-4">
+                            <label htmlFor="passMarksInput">Pass Marks</label>
+                            <input type="text" 
+                                style={{borderColor:passMarksColor}}
+                                className="form-control" 
+                                id="passMarks" 
+                                placeholder="Enter passing marks" 
+                                value={state.passMarks}
+                                onChange={handleChange}
+                                required />
                         </div>
-                        <div className="form-group form-inline">
+                        <div className="form-group col-md-4">
+                            <label htmlFor="durationInput">Duration (in minutes)</label>
+                            <input type="text" 
+                                style={{borderColor:durationColor}}
+                                className="form-control" 
+                                id="duration" 
+                                placeholder="Enter duration in minutes" 
+                                value={state.duration}
+                                onChange={handleChange}
+                                required />
+                        </div>
+                    </div>
+                    <div className="form-group text-left">
+                    <label htmlFor="instructionsInput">Instructions</label>
+                    <textarea 
+                        className="form-control" 
+                        id="instructions" 
+                        placeholder="Enter instructions to be followed during Examination." 
+                        value={state.instructions}
+                        onChange={handleChange} />
+                    </div>
+                    <div className="form-group form-inline">
+                    <button
+                        type="submit" 
+                        className="btn btn-primary"
+                        onClick={handleResetClick}>
+                        Reset
+                    </button>
+                    <div style={{paddingLeft: '15%'}} >
                         <button
                             type="submit" 
-                            className="btn btn-primary"
-                            onClick={handleResetClick}>
-                            Reset
+                            className="btn btn-primary" >
+                            Save
                         </button>
-                        <div style={{paddingLeft: '15%'}} >
-                            <button
-                                type="submit" 
-                                className="btn btn-primary" 
-                                onClick={handleSubmitClick}>
-                                Save
-                            </button>
-                        </div>
-                        <div style={{display: state.successMessage ? 'block' : 'none', paddingLeft: '15%'}} >
-                            <button
-                                type="submit" 
-                                className="btn btn-primary" 
-                                onClick={handleAddEditClick}>
-                                Add/ Edit Question(s)
-                            </button>
-                        </div>
-                        </div>
-                    </form>
-                    <div className="alert alert-success mt-2" style={{display: state.successMessage ? 'block' : 'none' }} role="alert">
-                        {state.successMessage}
                     </div>
+                    <div style={{display: state.successMessage ? 'block' : 'none', paddingLeft: '15%'}} >
+                        <button
+                            type="submit" 
+                            className="btn btn-primary" 
+                            onClick={handleAddEditClick}>
+                            Add/ Edit Question(s)
+                        </button>
+                    </div>
+                    </div>
+                </form>
+                <div className="alert alert-success mt-2" style={{display: state.successMessage ? 'block' : 'none' }} role="alert">
+                    {state.successMessage}
                 </div>
             </div>
+            }
         </div>
     )
 }
 
-export default withRouter(QuestionPaperForm);
+export default withRouter(CreateEditQuestionPaper);

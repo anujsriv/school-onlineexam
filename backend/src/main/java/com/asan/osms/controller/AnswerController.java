@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,6 +62,26 @@ public class AnswerController {
 		}
 		
 		throw new ResourceNotFoundException(String.valueOf(answerPaperID));
+	}
+	
+	@PutMapping("/answers")
+	Answer updateAnswer(@RequestBody Answer updatedanswer) {
+		Answer answer = null;
+		
+		try {
+			answer = repository.findById(updatedanswer.getId()).get();
+		} catch (NoSuchElementException ex) {
+			throw new ResourceNotFoundException(String.valueOf(updatedanswer.getId()));
+		}
+		
+		if (answer != null) {
+			answer.setCorrectIncorrect(updatedanswer.getCorrectIncorrect());
+			answer.setMarksObtained(updatedanswer.getMarksObtained());
+			repository.save(answer);
+			return answer;
+		}
+		
+		throw new ResourceNotFoundException(String.valueOf(updatedanswer.getId()));
 	}
 
 }

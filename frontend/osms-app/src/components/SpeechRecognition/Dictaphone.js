@@ -14,7 +14,9 @@ const Dictaphone = () => {
             Once done, please click on 'Stop' button. Then copy and paste the transcript in the above area. If you want to make any changes, please click on 'Reset' button
             and try again. 
         </p>
-        <button className="btn btn-secondary btn-sm" onClick={SpeechRecognition.startListening}>Start</button> | <button className="btn btn-secondary btn-sm" onClick={SpeechRecognition.stopListening}>Stop</button> | <button className="btn btn-secondary btn-sm" onClick={resetTranscript}>Reset</button>
+        <button className="btn btn-secondary btn-sm" onClick={SpeechRecognition.startListening}>Start</button> 
+        | <button className="btn btn-secondary btn-sm" onClick={SpeechRecognition.stopListening}>Stop</button> 
+        | <button className="btn btn-secondary btn-sm" onClick={resetTranscript}>Reset</button>
         <p>{transcript}</p>
     </div>
   )

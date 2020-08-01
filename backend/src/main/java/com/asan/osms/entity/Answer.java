@@ -23,6 +23,12 @@ public class Answer {
 	
 	@Column(name = "ANSWER", columnDefinition = "ntext")
 	private String answer;
+	
+	@Column(name = "CORRECT_INCORRECT")
+	private String correctIncorrect;
+	
+	@Column(name = "MARKS_OBTAINED")
+	private Integer marksObtained;
 
 	/**
 	 * @return the id
@@ -78,6 +84,34 @@ public class Answer {
 	 */
 	public void setAnswer(String answer) {
 		this.answer = answer;
+	}
+
+	/**
+	 * @return the correctIncorrect
+	 */
+	public String getCorrectIncorrect() {
+		return correctIncorrect;
+	}
+
+	/**
+	 * @param correctIncorrect the correctIncorrect to set
+	 */
+	public void setCorrectIncorrect(String correctIncorrect) {
+		this.correctIncorrect = correctIncorrect;
+	}
+
+	/**
+	 * @return the marksObtained
+	 */
+	public Integer getMarksObtained() {
+		return marksObtained;
+	}
+
+	/**
+	 * @param marksObtained the marksObtained to set
+	 */
+	public void setMarksObtained(Integer marksObtained) {
+		this.marksObtained = marksObtained;
 	}
 
 }

@@ -12,7 +12,7 @@ import {
 } from "react-router-dom";
 import AlertComponent from './components/AlertComponent/AlertComponent';  
 import StartExam from './components/Exam/StartExam';
-import Invigilate from './components/Invigilator/Invigilate';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   const [title, updateTitle] = useState(null);
@@ -40,9 +40,6 @@ function App() {
             </Route>
             <Route path="/studentstartexam" >
               <StartExam showError={updateErrorMessage} updateTitle={updateTitle}/>
-            </Route>
-            <Route path="/invigilation" >
-              <Invigilate showError={updateErrorMessage} updateTitle={updateTitle}/>
             </Route>
           </Switch>
           <AlertComponent errorMessage={errorMessage} hideError={updateErrorMessage}/>
