@@ -82,9 +82,9 @@ function RegistrationForm(props) {
                                 if(response.status === 200){
                                     setState(prevState => ({
                                         ...prevState,
-                                        'successMessage' : 'Registration successful. Redirecting to home page..'
+                                        'successMessage' : 'Registration successful. Click on "Login Here" to log into your account.'
                                     }))
-                                    redirectToLogin();
+                                    //redirectToLogin();
                                     props.showError(null)
                                 } else{
                                     props.showError("Some error ocurred");
@@ -102,9 +102,9 @@ function RegistrationForm(props) {
                             if(response.status === 200){
                                 setState(prevState => ({
                                     ...prevState,
-                                    'successMessage' : 'Registration successful. Redirecting to home page..'
+                                    'successMessage' : 'Registration successful. Click on "Login Here" to log into your account.'
                                 }))
-                                redirectToLogin();
+                                //redirectToLogin();
                                 props.showError(null)
                             } else{
                                 props.showError("Some error ocurred");

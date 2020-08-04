@@ -12,7 +12,7 @@ function StartExam(props) {
 
     const [state, setState] = useState({
         multiChoice: [],
-        singleChoice: "",
+        singleChoice: "ps-sc",
         answerText: "",
         successMessage: null,
         disabled: "false"
@@ -314,6 +314,7 @@ function StartExam(props) {
     }
 
     return(
+        <div className="container-fluid d-flex justify-content-center align-items-center flex-column">
             <div className="card w-75 text-left">
                 <div className="alert alert-success" style={{display: state.successMessage ? 'block' : 'none' }} role="alert">
                     {state.successMessage}
@@ -326,6 +327,7 @@ function StartExam(props) {
                             <div style={{display: question.type === 'multi' ? 'block' : 'none' }} className="form-group">
                                 <label htmlFor="multi">Choose the correct option(s). There can be more than 1 correct answer. Press 'Ctrl' and click to select multiple options.</label>
                                 <select multiple className="form-control" id="multiChoice" value={state.multiChoice} onChange={handleChange} >
+                                    <option value="ps-mc">---Please Select---</option>
                                     {renderOptions()}
                                 </select>
                             </div>
@@ -333,6 +335,7 @@ function StartExam(props) {
                             <div style={{display: question.type === 'single' ? 'block' : 'none' }} className="form-group">
                                 <label htmlFor="single">Choose the correct option.</label>
                                 <select className="form-control" id="singleChoice" value={state.singleChoice} onChange={handleChange} >
+                                    <option value="ps-sc">---Please Select---</option>
                                     {renderOptions()}
                                 </select>
                             </div>
@@ -368,6 +371,7 @@ function StartExam(props) {
                     </div> 
                 }
             </div>
+        </div>
     )
 }
 

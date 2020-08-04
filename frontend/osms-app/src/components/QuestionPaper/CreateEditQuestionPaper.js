@@ -581,21 +581,21 @@ function CreateEditQuestionPaper(props) {
                         </div>
                     </div>
                     <div className="form-group text-left">
-                    <label htmlFor="instructionsInput">Instructions</label>
-                    <textarea 
-                        className="form-control" 
-                        id="instructions" 
-                        placeholder="Enter instructions to be followed during Examination." 
-                        value={state.instructions}
-                        onChange={handleChange} />
+                        <label htmlFor="instructionsInput">Instructions</label>
+                        <textarea 
+                            className="form-control" 
+                            id="instructions" 
+                            placeholder="Enter instructions to be followed during Examination." 
+                            value={state.instructions}
+                            onChange={handleChange} />
                     </div>
                     <div className="form-group form-inline">
-                    <button
-                        type="submit" 
-                        className="btn btn-primary"
-                        onClick={handleResetClick}>
-                        Reset
-                    </button>
+                        <button
+                            type="submit" 
+                            className="btn btn-primary"
+                            onClick={handleResetClick}>
+                            Reset
+                        </button>
                     <div style={{paddingLeft: '15%'}} >
                         <button
                             type="submit" 

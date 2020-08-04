@@ -290,7 +290,7 @@ function QuestionTable (props) {
                     <td>{className}</td>
                     <td>{section}</td>
                     <td>
-                        <img src={EvaluateIcon} alt='' width="30" height="30" data-toggle="modal" data-target="#exampleModalLong" onClick={() => getStudentAndAnswerDetails(id)} title="Click here to evaluate this Answer Sheet." />
+                        <img src={EvaluateIcon} alt='' style={{cursor:'pointer'}} width="30" height="30" data-toggle="modal" data-target="#exampleModalLong" onClick={() => getStudentAndAnswerDetails(id)} title="Click here to evaluate this Answer Sheet." />
                     </td>
                 </tr>
             )
@@ -344,8 +344,9 @@ function QuestionTable (props) {
                                 id={"evaluation"+eachQuestion.id}
                                 className="form-control"
                                 onChange={handleChange} >
-                            <option value="correct">Correct</option>
-                            <option value="incorrect">Incorrect</option>
+                            <option value="ps">---Please Select---</option>
+                            <option value="Correct">Correct</option>
+                            <option value="Incorrect">Incorrect</option>
                           </select>}
                         <label className="font-weight-bold">Marks: </label>
                         <div className="form-group mx-sm-2 mb-2">
