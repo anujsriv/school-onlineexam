@@ -12,6 +12,8 @@ function LoginForm(props) {
 
     const [passwordColor, setPasswordColor] = useState();
 
+    const [schoolColor, setSchoolColor] = useState();
+
     useEffect(() => {
         getData()
     }, [])
@@ -24,7 +26,7 @@ function LoginForm(props) {
     const [state , setState] = useState({
         email : "",
         password : "",
-        school: "",
+        school: "ps",
         successMessage: null
     })
     const handleChange = (e) => {
@@ -40,6 +42,9 @@ function LoginForm(props) {
                 break;
             case  'password' :
                 setPasswordColor()
+                break;
+            case 'school' :
+                setSchoolColor();
                 break;
         }
     }
@@ -58,6 +63,9 @@ function LoginForm(props) {
                         setPasswordColor("red")
                         break;
                 }
+            } else if (element.type === "select-one" && element.value === "ps") {
+                oneFailure = true;
+                setSchoolColor("red");
             }
         })
 
@@ -99,7 +107,6 @@ function LoginForm(props) {
         schools.forEach(function (eachSchool) {
             if (state.school === eachSchool.schoolName) {
                 localStorage.setItem('tenantID', eachSchool.tenantID);
-                UserProfile.setSchoolName(state.school);
             }
         });
     }
@@ -109,6 +116,7 @@ function LoginForm(props) {
         UserProfile.setUserName(user.userName);
         UserProfile.setPassword(user.password);
         UserProfile.setId(user.id);
+        UserProfile.setSchoolName(state.school);
     }
 
     const redirectToHome = (data) => {
@@ -138,56 +146,60 @@ function LoginForm(props) {
     }
 
     return(
-        <div className="card col-12 col-lg-4 login-card mt-2 hv-center">
-            <form noValidate onSubmit={handleSubmitClick}>
-                <div className="form-group text-left">
-                <label htmlFor="exampleInputEmail1">User Name</label>
-                <input type="text" 
-                       style={{borderColor:userColor}}
-                       className="form-control" 
-                       id="email" 
-                       aria-describedby="emailHelp" 
-                       placeholder="Enter User Name" 
-                       value={state.email}
-                       onChange={handleChange}
-                       required
-                />
+        <div className="container-fluid d-flex justify-content-center align-items-center flex-column">
+            <div className="card col-12 col-lg-4 login-card mt-2 hv-center">
+                <form noValidate onSubmit={handleSubmitClick}>
+                    <div className="form-group text-left">
+                    <label htmlFor="exampleInputEmail1">User Name</label>
+                    <input type="text" 
+                        style={{borderColor:userColor}}
+                        className="form-control" 
+                        id="email" 
+                        aria-describedby="emailHelp" 
+                        placeholder="Enter User Name" 
+                        value={state.email}
+                        onChange={handleChange}
+                        required
+                    />
+                    </div>
+                    <div className="form-group text-left">
+                    <label htmlFor="exampleInputPassword1">Password</label>
+                    <input type="password" 
+                        style={{borderColor:passwordColor}}
+                        className="form-control" 
+                        id="password" 
+                        placeholder="Password"
+                        value={state.password}
+                        onChange={handleChange} 
+                        required
+                    />
+                    </div>
+                    <div className="form-group text-left">
+                        <label htmlFor="schoolsDropDown">School</label>
+                        <select name="schoolsDropDown" 
+                                style={{borderColor:schoolColor}}
+                                id="school"
+                                className="form-control"
+                                value={state.school}
+                                onChange={handleChange}>
+                            <option value="ps">---Please Select---</option>
+                            {renderOptions()}
+                        </select>
+                    </div>
+                    <div className="form-check">
+                    </div>
+                    <button 
+                        type="submit" 
+                        className="btn btn-primary"
+                    >Submit</button>
+                </form>
+                <div className="alert alert-success mt-2" style={{display: state.successMessage ? 'block' : 'none' }} role="alert">
+                    {state.successMessage}
                 </div>
-                <div className="form-group text-left">
-                <label htmlFor="exampleInputPassword1">Password</label>
-                <input type="password" 
-                       style={{borderColor:passwordColor}}
-                       className="form-control" 
-                       id="password" 
-                       placeholder="Password"
-                       value={state.password}
-                       onChange={handleChange} 
-                       required
-                />
+                <div className="registerMessage">
+                    <span>Don't have an account? </span>
+                    <span className="loginText" onClick={() => redirectToRegister()}>Register</span> 
                 </div>
-                <div className="form-group text-left">
-                    <label htmlFor="schoolsDropDown">School</label>
-                    <select name="schoolsDropDown" 
-                            id="school"
-                            className="form-control"
-                            value={state.school}
-                            onChange={handleChange}>
-                        {renderOptions()}
-                    </select>
-                </div>
-                <div className="form-check">
-                </div>
-                <button 
-                    type="submit" 
-                    className="btn btn-primary"
-                >Submit</button>
-            </form>
-            <div className="alert alert-success mt-2" style={{display: state.successMessage ? 'block' : 'none' }} role="alert">
-                {state.successMessage}
-            </div>
-            <div className="registerMessage">
-                <span>Don't have an account? </span>
-                <span className="loginText" onClick={() => redirectToRegister()}>Register</span> 
             </div>
         </div>
     )

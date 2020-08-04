@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import './App.css';
 import Header from './components/Header/Header';
+import Footer from './components/Header/Footer';
 import LoginForm from './components/LoginForm/LoginForm';
 import RegistrationForm from './components/RegistrationForm/RegistrationForm';
 import TeacherHome from './components/Home/TeacherHome';
@@ -21,7 +22,7 @@ function App() {
     <Router>
     <div className="App">
       <Header title={title} updateTitle={updateTitle}/>
-        <div className="container d-flex align-items-center flex-column">
+        <div className="container-fluid align-items-center flex-column">
           <Switch>
             <Route path="/" exact={true}>
               <LoginForm showError={updateErrorMessage} updateTitle={updateTitle}/>
@@ -44,6 +45,8 @@ function App() {
           </Switch>
           <AlertComponent errorMessage={errorMessage} hideError={updateErrorMessage}/>
         </div>
+        <br></br>
+      <Footer />
     </div>
     </Router>
   );

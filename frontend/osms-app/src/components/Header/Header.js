@@ -1,22 +1,9 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import { withRouter } from "react-router-dom";
 import axios from '../CustomAxios/Axios';
 import UserProfile from '../../closure/UserProfile';
 
 function Header(props) {
-
-    useEffect(() => {
-        getData()
-    }, [])
-
-    const getData = async () => {
-        props.updateTitle('Login')
-    }
-
-    const capitalize = (s) => {
-        if (typeof s !== 'string') return ''
-        return s.charAt(0).toUpperCase() + s.slice(1)
-    }
 
     const redirectToLogin = () => {
         const payload={
@@ -48,19 +35,20 @@ function Header(props) {
         UserProfile.setSchoolName("");
     }
 
-    const title = capitalize(props.location.pathname.substring(1,props.location.pathname.length))
+    const title = UserProfile.getSchoolName();
+
     return(
         <div className="d-flex flex-row justify-content-around bd-highlight mb-3 bg-primary">
             <div className="p-2 bd-highlight text-white">
                 {!!UserProfile.getFullName() &&
                     <div>
-                        Welcome {UserProfile.getFullName()} !
+                        Welcome {UserProfile.getFullName()}
                     </div>
                 }
             </div>
             <div className="p-2 bd-highlight">
                 <div className="text-white">
-                    <span className="h3">{UserProfile.getSchoolName()}</span>
+                    <span className="h3">{title}</span>
                 </div>
             </div>
             <div className="p-2 bd-highlight">

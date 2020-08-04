@@ -9,6 +9,7 @@ function RegistrationForm(props) {
     const [userNameColor, setUserNameColor] = useState();
     const [passwordColor, setPasswordColor] = useState();
     const [confirmColor, setConfirmColor] = useState();
+    const [schoolColor, setSchoolColor] = useState();
 
     const [schools, setSchools] = useState([]);
 
@@ -29,7 +30,7 @@ function RegistrationForm(props) {
         type : "teacher",
         className : "LKG",
         section : "A",
-        school: "",
+        school: "ps",
         successMessage: null
     })
 
@@ -52,6 +53,9 @@ function RegistrationForm(props) {
                 break;
             case  'confirmPassword' :
                 setConfirmColor()
+                break;
+            case 'school' :
+                setSchoolColor();
                 break;
         }
     }
@@ -150,6 +154,9 @@ function RegistrationForm(props) {
                             setConfirmColor("red")
                             break;
                     }
+                } else if (element.type === "select-one" && element.value === "ps") {
+                    oneFailure = true;
+                    setSchoolColor("red");
                 }
             })
 
@@ -177,139 +184,142 @@ function RegistrationForm(props) {
     }
 
     return(
-        <div className="card col-12 col-lg-4 login-card mt-2 hv-center">
-            <form noValidate onSubmit={handleSubmitClick}>
-                <div className="form-group text-left">
-                    <label htmlFor="userNameInput">Full Name</label>
-                    <input type="text" 
-                        style={{borderColor:fullNameColor}}
-                        className="form-control" 
-                        id="fullName"
-                        aria-describedby="fullNameHelp"  
-                        placeholder="Enter Full Name" 
-                        value={state.fullName}
-                        onChange={handleChange} 
-                        required
-                    />
-                    <small id="fullNameHelp" className="form-text text-muted">Please enter full name as: [FIRST NAME] [MIDDLE NAME] [LAST NAME]</small>
-                </div>
-                <div className="form-group text-left">
-                <label htmlFor="exampleInputEmail1">User Name</label>
-                <input type="text" 
-                       style={{borderColor:userNameColor}}
-                       className="form-control" 
-                       id="userName" 
-                       placeholder="Enter user name" 
-                       value={state.userName}
-                       onChange={handleChange}
-                       required
-                />
-                </div>
-                <div className="form-group text-left">
-                    <label htmlFor="schoolsDropDown">School</label>
-                    <select name="schoolsDropDown" 
-                            id="school"
-                            className="form-control"
-                            value={state.school}
-                            onChange={handleChange}>
-                        {renderOptions()}
-                    </select>
-                </div>
-                <div className="form-group text-left">
-                    <label htmlFor="userTypeDropDown">User Type</label>
-                    <select name="userTypeDropDown" 
-                            id="type"
-                            className="form-control"
-                            value={state.type}
-                            onChange={handleChange}>
-                        <option value="teacher">Teacher</option>
-                        <option value="student">Student</option>
-                    </select>
-                </div>
-                <div className="form-group text-left">
-                    <label htmlFor="classNameDropDown">Class</label>
-                    <select name="classNameDropDown" 
-                            id="className"
-                            className="form-control"
-                            value={state.className}
-                            onChange={handleChange}>
-                        <option value="LKG">LKG</option>
-                        <option value="UKG">UKG</option>
-                        <option value="I">I</option>
-                        <option value="II">II</option>
-                        <option value="III">III</option>
-                        <option value="IV">IV</option>
-                        <option value="V">V</option>
-                        <option value="VI">VI</option>
-                        <option value="VII">VII</option>
-                        <option value="VIII">VIII</option>
-                        <option value="IX">IX</option>
-                        <option value="X">X</option>
-                        <option value="XI">XI</option>
-                        <option value="XII">XII</option>
-                    </select>
-                </div>
+        <div className="container-fluid d-flex justify-content-center align-items-center flex-column">
+            <div className="card col-12 col-lg-4 login-card mt-2 hv-center">
+                <form noValidate onSubmit={handleSubmitClick}>
                     <div className="form-group text-left">
-                    <label htmlFor="sectionInput">Section</label>
-                    <select name="languageDropDown" 
-                            id="section"
-                            className="form-control"
-                            value={state.section}
-                            onChange={handleChange}>
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
-                        <option value="D">D</option>
-                        <option value="E">E</option>
-                        <option value="F">F</option>
-                        <option value="G">G</option>
-                        <option value="H">H</option>
-                        <option value="I">I</option>
-                        <option value="J">J</option>
-                        <option value="K">K</option>
-                        <option value="L">L</option>
-                        <option value="M">M</option>
-                        <option value="N">N</option>
-                    </select>
-                </div>
-                <div className="form-group text-left">
-                    <label htmlFor="exampleInputPassword1">Password</label>
-                    <input type="password" 
-                        style={{borderColor:passwordColor}}
+                        <label htmlFor="userNameInput">Full Name</label>
+                        <input type="text" 
+                            style={{borderColor:fullNameColor}}
+                            className="form-control" 
+                            id="fullName"
+                            aria-describedby="fullNameHelp"  
+                            placeholder="Enter Full Name" 
+                            value={state.fullName}
+                            onChange={handleChange} 
+                            required
+                        />
+                        <small id="fullNameHelp" className="form-text text-muted">Please enter full name as: [FIRST NAME] [MIDDLE NAME] [LAST NAME]</small>
+                    </div>
+                    <div className="form-group text-left">
+                    <label htmlFor="exampleInputEmail1">User Name</label>
+                    <input type="text" 
+                        style={{borderColor:userNameColor}}
                         className="form-control" 
-                        id="password" 
-                        placeholder="Password"
-                        value={state.password}
-                        onChange={handleChange} 
+                        id="userName" 
+                        placeholder="Enter user name" 
+                        value={state.userName}
+                        onChange={handleChange}
                         required
                     />
+                    </div>
+                    <div className="form-group text-left">
+                        <label htmlFor="schoolsDropDown">School</label>
+                        <select name="schoolsDropDown" 
+                                style={{borderColor:schoolColor}}
+                                id="school"
+                                className="form-control"
+                                value={state.school}
+                                onChange={handleChange}>
+                            <option value="ps">---Please Select---</option>
+                            {renderOptions()}
+                        </select>
+                    </div>
+                    <div className="form-group text-left">
+                        <label htmlFor="userTypeDropDown">User Type</label>
+                        <select name="userTypeDropDown" 
+                                id="type"
+                                className="form-control"
+                                value={state.type}
+                                onChange={handleChange}>
+                            <option value="teacher">Teacher</option>
+                            <option value="student">Student</option>
+                        </select>
+                    </div>
+                    <div className="form-group text-left">
+                        <label htmlFor="classNameDropDown">Class</label>
+                        <select name="classNameDropDown" 
+                                id="className"
+                                className="form-control"
+                                value={state.className}
+                                onChange={handleChange}>
+                            <option value="LKG">LKG</option>
+                            <option value="UKG">UKG</option>
+                            <option value="I">I</option>
+                            <option value="II">II</option>
+                            <option value="III">III</option>
+                            <option value="IV">IV</option>
+                            <option value="V">V</option>
+                            <option value="VI">VI</option>
+                            <option value="VII">VII</option>
+                            <option value="VIII">VIII</option>
+                            <option value="IX">IX</option>
+                            <option value="X">X</option>
+                            <option value="XI">XI</option>
+                            <option value="XII">XII</option>
+                        </select>
+                    </div>
+                        <div className="form-group text-left">
+                        <label htmlFor="sectionInput">Section</label>
+                        <select name="languageDropDown" 
+                                id="section"
+                                className="form-control"
+                                value={state.section}
+                                onChange={handleChange}>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                            <option value="F">F</option>
+                            <option value="G">G</option>
+                            <option value="H">H</option>
+                            <option value="I">I</option>
+                            <option value="J">J</option>
+                            <option value="K">K</option>
+                            <option value="L">L</option>
+                            <option value="M">M</option>
+                            <option value="N">N</option>
+                        </select>
+                    </div>
+                    <div className="form-group text-left">
+                        <label htmlFor="exampleInputPassword1">Password</label>
+                        <input type="password" 
+                            style={{borderColor:passwordColor}}
+                            className="form-control" 
+                            id="password" 
+                            placeholder="Password"
+                            value={state.password}
+                            onChange={handleChange} 
+                            required
+                        />
+                    </div>
+                    <div className="form-group text-left">
+                        <label htmlFor="exampleInputPassword1">Confirm Password</label>
+                        <input type="password" 
+                            style={{borderColor:confirmColor}}
+                            className="form-control" 
+                            id="confirmPassword" 
+                            placeholder="Confirm Password"
+                            value={state.confirmPassword}
+                            onChange={handleChange} 
+                            required
+                        />
+                    </div>
+                    <button 
+                        type="submit" 
+                        className="btn btn-primary">
+                        Register
+                    </button>
+                </form>
+                <div className="alert alert-success mt-2" style={{display: state.successMessage ? 'block' : 'none' }} role="alert">
+                    {state.successMessage}
                 </div>
-                <div className="form-group text-left">
-                    <label htmlFor="exampleInputPassword1">Confirm Password</label>
-                    <input type="password" 
-                        style={{borderColor:confirmColor}}
-                        className="form-control" 
-                        id="confirmPassword" 
-                        placeholder="Confirm Password"
-                        value={state.confirmPassword}
-                        onChange={handleChange} 
-                        required
-                    />
+                <div className="mt-2">
+                    <span>Already have an account? </span>
+                    <span className="loginText" onClick={() => redirectToLogin()}>Login here</span> 
                 </div>
-                <button 
-                    type="submit" 
-                    className="btn btn-primary">
-                    Register
-                </button>
-            </form>
-            <div className="alert alert-success mt-2" style={{display: state.successMessage ? 'block' : 'none' }} role="alert">
-                {state.successMessage}
             </div>
-            <div className="mt-2">
-                <span>Already have an account? </span>
-                <span className="loginText" onClick={() => redirectToLogin()}>Login here</span> 
-            </div>
-            
         </div>
     )
 }

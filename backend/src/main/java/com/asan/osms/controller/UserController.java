@@ -119,9 +119,9 @@ public class UserController {
 			} else {
 				throw new UserAlreadyLoggedOutException(user.getUserName());
 			}
+		} else {
+			throw new ResourceNotFoundException(requestedUser.getUserName());
 		}
-		
-		throw new ResourceNotFoundException(requestedUser.getUserName());
 	}
 
 }

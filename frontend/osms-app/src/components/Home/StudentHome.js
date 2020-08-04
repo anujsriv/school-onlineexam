@@ -8,7 +8,7 @@ function StudentHome(props) {
     const [errorMessage, updateErrorMessage] = useState(null);
 
     return(
-        <div style={{width:"1200px"}} className="card">
+        <div className="card">
             <div className="row">
                 <div className="col-3">
                     <div className="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
@@ -18,10 +18,10 @@ function StudentHome(props) {
                 </div>
                 <div className="col-9">
                     <div className="tab-content" id="v-pills-tabContent">
-                        <div style={{width:"850px"}} className="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                        <div className="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
                             <AnswerPapers showError={updateErrorMessage} />
                         </div>
-                        <div style={{width:"850px"}} className="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                        <div className="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
                             <PreviousAnswers showError={updateErrorMessage} />
                         </div>
                     </div>

@@ -25,8 +25,8 @@ public class RestServiceApplication {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				//registry.addMapping("/**").allowedOrigins("http://localhost:3000");
-				registry.addMapping("/**").allowedMethods("*").allowedOrigins("https://prarat-oems.com");
+				registry.addMapping("/**").allowedOrigins("http://localhost:3000");
+				//registry.addMapping("/**").allowedMethods("*").allowedOrigins("https://prarat-oems.com");
 			}
 			
 			@Override

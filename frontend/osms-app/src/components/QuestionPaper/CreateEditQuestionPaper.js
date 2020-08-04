@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import axios from '../CustomAxios/Axios';
 import { withRouter } from "react-router-dom";
 import TranslateIcon from '../Images/translate.png';
+import Dictaphone from '../SpeechRecognition/Dictaphone'
 
 function CreateEditQuestionPaper(props) {
 
@@ -430,6 +431,7 @@ function CreateEditQuestionPaper(props) {
                             </div>
                         </div>
                     </form>
+                    <Dictaphone />
                     <div className="alert alert-success mt-2" style={{display: questionState.successMessage ? 'block' : 'none' }} role="alert">
                         {questionState.successMessage}
                     </div>

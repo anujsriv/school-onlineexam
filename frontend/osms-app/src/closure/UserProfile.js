@@ -42,7 +42,7 @@ var UserProfile = (function() {
     };
 
     var getSchoolName = function() {
-      return localStorage.getItem('schoolName ') || '';
+      return localStorage.getItem('schoolName') || '';
     };
     
     var setSchoolName = function(name) {

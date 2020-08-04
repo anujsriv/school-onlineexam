@@ -214,6 +214,8 @@ function QuestionTable (props) {
 
     const getStudentAndAnswerDetails = (id) => {
 
+        setEvaluated(false);
+
         let questionArray = [];
         let answerArray = [];
         let modifiedQuestionArray = [];
@@ -240,6 +242,10 @@ function QuestionTable (props) {
                 if (answerPaperResponse.status === 200) {
                     anspaperID = answerPaperResponse.data.id;
 
+                    if (answerPaperResponse.data.status === 'Submitted') {
+                        setEvaluated("true");
+                    }
+
                     axios.get('answers/'+anspaperID)
                         .then(response => {
                             if (response.status === 200) {
@@ -253,7 +259,9 @@ function QuestionTable (props) {
                                                 "answer": eachAnswer.answer,
                                                 "marks": eachQuestion.marks,
                                                 "answerPaperID":eachAnswer.answerPaperID,
-                                                "id": eachAnswer.id
+                                                "id": eachAnswer.id,
+                                                "marksObtained": eachAnswer.marksObtained,
+                                                "correctIncorrect": eachAnswer.correctIncorrect
                                             }
                                             modifiedQuestionArray.push(qa);
                                         }
@@ -270,7 +278,6 @@ function QuestionTable (props) {
             })
             .catch(function (error){
                 console.log(error);
-                setEvaluated("Answer paper already evaluated.");
         })
     }
 
@@ -332,16 +339,19 @@ function QuestionTable (props) {
                     <br></br>
                     <form className="form-inline">
                         <label className="font-weight-bold">Evaluation : </label>
-                        <select name="evaluationTypeDropDown" 
-                            id={"evaluation"+eachQuestion.id}
-                            className="form-control"
-                            onChange={handleChange} >
-                        <option value="correct">Correct</option>
-                        <option value="incorrect">Incorrect</option>
-                        </select>
+                        {evaluated === "true" ? eachQuestion.correctIncorrect
+                        : <select name="evaluationTypeDropDown" 
+                                id={"evaluation"+eachQuestion.id}
+                                className="form-control"
+                                onChange={handleChange} >
+                            <option value="correct">Correct</option>
+                            <option value="incorrect">Incorrect</option>
+                          </select>}
                         <label className="font-weight-bold">Marks: </label>
                         <div className="form-group mx-sm-2 mb-2">
-                            <input type="text" onChange={handleChange} className="form-control" id={"marksObtained"+eachQuestion.id} placeholder="Marks" />
+                        {evaluated === "true" ? eachQuestion.marksObtained
+                        : <input type="text" onChange={handleChange} className="form-control" id={"marksObtained"+eachQuestion.id} placeholder="Marks" />
+                        }
                         </div>
                         <label className="font-weight-bold">Total Marks : {eachQuestion.marks}</label>
                     </form>
@@ -410,12 +420,12 @@ function QuestionTable (props) {
                         </div>
                         <div className="modal-body">
                             <ul className="list-group list-group-flush">
-                                {evaluated ? evaluated : renderQAList()}
+                                {renderQAList()}
                             </ul>
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={() => {saveMarks()}}>Save Changes</button>
+                            <button type="button" style={{display: evaluated === "true" ? 'none' : 'block'}} className="btn btn-primary" data-dismiss="modal" onClick={() => {saveMarks()}}>Save Changes</button>
                         </div>
                         </div>
                     </div>

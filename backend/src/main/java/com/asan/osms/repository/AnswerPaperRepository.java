@@ -9,7 +9,7 @@ import com.asan.osms.entity.AnswerPaper;
 
 public interface AnswerPaperRepository extends CrudRepository<AnswerPaper, Integer> {
 	
-	@Query(value = "SELECT ap FROM AnswerPaper ap WHERE ap.questionPaperID = ?1 AND ap.studentID = ?2 AND ap.status != 'Submitted' ")
+	@Query(value = "SELECT ap FROM AnswerPaper ap WHERE ap.questionPaperID = ?1 AND ap.studentID = ?2 ")
 	AnswerPaper findByQuestionPaperAndStudent(Integer questionPaperID, Integer studentID);
 
 	@Query(value = "SELECT ap FROM AnswerPaper ap WHERE ap.questionPaperID = ?1")
