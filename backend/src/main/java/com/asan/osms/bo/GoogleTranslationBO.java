@@ -9,7 +9,7 @@ import com.google.cloud.translate.TranslateOptions;
 import com.google.cloud.translate.Translation;
 
 @Component
-public class TranslationBO {
+public class GoogleTranslationBO {
 
 	public String translateTextGCAPI(TranslateRequest translateRequest) {
 

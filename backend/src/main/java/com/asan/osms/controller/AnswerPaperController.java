@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.asan.osms.beans.QuestionAndAnswer;
 import com.asan.osms.beans.StudentAnswerResponse;
+import com.asan.osms.bo.AmazonS3BO;
 import com.asan.osms.entity.Answer;
 import com.asan.osms.entity.AnswerPaper;
 import com.asan.osms.entity.Question;
@@ -30,20 +31,22 @@ import com.asan.osms.repository.UserRepository;
 @RequestMapping("/api")
 public class AnswerPaperController {
 
-	private AnswerPaperRepository repository;
-	private UserRepository userRepository;
-	private QuestionPaperRepository questionPaperRepository;
-	private QuestionRepository questionRepository;
-	private AnswerRepository answerRepository;
+	private final AnswerPaperRepository repository;
+	private final UserRepository userRepository;
+	private final QuestionPaperRepository questionPaperRepository;
+	private final QuestionRepository questionRepository;
+	private final AnswerRepository answerRepository;
+	private final AmazonS3BO amazonS3BO;
 
 	AnswerPaperController(AnswerPaperRepository answerPaperRepository, UserRepository userRepository,
 			QuestionPaperRepository questionPaperRepository, QuestionRepository questionRepository,
-			AnswerRepository answerRepository) {
+			AnswerRepository answerRepository, AmazonS3BO amazonS3BO) {
 		this.repository = answerPaperRepository;
 		this.userRepository = userRepository;
 		this.questionPaperRepository = questionPaperRepository;
 		this.questionRepository = questionRepository;
 		this.answerRepository = answerRepository;
+		this.amazonS3BO = amazonS3BO;
 	}
 
 	@PostMapping("/answerpapers")
@@ -112,6 +115,14 @@ public class AnswerPaperController {
 											questionAndAnswer.setCorrectIncorrect(answer.getCorrectIncorrect());
 											questionAndAnswer.setMarksObtained(answer.getMarksObtained());
 											questionAndAnswer.setId(answer.getId());
+											
+											if (answer.getImagePath() != null && !answer.getImagePath().isEmpty()) {
+												String bucketName = answer.getImagePath().split("~")[0];
+												String keyName = answer.getImagePath().split("~")[1];
+												
+												String awsPreSignedURL = amazonS3BO.getPresignedUrl(bucketName, keyName);
+												questionAndAnswer.setImagePath(awsPreSignedURL);
+											}
 											
 											totalMarksObtained = totalMarksObtained + answer.getMarksObtained();
 										}

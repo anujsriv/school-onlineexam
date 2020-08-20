@@ -125,6 +125,7 @@ function RegistrationForm(props) {
         schools.forEach(function (eachSchool) {
             if (state.school === eachSchool.schoolName) {
                 localStorage.setItem('tenantID', eachSchool.tenantID);
+                localStorage.setItem('videoAppID', eachSchool.videoAppID);
             }
         });
     }

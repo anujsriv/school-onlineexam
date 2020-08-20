@@ -27,6 +27,9 @@ public class Procting {
 	@Column(name = "VIDEO_URL", columnDefinition = "ntext")
 	private String videoURL;
 	
+	@Column(name = "USER_TYPE")
+	private String userType;
+	
 
 	/**
 	 * @return the id
@@ -96,6 +99,20 @@ public class Procting {
 	 */
 	public void setVideoURL(String videoURL) {
 		this.videoURL = videoURL;
+	}
+
+	/**
+	 * @return the userType
+	 */
+	public String getUserType() {
+		return userType;
+	}
+
+	/**
+	 * @param userType the userType to set
+	 */
+	public void setUserType(String userType) {
+		this.userType = userType;
 	}
 
 }

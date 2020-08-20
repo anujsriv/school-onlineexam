@@ -8,9 +8,15 @@ const instance = axios.create({
 instance.interceptors.request.use(
     function(config) {
         const tenantID = localStorage.getItem('tenantID') || '';
+        const videoAppID = localStorage.getItem('videoAppID') || '';
+        
         if (tenantID) {
             config.headers['X-TenantID'] = tenantID;
         }
+        if (videoAppID) {
+            config.headers['X-VideoAppID'] = videoAppID;
+        }
+
         return config;
     },
     function(error) {

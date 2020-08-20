@@ -5,6 +5,7 @@ import axios from '../CustomAxios/Axios';
 import DetailIcon from '../Images/marks_details.png';
 import PassIcon from '../Images/pass.png';
 import FailIcon from '../Images/fail.png';
+import ReactImageMagnify from 'react-image-magnify';
 
 function PreviousAnswer(props) {
 
@@ -49,7 +50,30 @@ function PreviousAnswer(props) {
                     <br></br>
                     <label className="font-weight-bold">Answer</label>
                     <br></br>
-                    <p className="font-weight-normal">{eachQuestion.answer}</p>
+                    {eachQuestion.imagePath ? 
+                    <div className="media">
+                        <ReactImageMagnify {...{
+                                smallImage: {
+                                    alt: 'Supported Diagram',
+                                    imageClassName: 'align-self-start mr-3',
+                                    src: eachQuestion.imagePath,
+                                    width: 90,
+                                    height: 90
+                                },
+                                largeImage: {
+                                    src: eachQuestion.imagePath,
+                                    width: 700,
+                                    height: 700
+                                },
+                                enlargedImageContainerDimensions: {
+                                    width: '700%', height: '700%'
+                                }
+                            }} />
+                    <div className="media-body">
+                        <p className="font-weight-normal">{eachQuestion.answer}</p>
+                    </div>
+                    </div>
+                    : <p className="font-weight-normal">{eachQuestion.answer}</p>}
                     <br></br>
                     <form className="form-inline">
                         <label className="form-control mb-2 mr-sm-2 font-weight-bold">Evaluation : {eachQuestion.correctIncorrect}</label>

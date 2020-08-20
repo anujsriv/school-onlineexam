@@ -8,6 +8,10 @@ import UserProfile from '../../closure/UserProfile';
 
 function StartExam(props) {
 
+    const [checked, setChecked] = useState(false);
+
+    const [uploadFiles, setUploadFiles] = useState([])
+
     const [questionPaper, setQuestionPaper] = useState([]);
 
     const [state, setState] = useState({
@@ -15,6 +19,7 @@ function StartExam(props) {
         singleChoice: "ps-sc",
         answerText: "",
         successMessage: null,
+        uploadSuccessMessage: null,
         disabled: "false"
     })
 
@@ -36,7 +41,8 @@ function StartExam(props) {
         answerPaperID : "",
         questionID : "",
         type: "",
-        answerString : ""
+        answerString : "",
+        imagePath: ""
     });
 
     const[states, setStates] = useState({
@@ -130,7 +136,8 @@ function StartExam(props) {
                 const payload = {
                     "answerPaperID": eachAnswer.answerPaperID,
                     "questionID": eachAnswer.questionID,
-                    "answer": eachAnswer.answerString
+                    "answer": eachAnswer.answerString,
+                    "imagePath": eachAnswer.imagePath
                 }
 
                 axios.post('answers', payload)
@@ -215,9 +222,54 @@ function StartExam(props) {
         })
     }
 
+    const handleUploadFile = (e) => {
+        e.preventDefault();
+        Array.from(uploadFiles).forEach(function (eachFile){
+            let config = {
+                headers: {
+                    'content-type': 'multipart/form-data'
+                }
+            }
+
+            let formData = new FormData();
+            formData.append("file", eachFile);
+            formData.append("docType", "answer");
+            formData.append("userName", UserProfile.getUserName());
+            formData.append("fileName", answer.questionID);
+
+            axios.post('upload', formData, config)
+                .then(function (response){
+                    if (response.status === 200) {
+                        setAnswer(prevState=> ({
+                            ...prevState,
+                            'imagePath' : response.data
+                        }));
+                        setState(prevState => ({
+                            ...prevState,
+                            'uploadSuccessMessage' : 'Diagram attached successfully.'
+                        }))
+                    } else {
+                        props.showError('Some error occured while uploading question.');        
+                    }
+                })
+            .catch(function (error){
+                props.showError('Some error occured while uploading question.');
+                console.log(error);
+            })
+        })
+    }
+
     const handleChange = (e) => {
         const {id , value} = e.target;
+        
+        if (id === 'addDiagram') {
+            setChecked(!checked);
+        }
 
+        if (id === 'uploadAnswer') {
+            setUploadFiles(e.target.files);
+        }
+        
         if (id === 'multiChoice') {
             var options = e.target.options;
             var values = [];
@@ -301,13 +353,16 @@ function StartExam(props) {
             setAnswer(prevState=> ({
                 ...prevState,
                 'questionID' : "",
-                'answerString': ""
+                'answerString': "",
+                'imagePath': ""
             }));
             setState({
                 'multiChoice': [],
                 'singleChoice': "",
                 'answerText': ""
             });
+
+            setChecked(false);
         }
 
         states.answerMap.set(answer.questionID, answer);
@@ -318,7 +373,7 @@ function StartExam(props) {
             <div className="card w-75 text-left">
                 <div className="alert alert-success" style={{display: state.successMessage ? 'block' : 'none' }} role="alert">
                     {state.successMessage}
-                    <p>For security purposes, please close the Browser Window.</p>
+                    <p>For security purposes, please 'Logout' and close the Browser Window.</p>
                 </div>
                 { question.type ?
                     <div style={{display: state.disabled === 'disabled' ? 'none' : 'block' }} className="card text-left">
@@ -351,14 +406,30 @@ function StartExam(props) {
                                         : <p></p>
                                     }
                                     <textarea className="form-control" rows="5" id="answerText" value={state.answerText} onChange={handleChange} placeholder="Type your answer here."/>
+                                    <h4 />
                                     <Dictaphone />
                             </div>
                             <div className="form-group form-inline">
                                 <div style={{display: pagable.currentPageNumber !== 0 ? 'block' : 'none', paddingRight: '15%' }}>
-                                    <button id='previous' type="submit" className="btn btn-primary" onClick={handleNextClick} >Previous</button>
+                                    <button id='previous' type="submit" className="btn btn-primary form-group" onClick={handleNextClick} >Previous</button>
                                 </div>
                                 <button id='next' style={{display: pagable.currentPageNumber !== pagable.totalNumberOfPages -1 ? 'block' : 'none'}} type="submit" className="btn btn-primary" onClick={handleNextClick} >Next</button>
                                 <button id='submit' style={{display: pagable.currentPageNumber === pagable.totalNumberOfPages -1 ? 'block' : 'none'}} type="submit" className="btn btn-primary" onClick={handleNextClick} >Submit</button>
+                                <div style={{paddingLeft: '10%' }} className="form-group form-check">
+                                    <input type="checkbox" onChange={handleChange} defaultChecked={checked} className="form-check-input" id="addDiagram" />
+                                    <label className="form-check-label" htmlFor="addDiagram">Add a diagram to your answer</label>
+                                </div>
+                                <div style={{display: checked ? 'block' : 'none', paddingLeft: '10%'}} className="form-group">
+                                    <input type="file" accept="image/*" onChange={handleChange} className="form-control-file" id="uploadAnswer" />
+                                </div>
+                                <div style={{display: checked ? 'block' : 'none'}} className="form-group">
+                                    <button
+                                        type="button" 
+                                        className="btn btn-primary"
+                                        onClick={handleUploadFile} >
+                                        Upload
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div> : 
@@ -370,6 +441,9 @@ function StartExam(props) {
                         </div>
                     </div> 
                 }
+                <div className="alert alert-success" style={{display: state.uploadSuccessMessage ? 'block' : 'none' }} role="alert">
+                    {state.uploadSuccessMessage}
+                </div>
             </div>
         </div>
     )

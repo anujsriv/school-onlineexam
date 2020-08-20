@@ -21,6 +21,9 @@ public class School {
 	@Column(name = "TENANT_ID")
 	private String tenantID;
 	
+	@Column(name = "VIDEO_APP_ID")
+	private String videoAppID;
+	
 
 	/**
 	 * @return the id
@@ -62,6 +65,20 @@ public class School {
 	 */
 	public void setTenantID(String tenantID) {
 		this.tenantID = tenantID;
+	}
+
+	/**
+	 * @return the videoAppID
+	 */
+	public String getVideoAppID() {
+		return videoAppID;
+	}
+
+	/**
+	 * @param videoAppID the videoAppID to set
+	 */
+	public void setVideoAppID(String videoAppID) {
+		this.videoAppID = videoAppID;
 	}
 
 }

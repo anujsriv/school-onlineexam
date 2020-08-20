@@ -29,6 +29,9 @@ public class Answer {
 	
 	@Column(name = "MARKS_OBTAINED")
 	private Integer marksObtained;
+	
+	@Column(name = "IMAGE_PATH")
+	private String imagePath;
 
 	/**
 	 * @return the id
@@ -112,6 +115,20 @@ public class Answer {
 	 */
 	public void setMarksObtained(Integer marksObtained) {
 		this.marksObtained = marksObtained;
+	}
+
+	/**
+	 * @return the imagePath
+	 */
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	/**
+	 * @param imagePath the imagePath to set
+	 */
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
 	}
 
 }

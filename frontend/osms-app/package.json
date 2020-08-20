@@ -13,6 +13,7 @@
     "react-bootstrap": "^1.3.0",
     "react-bulb": "0.0.2",
     "react-dom": "^16.13.1",
+    "react-image-magnify": "^2.7.4",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "react-speech-recognition": "^3.0.2",

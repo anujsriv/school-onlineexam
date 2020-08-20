@@ -15,9 +15,11 @@ public class TenantInterceptor extends HandlerInterceptorAdapter {
             throws Exception {
     	String requestURI = request.getRequestURI();
     	String tenantID = null;
+    	String videoAppId = null;
     	
     	if (requestURI.contains("/api")) {
     		tenantID = request.getHeader("X-TenantID");
+    		videoAppId = request.getHeader("X-VideoAppID");
             
             if (requestURI.equalsIgnoreCase("/api/schools/")) {
             	tenantID = "osms_common";
@@ -30,6 +32,7 @@ public class TenantInterceptor extends HandlerInterceptorAdapter {
             }
             
             TenantContext.setCurrentTenant(tenantID);
+            TenantContext.setCurrentVideoApp(videoAppId);
     	}
         
         return true;

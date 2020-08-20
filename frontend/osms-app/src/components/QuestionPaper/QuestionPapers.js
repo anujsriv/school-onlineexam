@@ -4,6 +4,7 @@ import { withRouter } from "react-router-dom";
 import UserProfile from '../../closure/UserProfile';
 import EvaluateIcon from '../Images/evaluate.png';
 import './QuestionPapers.css';
+import ReactImageMagnify from 'react-image-magnify';
 
 function QuestionTable (props) {
 
@@ -19,6 +20,8 @@ function QuestionTable (props) {
     
     const [questionPapers, setQuestionPapers] = useState([]);
 
+    const [questionPaper, setQuestionPaper] = useState({});
+
     useEffect(() => {
         getData()
         const interval = setInterval(() => {
@@ -32,7 +35,22 @@ function QuestionTable (props) {
         setQuestionPapers(response.data);
     }
 
-    const editData = (id) => {
+    const viewData = (id, edit) => {
+        axios.get('question/'+id)
+            .then(questionsResponse => {
+                if (questionsResponse.status === 200) {
+                    setQuestions(questionsResponse.data);
+                }
+            })
+            .catch(function (error){
+                console.log(error);
+        })
+
+        questionPapers.forEach(function (eachQuestionPaper){
+            if (id === eachQuestionPaper.id) {
+                setQuestionPaper(eachQuestionPaper);
+            }
+        })
     }
 
     const startExam = (id) => {
@@ -51,7 +69,8 @@ function QuestionTable (props) {
             const teacherPayload = {
                 "className": className,
                 "section": section,
-                "userName": UserProfile.getUserName()
+                "userName": UserProfile.getUserName(),
+                "userType": "teacher"
             }
 
             axios.post('procting', teacherPayload)
@@ -72,7 +91,8 @@ function QuestionTable (props) {
                             const payload = {
                                 "className": eachStudent.className,
                                 "section": eachStudent.section,
-                                "userName": eachStudent.userName
+                                "userName": eachStudent.userName,
+                                "userType": "student"
                             }
 
                             axios.post('procting', payload)
@@ -141,11 +161,16 @@ function QuestionTable (props) {
         })
     }
 
-    const deleteData = (id) => {
-        axios.delete('questionpaper/'+id).then(res => {
-            const del = questionPapers.filter(questionPaper => id !== questionPaper.id)
+    const deleteData = () => {
+        axios.delete('questionpaper/'+currentQuestionPaperID).then(res => {
+            const del = questionPapers.filter(questionPaper => currentQuestionPaperID !== questionPaper.id)
             setQuestionPapers(del)
         })
+        setCurrentQuestionPaperID();
+    }
+
+    const dontDeleteData = () => {
+        setCurrentQuestionPaperID();
     }
 
     const renderHeader = () => {
@@ -160,6 +185,7 @@ function QuestionTable (props) {
         if (status === 'Started') {
             return (
                 <div className="btn-group" role="group" aria-label="Action Buttons">
+                    <button className='button' data-toggle="modal" data-target="#viewEditQuestions" title='Click here to edit this Question Paper or add/ remove questions from it.' onClick={() => viewData(id, 'false')}>View</button> |
                     <button className='button btn-outline-success' title='Click here to start monitoring the Exam.' onClick={() => invigilateExam(id)}>Invigilate</button> | 
                     <button className='button btn-outline-warning' title='Click here to stop the Exam.' onClick={() => stopExam(id)}>Stop</button>
                 </div>
@@ -169,6 +195,7 @@ function QuestionTable (props) {
         if (status === 'Stopped') {
             return (
                 <div className="btn-group" role="group" aria-label="Action Buttons">
+                    <button className='button' data-toggle="modal" data-target="#viewEditQuestions" title='Click here to edit this Question Paper or add/ remove questions from it.' onClick={() => viewData(id, 'false')}>View</button> |
                     <button className='button' data-toggle="collapse" data-target="#studentList" onClick={() => evaluateExam(id)} title='Click here to start evaluate the Exam.'>Evaluate</button>
                 </div>
             )
@@ -177,9 +204,9 @@ function QuestionTable (props) {
         if (status === 'Created') {
             return (
                 <div className="btn-group" role="group" aria-label="Action Buttons">
-                    <button className='button' title='Click here to edit this Question Paper or add/ remove questions from it.' onClick={() => editData(id)}>Edit</button> |
-                    <button className='button' title='Click here to delete this Question Paper.' onClick={() => deleteData(id)}>Delete</button> | 
-                    <button className='button' title='Click here to start the Exam.' onClick={() => startExam(id)}>Start</button>
+                    <button className='button' title='Click here to start the Exam.' onClick={() => startExam(id)}>Start</button> | 
+                    <button className='button' data-toggle="modal" data-target="#viewEditQuestions" title='Click here to edit this Question Paper or add/ remove questions from it.' onClick={() => viewData(id, 'true')}>View</button> |
+                    <button className='button' title='Click here to delete this Question Paper.' onClick={() => setCurrentQuestionPaperID(id)} data-toggle="modal" data-target="#deleteConfirm">Delete</button>
                 </div>
             )
         }
@@ -196,7 +223,7 @@ function QuestionTable (props) {
     const renderBody = () => {
         return questionPapers && questionPapers.map(({ id, subject, className, section, duration, fullMarks, status}) => {
             return (
-                <tr key={id}>
+                <tr key={id} id={id}>
                     <th scope="row">{id}</th>
                     <td>{subject}</td>
                     <td>{className}</td>
@@ -261,7 +288,8 @@ function QuestionTable (props) {
                                                 "answerPaperID":eachAnswer.answerPaperID,
                                                 "id": eachAnswer.id,
                                                 "marksObtained": eachAnswer.marksObtained,
-                                                "correctIncorrect": eachAnswer.correctIncorrect
+                                                "correctIncorrect": eachAnswer.correctIncorrect,
+                                                "imagePath": eachAnswer.imagePath
                                             }
                                             modifiedQuestionArray.push(qa);
                                         }
@@ -325,6 +353,21 @@ function QuestionTable (props) {
         })
     }
 
+    const renderQList = () => {
+        return questions && questions.map(function (eachQuestion) {
+            return (
+                <li className="list-group-item text-left" key={eachQuestion.id}>
+                    <label className="font-weight-bold">Question</label>
+                    <br></br>
+                    <label className="font-weight-normal">{eachQuestion.question}</label>
+                    <br></br>
+                    <label className="font-weight-bold">Total Marks : {eachQuestion.marks}</label>
+                </li>
+            )
+        });
+
+    }
+
     const renderQAList = () => {
         return questions && questions.map(function (eachQuestion) {
             return (
@@ -335,7 +378,30 @@ function QuestionTable (props) {
                     <br></br>
                     <label className="font-weight-bold">Answer</label>
                     <br></br>
-                    <p className="font-weight-normal">{eachQuestion.answer}</p>
+                    {eachQuestion.imagePath ? 
+                    <div className="media">
+                        <ReactImageMagnify {...{
+                                smallImage: {
+                                    alt: 'Supported Diagram',
+                                    imageClassName: 'align-self-start mr-3',
+                                    src: eachQuestion.imagePath,
+                                    width: 90,
+                                    height: 90
+                                },
+                                largeImage: {
+                                    src: eachQuestion.imagePath,
+                                    width: 700,
+                                    height: 700
+                                },
+                                enlargedImageContainerDimensions: {
+                                    width: '700%', height: '700%'
+                                }
+                            }} />
+                    <div className="media-body">
+                        <p className="font-weight-normal">{eachQuestion.answer}</p>
+                    </div>
+                    </div>
+                    : <p className="font-weight-normal">{eachQuestion.answer}</p>}
                     <br></br>
                     <form className="form-inline">
                         <label className="font-weight-bold">Evaluation : </label>
@@ -400,7 +466,7 @@ function QuestionTable (props) {
                         </tbody>
                     </table>
                 </div>
-                <div className="collapse" id="studentList">
+                <div className="collapse shadow-lg p-3 mb-5 bg-white rounded" id="studentList">
                     <div className="card text-center">
                     <h5 className="card-title text-left">Following Students completed the exam</h5>
                         <table className="table table-hover">
@@ -428,6 +494,46 @@ function QuestionTable (props) {
                             <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="button" style={{display: evaluated === "true" ? 'none' : 'block'}} className="btn btn-primary" data-dismiss="modal" onClick={() => {saveMarks()}}>Save Changes</button>
                         </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="modal fade" id="deleteConfirm" tabIndex="-1" role="dialog" aria-labelledby="deleteConfirmTitle" aria-hidden="true">
+                    <div className="modal-dialog modal-dialog-centered" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="deleteConfirmTitle">Confirm Deletion</h5>
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                Are you sure you want to permanently delete this Quesion Paper? 
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-outline-danger" data-dismiss="modal" onClick={() => deleteData()}>Yes</button>
+                                <button type="button" className="btn btn-outline-primary" data-dismiss="modal" onClick={() => dontDeleteData()}>No</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="modal fade" id="viewEditQuestions" tabIndex="-1" role="dialog" aria-labelledby="viewEditQuestionsTitle" aria-hidden="true">
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="viewEditQuestionsTitle">Subject: {questionPaper.subject}</h5>
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <ul className="list-group list-group-flush">
+                                    {renderQList()}
+                                </ul>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" className="btn btn-primary">Save changes</button>
+                            </div>
                         </div>
                     </div>
                 </div>

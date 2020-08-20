@@ -2,7 +2,8 @@ import React, {useState} from 'react';
 import axios from '../CustomAxios/Axios';
 import { withRouter } from "react-router-dom";
 import TranslateIcon from '../Images/translate.png';
-import Dictaphone from '../SpeechRecognition/Dictaphone'
+import Dictaphone from '../SpeechRecognition/Dictaphone';
+import UserProfile from '../../closure/UserProfile';
 
 function CreateEditQuestionPaper(props) {
 
@@ -17,6 +18,14 @@ function CreateEditQuestionPaper(props) {
     const [showMultiBlock, setShowMultiBlock] = useState(false)
 
     const [showQuestions, setShowQuestions] = useState(false)
+
+    const [showQuestionUpload, setShowQuestionUpload] = useState(false)
+
+    const [uploadFiles, setUploadFiles] = useState([])
+
+    const [uploadFile, setUploadFile] = useState()
+
+    const [preSignUrl, setPreSignUrl] = useState({})
 
     const [state , setState] = useState({
         subject : "",
@@ -93,6 +102,10 @@ function CreateEditQuestionPaper(props) {
     
     const handleChange = (e) => {
         const {id , value} = e.target;   
+
+        if (id === 'uploadQuestion') {
+            setUploadFiles(e.target.files);
+        }
         
         if (id === 'questionType') {
             if (value === 'subjective') {
@@ -155,10 +168,11 @@ function CreateEditQuestionPaper(props) {
             questionPaper : ""
         });
         setSubjectColor();
-        seNnumberOfQuestionscolor()
-        setFullMarksColor()
-        setPassMarksColor()
-        setDurationColor()
+        seNnumberOfQuestionscolor();
+        setFullMarksColor();
+        setPassMarksColor();
+        setDurationColor();
+        setShowQuestionUpload(false);
     }
 
     const handleSubmitClick = (e) => {
@@ -208,6 +222,44 @@ function CreateEditQuestionPaper(props) {
             currentQuestion : 1,
             successMessage: ""
         });
+    }
+
+    const handleUploadClick = (e) => {
+        e.preventDefault();
+        setShowQuestionUpload(true);
+    }
+
+    const handleUploadFile = (e) => {
+        e.preventDefault();
+        Array.from(uploadFiles).forEach(function (eachFile){
+            let config = {
+                headers: {
+                    'content-type': 'multipart/form-data'
+                }
+            }
+
+            let formData = new FormData();
+            formData.append("file", eachFile);
+            formData.append("docType", "question");
+            formData.append("userName", UserProfile.getUserName());
+            formData.append("fileName", state.questionPaper.id);
+
+            axios.post('upload', formData, config)
+                .then(function (response){
+                    if (response.status === 200) {
+                        setState(prevState => ({
+                            ...prevState,
+                            'successMessage' : 'Question uploaded successfully.'
+                        }))
+                    } else {
+                        props.showError('Some error occured while uploading question.');        
+                    }
+                })
+            .catch(function (error){
+                props.showError('Some error occured while uploading question.');
+                console.log(error);
+            })
+        })
     }
 
     const sendDetailsToServer = () => {
@@ -288,12 +340,13 @@ function CreateEditQuestionPaper(props) {
             e.stopPropagation();
             props.showError('Field(s) highlighted in red are mandatory.')
         } else {
-            sendQuestionDetailsToServer();
+            sendQuestionDetailsToServer(e);
         }
     }
 
-    const sendQuestionDetailsToServer = () => {
+    const sendQuestionDetailsToServer = (e) => {
         //if(questionState.question.length && questionState.questionType.length) {
+            e.preventDefault();
             props.showError(null);
             const payload={
                 "type" : questionState.questionType,
@@ -321,6 +374,7 @@ function CreateEditQuestionPaper(props) {
                         if (questionState.currentQuestion === questionState.totalQuestions) {
                            
                             setShowQuestions(false);
+                            handleResetClick(e);   
                         }
 
                         setShowMultiBlock(false);
@@ -436,7 +490,7 @@ function CreateEditQuestionPaper(props) {
                         {questionState.successMessage}
                     </div>
                 </div>
-                : <div >
+                : <div>
                 <form noValidate onSubmit={handleSubmitClick}>
                     <div className="form-row">
                         <div className="form-group col-md-6">
@@ -596,21 +650,37 @@ function CreateEditQuestionPaper(props) {
                             onClick={handleResetClick}>
                             Reset
                         </button>
-                    <div style={{paddingLeft: '15%'}} >
-                        <button
-                            type="submit" 
-                            className="btn btn-primary" >
-                            Save
-                        </button>
-                    </div>
-                    <div style={{display: state.successMessage ? 'block' : 'none', paddingLeft: '15%'}} >
-                        <button
-                            type="submit" 
-                            className="btn btn-primary" 
-                            onClick={handleAddEditClick}>
-                            Add/ Edit Question(s)
-                        </button>
-                    </div>
+                        <div style={{paddingLeft: '15%'}} >
+                            <button
+                                type="submit" 
+                                className="btn btn-primary" >
+                                Save
+                            </button>
+                        </div>
+                        <div style={{display: state.successMessage ? 'block' : 'none', paddingLeft: '15%'}} >
+                            <div className="dropdown">
+                                <button
+                                    type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
+                                    className="btn btn-primary dropdown-toggle">
+                                    Add Question(s)
+                                </button>
+                                <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a className="dropdown-item" onClick={handleAddEditClick} href="#">Via Form</a>
+                                    <a className="dropdown-item" onClick={handleUploadClick} href="#">Upload</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div style={{display: showQuestionUpload ? 'block' : 'none', paddingLeft: '10%'}} className="form-group">
+                            <input type="file" accept="image/*" value={uploadFile} onChange={handleChange} className="form-control-file" id="uploadQuestion" />
+                        </div>
+                        <div style={{display: showQuestionUpload ? 'block' : 'none'}} className="form-group">
+                            <button
+                                type="button" 
+                                className="btn btn-primary"
+                                onClick={handleUploadFile} >
+                                Upload
+                            </button>
+                        </div>
                     </div>
                 </form>
                 <div className="alert alert-success mt-2" style={{display: state.successMessage ? 'block' : 'none' }} role="alert">

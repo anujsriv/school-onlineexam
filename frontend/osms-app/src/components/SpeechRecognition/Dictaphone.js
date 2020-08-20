@@ -10,10 +10,11 @@ const Dictaphone = () => {
 
   return (
     <div>
-        <p>If you have difficulty in typing or your speed is slow, please use the  below 'Start' button to start recording your answer and convert it to text. 
+        <small>If you have difficulty in typing or your speed is slow, please use the  below 'Start' button to start recording your answer and convert it to text. 
             Once done, please click on 'Stop' button. Then copy and paste the transcript in the above area. If you want to make any changes, please click on 'Reset' button
             and try again. 
-        </p>
+        </small>
+        <h5/>
         <button className="btn btn-secondary btn-sm" onClick={SpeechRecognition.startListening}>Start</button> 
         | <button className="btn btn-secondary btn-sm" onClick={SpeechRecognition.stopListening}>Stop</button> 
         | <button className="btn btn-secondary btn-sm" onClick={resetTranscript}>Reset</button>

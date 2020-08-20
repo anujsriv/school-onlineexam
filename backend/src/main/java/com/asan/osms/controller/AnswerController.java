@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.asan.osms.bo.AmazonS3BO;
 import com.asan.osms.entity.Answer;
 import com.asan.osms.exception.ResourceNotFoundException;
 import com.asan.osms.repository.AnswerRepository;
@@ -20,9 +21,11 @@ import com.asan.osms.repository.AnswerRepository;
 public class AnswerController {
 	
 	private final AnswerRepository repository;
+	private final AmazonS3BO amazonS3BO;
 	
-	AnswerController(AnswerRepository answerRepository) {
+	AnswerController(AnswerRepository answerRepository, AmazonS3BO amazonS3BO) {
 		this.repository = answerRepository;
+		this.amazonS3BO = amazonS3BO;
 	}
 	
 	@PostMapping("/answers")
@@ -58,6 +61,15 @@ public class AnswerController {
 		}
 		
 		if (answers != null) {
+			for (Answer answer : answers) {
+				if (answer.getImagePath() != null && !answer.getImagePath().isEmpty()) {
+					String bucketName = answer.getImagePath().split("~")[0];
+					String keyName = answer.getImagePath().split("~")[1];
+					
+					String awsPreSignedURL = amazonS3BO.getPresignedUrl(bucketName, keyName);
+					answer.setImagePath(awsPreSignedURL);
+				}
+			}
 			return answers;
 		}
 		

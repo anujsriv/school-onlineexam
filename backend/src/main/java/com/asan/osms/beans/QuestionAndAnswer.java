@@ -8,6 +8,7 @@ public class QuestionAndAnswer {
 	private String correctIncorrect;
 	private Integer marksObtained;
 	private Double fullMarks;
+	private String imagePath;
 	
 	
 	/**
@@ -81,6 +82,19 @@ public class QuestionAndAnswer {
 	 */
 	public void setFullMarks(Double fullMarks) {
 		this.fullMarks = fullMarks;
+	}
+	
+	/**
+	 * @return the imagePath
+	 */
+	public String getImagePath() {
+		return imagePath;
+	}
+	/**
+	 * @param imagePath the imagePath to set
+	 */
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
 	}
 
 }
