@@ -22,6 +22,8 @@ function QuestionTable (props) {
 
     const [questionPaper, setQuestionPaper] = useState({});
 
+    const [enlargeImage, setEnlargeImage] = useState(false);
+
     useEffect(() => {
         getData()
         const interval = setInterval(() => {
@@ -378,28 +380,17 @@ function QuestionTable (props) {
                     <br></br>
                     <label className="font-weight-bold">Answer</label>
                     <br></br>
-                    {eachQuestion.imagePath ? 
-                    <div className="media">
-                        <ReactImageMagnify {...{
-                                smallImage: {
-                                    alt: 'Supported Diagram',
-                                    imageClassName: 'align-self-start mr-3',
-                                    src: eachQuestion.imagePath,
-                                    width: 90,
-                                    height: 90
-                                },
-                                largeImage: {
-                                    src: eachQuestion.imagePath,
-                                    width: 700,
-                                    height: 700
-                                },
-                                enlargedImageContainerDimensions: {
-                                    width: '700%', height: '700%'
-                                }
-                            }} />
-                    <div className="media-body">
-                        <p className="font-weight-normal">{eachQuestion.answer}</p>
-                    </div>
+                    {eachQuestion.imagePath ? <div>
+                        <div className="media">
+                            <img class="align-self-start mr-3" onClick={() => setEnlargeImage(!enlargeImage)} 
+                                 style={{cursor:'pointer'}} width='90' height='90' src={eachQuestion.imagePath}></img>
+                            <div className="media-body">
+                                <p className="font-weight-normal">{eachQuestion.answer}</p>
+                            </div>
+                        </div>
+                        <div id={"portal"+eachQuestion.id} style={{display: enlargeImage ? 'block' : 'none' }} className="portal">
+                            <img class="align-self-start mr-3" width='700' height='700' src={eachQuestion.imagePath}></img>
+                        </div>
                     </div>
                     : <p className="font-weight-normal">{eachQuestion.answer}</p>}
                     <br></br>

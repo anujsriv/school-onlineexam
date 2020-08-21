@@ -12,3 +12,13 @@
   .button:active {
     border: 1px solid 007bff
   }
+
+  .portal {
+    position: relative;
+    overflow: hidden;
+    margin-left: 10px;
+    opacity: 1;
+    transition: opacity 300ms ease-in 0ms;
+    z-index: 2;
+    border: 1px solid #007bff;
+  }
