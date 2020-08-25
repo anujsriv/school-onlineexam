@@ -35,7 +35,15 @@ public class QuestionController {
 	
 	@GetMapping("/question/{questionPaperID}")
 	List<Question> getAllQuestionsForQuestionPaper(@PathVariable Integer questionPaperID) {
-		return repository.getAllQuestionsForQuestionPaper(questionPaperID);
+		List<Question> questions = repository.getAllQuestionsForQuestionPaper(questionPaperID);
+		
+		if (questions != null && !questions.isEmpty()) {
+			for (Question question : questions) {
+				question.setButtonClass("btn btn-outline-danger");
+			}
+		}
+		
+		return questions;
 	}
 	
 	@GetMapping("/question/{questionPaperID}/{pageNumber}")

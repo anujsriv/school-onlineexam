@@ -11,7 +11,7 @@ import com.asan.osms.entity.Question;
 
 public interface QuestionRepository extends PagingAndSortingRepository<Question, Integer> {
 	
-	@Query(value = "SELECT q FROM Question q WHERE q.questionPaperID = ?1")
+	@Query(value = "SELECT q FROM Question q WHERE q.questionPaperID = ?1 order by q.id asc")
 	List<Question> getAllQuestionsForQuestionPaper(Integer id);
 	
 	@Query(value = "SELECT q FROM Question q WHERE q.questionPaperID = ?1")

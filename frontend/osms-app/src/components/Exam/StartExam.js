@@ -5,14 +5,27 @@ import { isNullOrUndefined } from 'util';
 import TranslateIcon from '../Images/translate.png';
 import Dictaphone from '../SpeechRecognition/Dictaphone';
 import UserProfile from '../../closure/UserProfile';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 
 function StartExam(props) {
-
-    const [checked, setChecked] = useState(false);
 
     const [uploadFiles, setUploadFiles] = useState([])
 
     const [questionPaper, setQuestionPaper] = useState([]);
+
+    const [questions, setQuestions] = useState([]);
+
+    const [answers, setAnswers] = useState([]);
+
+    const [answerPaperID, setAnswerPaperID] = useState(null);
+
+    const [showSubmit, setShowSubmit] = useState(false);
+    
+    const [attemptedQNum, setAttemptedQNum] = useState(1);
+
+    const [show, setShow] = useState(false);
 
     const [state, setState] = useState({
         multiChoice: [],
@@ -23,30 +36,14 @@ function StartExam(props) {
         disabled: "false"
     })
 
-    const [pagable, setPagable] = useState({
-        currentPageNumber : "",
-        totalNumberOfPages: ""
-    });
-
     const [question, setQuestion] = useState({
-        questionPaperID : "",
         type: "",
         question: "",
         marks: "",
         options: "",
-        imagePath: ""
-    });
-
-    const [answer, setAnswer] = useState({
-        answerPaperID : "",
-        questionID : "",
-        type: "",
-        answerString : "",
-        imagePath: ""
-    });
-
-    const[states, setStates] = useState({
-        answerMap: new Map()
+        imagePath: "",
+        id: "",
+        buttonClass: "btn btn-outline-danger"
     });
 
     useEffect(() => {
@@ -56,7 +53,7 @@ function StartExam(props) {
     const getData = async () => {
         if (!isNullOrUndefined(props.location.state)) {
             const response = await axios.get('questionpaper/'+props.location.state.questionPaperID)
-            setQuestionPaper(response.data)
+            setQuestionPaper(response.data);
         }
     }
 
@@ -84,133 +81,172 @@ function StartExam(props) {
         }
     }
 
-    const handleNextClick = (e) => {
-
+    const handleStartClick = (e) => {
         e.preventDefault();
-        const {id} = e.target;
-        let pageNumber = 0;
-
-        if (id === 'next' || id === 'submit') {
-            handleAnswerState();
-            pageNumber = pagable.currentPageNumber + 1;
-        } else if (id === 'previous') {
-            pageNumber = pagable.currentPageNumber - 1;
+        const payload={
+            "questionPaperID":props.location.state.questionPaperID,
+            "studentID":props.location.state.studentID,
+            "status":"in-progress"
         }
+        axios.post('answerpapers', payload)
+            .then(function (response) {
+                if(response.status === 200){
+                    setAnswerPaperID(response.data.id);
+                } else{
+                    console.log("Some error occured");
+                }
+        })
+        .catch(function (error) {
+                console.log(error);
+        });
 
-        if (id === 'start') {
-            const payload={
-                "questionPaperID":props.location.state.questionPaperID,
-                "studentID":props.location.state.studentID,
-                "status":"in-progress"
-            }
-            axios.post('answerpapers', payload)
-                .then(function (response) {
-                    if(response.status === 200){
-                        setAnswer({
-                            'answerPaperID':response.data.id
-                        });
-                    } else{
-                        console.log("Some error occured");
-                    }
+        let userName = UserProfile.getUserName();
+        axios.get('procting/'+userName)
+            .then(function (response){
+                if (response.status === 200) {
+                    const proctingURL = response.data.videoURL;
+                    window.open(proctingURL, "_blank");
+                }
             })
             .catch(function (error) {
-                    console.log(error);
-            });
+                console.log(error);
+        })
 
-            let userName = UserProfile.getUserName();
-            axios.get('procting/'+userName)
-                .then(function (response){
-                    if (response.status === 200) {
-                        const proctingURL = response.data.videoURL;
-                        window.open(proctingURL, "_blank");
+        axios.get('question/'+props.location.state.questionPaperID)
+            .then(res =>{
+                if (res.status === 200) {
+                    setQuestions(res.data);
+                    setQuestion(res.data[0]);
+                }
+            })
+            .catch(function (error){
+                console.log(error);
+            });
+    }
+
+    const handleQButtonClick = (id) => {
+        setState({
+            'multiChoice': [],
+            'singleChoice': "",
+            'answerText': ""
+        });
+        questions.forEach(function (eachQuestion) {
+            if (eachQuestion.id === id) {
+                setQuestion(eachQuestion);
+
+                answers.forEach(function (eachAnswer){
+                    if (eachAnswer.questionID === id) {
+                        if (eachAnswer.answer) {
+                            if (eachQuestion.type === 'multi') {
+                                setState(prevState => ({
+                                    ...prevState,
+                                    "multiChoice": eachAnswer.answer.split(',')
+                                }))
+                            }
+            
+                            if (eachQuestion.type === 'single') {
+                                setState(prevState => ({
+                                    ...prevState,
+                                    "singleChoice": eachAnswer.answer
+                                }))
+                            }
+            
+                            if (eachQuestion.type === 'subjective') {
+                                setState(prevState => ({
+                                    ...prevState,
+                                    "answerText": eachAnswer.answer
+                                }))
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    const handleSaveClick = (e) => {
+        e.preventDefault();
+
+        if (question.type === 'multi') {
+            state.answerText = state.multiChoice.toString();
+        }
+
+        if (question.type === 'single') {
+            state.answerText = state.singleChoice;
+        }
+
+        let value = state.answerText;
+        let apId = answerPaperID;
+        let qId = question.id;
+
+        let found = false;
+        answers.forEach(function (eachAnswer){
+            if (eachAnswer.questionID === qId) {
+                eachAnswer.answer = value;
+                found = true;
+            }
+        });
+
+        if (!found) {
+            const answer = {
+                "answerPaperID":apId,
+                "questionID":qId,
+                "answer":value
+            }
+
+            answers.push(answer);
+        }
+
+        if (value) {
+            question.buttonClass="btn btn-outline-success";
+            setAttemptedQNum(attemptedQNum + 1);
+        }
+
+        if (attemptedQNum >= questionPaper.numberOfQuestions) {
+            setShowSubmit(true);
+        }
+
+        handleQButtonClick(question.id);
+    }
+
+    const handleSubmitClick = () => {
+        
+        let allSuccess = true;
+        answers.forEach(function(eachAnswer) {
+            const payload = {
+                "answerPaperID": eachAnswer.answerPaperID,
+                "questionID": eachAnswer.questionID,
+                "answer": eachAnswer.answer,
+                "imagePath": eachAnswer.imagePath
+            }
+
+            axios.post('answers', payload)
+                .then(function (response) {
+                    if(response.status === 200){
+                        
+                    } else{
+                        allSuccess = false;
+                        console.log("Some error occured");
                     }
                 })
                 .catch(function (error) {
-                    console.log(error);
-            })
-        } 
-        
-        if (id === 'submit') {
-            let allSuccess = true;
-            states.answerMap.forEach(function(eachAnswer, key) {
-                const payload = {
-                    "answerPaperID": eachAnswer.answerPaperID,
-                    "questionID": eachAnswer.questionID,
-                    "answer": eachAnswer.answerString,
-                    "imagePath": eachAnswer.imagePath
-                }
-
-                axios.post('answers', payload)
-                    .then(function (response) {
-                        if(response.status === 200){
-                            
-                        } else{
-                            allSuccess = false;
-                            console.log("Some error occured");
-                        }
-                    })
-                    .catch(function (error) {
-                            console.log(error);
-                    });
-            });
-
-            if (allSuccess) {
-                setState(prevState => ({
-                    ...prevState,
-                    'successMessage' : 'Answers submitted Successfully !!!',
-                    'disabled' : 'disabled'
-                }));
-            } else {
-                setState(prevState => ({
-                    ...prevState,
-                    'successMessage' : 'Some problem occured. Please try again.',
-                    'disabled' : 'disabled'
-                }))
-            }
-            
-        } else {
-            axios.get('question/'+props.location.state.questionPaperID+'/'+pageNumber)
-                .then(res =>{
-                    const response = res;
-                    setAnswer(prevState=> ({
-                        ...prevState,
-                        'questionID' : response.data.content[0].id
-                    }));
-
-                    if (states.answerMap.has(response.data.content[0].id)) {
-                        const eachAnswer = states.answerMap.get(response.data.content[0].id);
-
-                        if (eachAnswer.type === 'multi') {
-                            state.multiChoice = eachAnswer.answerString.split(',');
-                        }
-
-                        if (eachAnswer.type === 'single') {
-                            state.singleChoice = eachAnswer.answerString;
-                        }
-
-                        if (eachAnswer.type === 'subjective') {
-                            state.answerText = eachAnswer.answerString;
-                        }
-                    }
-                    displayQuestion(response.data);
+                        console.log(error);
                 });
+        });
+
+        if (allSuccess) {
+            setState(prevState => ({
+                ...prevState,
+                'successMessage' : 'Answers submitted Successfully !!!',
+                'disabled' : 'disabled'
+            }));
+        } else {
+            setState(prevState => ({
+                ...prevState,
+                'successMessage' : 'Some problem occured. Please try again.',
+                'disabled' : 'disabled'
+            }))
         }
-    }
-
-    const displayQuestion = (data) => {
-        setPagable({
-            'currentPageNumber': data.pageable.pageNumber,
-            'totalNumberOfPages': data.totalPages
-        });
-
-        setQuestion({
-            'questionPaperID' : data.content[0].questionPaperID,
-            'type': data.content[0].type,
-            'question': data.content[0].question,
-            'marks': data.content[0].marks,
-            'options': data.content[0].options,
-            'imagePath': data.content[0].imagePath
-        });
     }
 
     const renderOptions = () => {
@@ -235,18 +271,39 @@ function StartExam(props) {
             formData.append("file", eachFile);
             formData.append("docType", "answer");
             formData.append("userName", UserProfile.getUserName());
-            formData.append("fileName", answer.questionID);
+            formData.append("fileName", question.id);
 
             axios.post('upload', formData, config)
                 .then(function (response){
                     if (response.status === 200) {
-                        setAnswer(prevState=> ({
-                            ...prevState,
-                            'imagePath' : response.data
-                        }));
+                        let found = false;
+                        answers.forEach(function (eachAnswer){
+                            if (eachAnswer.questionID === question.id) {
+                                eachAnswer.imagePath = response.data;
+                                found = true;
+                            }
+                        });
+
+                        if (!found) {
+                            let apId = answerPaperID;
+                            const answer = {
+                                "answerPaperID":apId,
+                                "questionID":question.id,
+                                "imagePath":response.data
+                            }
+                            answers.push(answer);
+                        }
+
+                        question.buttonClass="btn btn-outline-success";
+                        setAttemptedQNum(attemptedQNum + 1);
+
+                        if (attemptedQNum >= questionPaper.numberOfQuestions) {
+                            setShowSubmit(true);
+                        }
+
                         setState(prevState => ({
                             ...prevState,
-                            'uploadSuccessMessage' : 'Diagram attached successfully.'
+                            'uploadSuccessMessage' : 'Answer uploaded/ Diagram attached successfully.'
                         }))
                     } else {
                         props.showError('Some error occured while uploading question.');        
@@ -261,10 +318,6 @@ function StartExam(props) {
 
     const handleChange = (e) => {
         const {id , value} = e.target;
-        
-        if (id === 'addDiagram') {
-            setChecked(!checked);
-        }
 
         if (id === 'uploadAnswer') {
             setUploadFiles(e.target.files);
@@ -284,88 +337,52 @@ function StartExam(props) {
                 [id] : values
             }))
 
-            if (states.answerMap.has(answer.questionID)) {
-                const eachAnswer = states.answerMap.get(answer.questionID);
-                eachAnswer.answerString = values.toString();
-                states.answerMap.set(answer.questionID, eachAnswer);
-            }
-
         } else {
             setState(prevState => ({
                 ...prevState,
                 [id] : value
             }))
-
-            if (states.answerMap.has(answer.questionID)) {
-                const eachAnswer = states.answerMap.get(answer.questionID);
-                eachAnswer.answerString = value;
-                states.answerMap.set(answer.questionID, eachAnswer);
-            }
         }
     }
 
-    const handleAnswerState = () => {
-        if (states.answerMap.has(answer.questionID)) {
-            const eachAnswer = states.answerMap.get(answer.questionID);
+    const handleClose = () => {
+        setShow(false);
+        handleSubmitClick();
+    }
+    const handleShow = () => setShow(true);
 
-            if (eachAnswer.type === 'multi') {
-                state.multiChoice = eachAnswer.answerString.split(',');
-            }
+    const handleTimeComplete = () => {
+        handleShow();
+    }
 
-            if (eachAnswer.type === 'single') {
-                state.singleChoice = eachAnswer.answerString;
-            }
+    const renderHeader = () => {
+        let headerElement = ['#', 'status']
 
-            if (eachAnswer.type === 'subjective') {
-                state.answerText = eachAnswer.answerString;
-            }
+        return headerElement.map((key, index) => {
+            return <th scope="col" key={index}>{key.toUpperCase()}</th>
+        })
+    }
 
-            if (question.type === 'multi') {
-                answer.answerString = state.multiChoice.toString();
-                answer.type = 'multi';
-            }
-    
-            if (question.type === 'single') {
-                answer.answerString = state.singleChoice;
-                answer.type = 'single';
-            }
-    
-            if (question.type === 'subjective') {
-                answer.answerString = state.answerText
-                answer.type = 'subjective';
-            }
-        } else {
-            if (question.type === 'multi') {
-                answer.answerString = state.multiChoice.toString();
-                answer.type = 'multi';
-            }
-    
-            if (question.type === 'single') {
-                answer.answerString = state.singleChoice;
-                answer.type = 'single';
-            }
-    
-            if (question.type === 'subjective') {
-                answer.answerString = state.answerText
-                answer.type = 'subjective';
-            }
-    
-            setAnswer(prevState=> ({
-                ...prevState,
-                'questionID' : "",
-                'answerString': "",
-                'imagePath': ""
-            }));
-            setState({
-                'multiChoice': [],
-                'singleChoice': "",
-                'answerText': ""
-            });
+    const children = ({ remainingTime }) => {
+        const hours = Math.floor(remainingTime / 3600)
+        const minutes = Math.floor((remainingTime % 3600) / 60)
+        const seconds = remainingTime % 60
 
-            setChecked(false);
-        }
+        return `${hours}:${minutes}:${seconds}`
+    }
 
-        states.answerMap.set(answer.questionID, answer);
+    const renderBody = () => {
+        let i = 1;
+        return questions && questions.map(function (eachQuestion) {
+            return (
+                <tr key={eachQuestion.id} id={eachQuestion.id}>
+                    <th scope="row">{i}</th>
+                    <td>
+                        <button key={eachQuestion.id} id={eachQuestion.id} type="button" onClick={() => handleQButtonClick(eachQuestion.id)} className={eachQuestion.buttonClass}>Question {i++}</button>
+                    </td>
+                </tr>
+            )
+        });
     }
 
     return(
@@ -376,68 +393,125 @@ function StartExam(props) {
                     <p>For security purposes, please 'Logout' and close the Browser Window.</p>
                 </div>
                 { question.type ?
-                    <div style={{display: state.disabled === 'disabled' ? 'none' : 'block' }} className="card text-left">
-                        <h5 className="card-header">{question.question} ({question.marks})</h5>
-                        <div className="card-body">
-                            <div style={{display: question.type === 'multi' ? 'block' : 'none' }} className="form-group">
-                                <label htmlFor="multi">Choose the correct option(s). There can be more than 1 correct answer. Press 'Ctrl' and click to select multiple options.</label>
-                                <select multiple className="form-control" id="multiChoice" value={state.multiChoice} onChange={handleChange} >
-                                    <option value="ps-mc">---Please Select---</option>
-                                    {renderOptions()}
-                                </select>
-                            </div>
+                    <div className="d-flex bd-highlight mb-3">
+                        <div style={{display: state.disabled === 'disabled' ? 'none' : 'block'}} className="p-2 bd-highlight text-center">
+                            <table className="table">
+                                <thead>
+                                    <tr className="table-primary">{renderHeader()}</tr>
+                                </thead>
+                                <tbody>
+                                    {renderBody()}
+                                </tbody>
+                            </table>
+                        </div> 
+                        <div style={{display: state.disabled === 'disabled' ? 'none' : 'block', width:'100%'}} className="card mr-auto p-2 bd-highlight">
+                            <h5 className="card-header">{question.question} ({question.marks})</h5>
+                            <div className="card-body" >
+                                <div style={{display: question.type === 'multi' ? 'block' : 'none' }} className="form-group">
+                                    <label htmlFor="multi">Choose the correct option(s). There can be more than 1 correct answer. Press 'Ctrl' and click to select multiple options.</label>
+                                    <select multiple className="form-control" id="multiChoice" value={state.multiChoice} onChange={handleChange} >
+                                        <option value="ps-mc">---Please Select---</option>
+                                        {renderOptions()}
+                                    </select>
+                                </div>
 
-                            <div style={{display: question.type === 'single' ? 'block' : 'none' }} className="form-group">
-                                <label htmlFor="single">Choose the correct option.</label>
-                                <select className="form-control" id="singleChoice" value={state.singleChoice} onChange={handleChange} >
-                                    <option value="ps-sc">---Please Select---</option>
-                                    {renderOptions()}
-                                </select>
-                            </div>
+                                <div style={{display: question.type === 'single' ? 'block' : 'none' }} className="form-group">
+                                    <label htmlFor="single">Choose the correct option.</label>
+                                    <select className="form-control" id="singleChoice" value={state.singleChoice} onChange={handleChange} >
+                                        <option value="ps-sc">---Please Select---</option>
+                                        {renderOptions()}
+                                    </select>
+                                </div>
 
-                            <div style={{display: question.type === 'subjective' ? 'block' : 'none' }} className="form-group">
-                                    {questionPaper.language !== 'en' ?
-                                        <div>
-                                        <p>Instructions: Please note to write your 'answer' in any langauge other than 'English', 
-                                        <br></br>please type in English (or the text copied from speech converter) and click 
-                                        <br></br>the button below to convert it into selected language.</p>
-                                        <img src={TranslateIcon} alt='' width="30" height="30" onClick={() => translate('answerText')} title="Click here to translate the above text." />
+                                <div style={{display: question.type === 'subjective' ? 'block' : 'none' }} className="form-group">
+                                        {questionPaper.language !== 'en' ?
+                                            <div>
+                                            <p>Instructions: Please note to write your 'answer' in any langauge other than 'English', 
+                                            <br></br>please type in English (or the text copied from speech converter) and click 
+                                            <br></br>the button below to convert it into selected language.</p>
+                                            <img src={TranslateIcon} alt='' width="30" height="30" onClick={() => translate('answerText')} title="Click here to translate the above text." />
+                                            </div>
+                                            : <p></p>
+                                        }
+                                        <textarea className="form-control" rows="5" id="answerText" value={state.answerText} onChange={handleChange} placeholder="Type your answer here."/>
+                                        <h4 />
+                                        <Dictaphone />
+                                </div>
+                                <div className="form-group form-inline">
+                                    <button id='save'  type="button" className="btn btn-primary form-group" onClick={handleSaveClick} >Save</button>
+                                    <div style={{paddingLeft: '2%' }} className="form-group">
+                                        <small>Add a diagram to your answer And/or Upload your answer.</small>
+                                        <input type="file" accept="image/*" onChange={handleChange} className="form-control-file" id="uploadAnswer"/>
+                                    </div>
+                                    <div className="form-group">
+                                        <button type="button" className="btn btn-primary" onClick={handleUploadFile}>Upload</button>
+                                    </div>
+                                    <button id='submit' style={{display: showSubmit ? 'block' : 'none'}} type="button" className="btn btn-primary form-group" data-toggle="modal" data-target="#submitConfirm">Submit</button>
+                                </div>
+                                <div className="modal fade" id="submitConfirm" tabIndex="-1" role="dialog" aria-labelledby="submitConfirmTitle" aria-hidden="true">
+                                    <div className="modal-dialog modal-dialog-centered" role="document">
+                                        <div className="modal-content">
+                                            <div className="modal-header">
+                                                <h5 className="modal-title" id="submitConfirmTitle">Confirm Submit</h5>
+                                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div className="modal-body">
+                                                Are you sure you want to submit your Answer Paper? 
+                                            </div>
+                                            <div className="modal-footer">
+                                                <button type="button" className="btn btn-outline-success" data-dismiss="modal" onClick={() => handleSubmitClick()}>Yes</button>
+                                                <button type="button" className="btn btn-outline-primary" data-dismiss="modal" >No</button>
+                                            </div>
                                         </div>
-                                        : <p></p>
-                                    }
-                                    <textarea className="form-control" rows="5" id="answerText" value={state.answerText} onChange={handleChange} placeholder="Type your answer here."/>
-                                    <h4 />
-                                    <Dictaphone />
-                            </div>
-                            <div className="form-group form-inline">
-                                <div style={{display: pagable.currentPageNumber !== 0 ? 'block' : 'none', paddingRight: '15%' }}>
-                                    <button id='previous' type="submit" className="btn btn-primary form-group" onClick={handleNextClick} >Previous</button>
+                                    </div>
                                 </div>
-                                <button id='next' style={{display: pagable.currentPageNumber !== pagable.totalNumberOfPages -1 ? 'block' : 'none'}} type="submit" className="btn btn-primary" onClick={handleNextClick} >Next</button>
-                                <button id='submit' style={{display: pagable.currentPageNumber === pagable.totalNumberOfPages -1 ? 'block' : 'none'}} type="submit" className="btn btn-primary" onClick={handleNextClick} >Submit</button>
-                                <div style={{paddingLeft: '10%' }} className="form-group form-check">
-                                    <input type="checkbox" onChange={handleChange} defaultChecked={checked} className="form-check-input" id="addDiagram" />
-                                    <label className="form-check-label" htmlFor="addDiagram">Add a diagram to your answer</label>
-                                </div>
-                                <div style={{display: checked ? 'block' : 'none', paddingLeft: '10%'}} className="form-group">
-                                    <input type="file" accept="image/*" onChange={handleChange} className="form-control-file" id="uploadAnswer" />
-                                </div>
-                                <div style={{display: checked ? 'block' : 'none'}} className="form-group">
-                                    <button
-                                        type="button" 
-                                        className="btn btn-primary"
-                                        onClick={handleUploadFile} >
-                                        Upload
-                                    </button>
-                                </div>
+                                <Modal show={show} backdrop="static" onHide={handleClose} aria-labelledby="contained-modal-title-vcenter" centered>
+                                    <Modal.Header closeButton>
+                                        <Modal.Title id="contained-modal-title-vcenter">
+                                            Time's Up !!
+                                        </Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body>
+                                        <p>
+                                            Sorry time's up !!
+                                            <br />All answered questions will be auto-submitted.
+                                        </p>
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                        <Button variant="secondary" onClick={handleClose}>OK</Button>
+                                    </Modal.Footer>
+                                </Modal>
                             </div>
                         </div>
-                    </div> : 
+                        <div style={{display: state.disabled === 'disabled' ? 'none' : 'block'}} className="p-2 bd-highlight" >
+                            <CountdownCircleTimer
+                                isPlaying
+                                duration={questionPaper.duration*60}
+                                colors={[
+                                ['#004777', 0.33], 
+                                ['#F7B801', 0.33],
+                                ['#A30000', 0.33],
+                                ]}
+                                onComplete={handleTimeComplete}
+                                size='90'
+                                >
+                                {children}
+                            </CountdownCircleTimer> 
+                        </div>
+                    </div>
+                    : 
                     <div style={{display: question.type ? 'none' : 'block' }} className="card text-left">
                         <h5 className="card-header ">General Instructions</h5>
                         <div className="card-body">
-                            <p className="card-text">{questionPaper.instructions} Please click on 'Start' to start your exam.</p>
-                            <button id='start' type="submit" className="btn btn-primary" onClick={handleNextClick} >Start</button>
+                            <p className="card-text">{questionPaper.instructions} 
+                            <br />Click on each 'Question #' to attempt the question.
+                            <br />Click on 'Save' after writing/ uploading your answer/ supported diagram for each question.
+                            <br />To edit/ modify any answer, please click on the 'Question #' in left hand panel.
+                            <br />Click on 'Submit' at the end to submit your answers. Please note this cannot be undone.
+                            <br />Click on 'Start' to start your exam.</p>
+                            <button id='start' type="button" className="btn btn-primary" onClick={handleStartClick} >Start</button>
                         </div>
                     </div> 
                 }

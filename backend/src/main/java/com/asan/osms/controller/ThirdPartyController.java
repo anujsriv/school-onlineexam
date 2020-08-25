@@ -60,9 +60,9 @@ public class ThirdPartyController {
 
 		try {
 			String scheme = "https://prarat-oems.com/proctor/proctor.html?";
-			String key = "9b1e20e3c88a44e2b827db0c2f3ee0d2";
+			String key = "dd81cc3636494218bba367cb329858ff";
 			String userName = procting.getUserName();
-			String appID = "6da13d.vidyo.io";
+			String appID = "8a01f2.vidyo.io";
 			String expires = "600";
 			String vCard = "";
 

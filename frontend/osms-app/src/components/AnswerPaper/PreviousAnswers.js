@@ -55,14 +55,14 @@ function PreviousAnswer(props) {
                     <br></br>
                     {eachQuestion.imagePath ? <div>
                         <div className="media">
-                            <img class="align-self-start mr-3" onClick={() => setEnlargeImage(!enlargeImage)} 
+                            <img class="align-self-start mr-3" alt='' onClick={() => setEnlargeImage(!enlargeImage)} 
                                  style={{cursor:'pointer'}} width='90' height='90' src={eachQuestion.imagePath}></img>
                             <div className="media-body">
                                 <p className="font-weight-normal">{eachQuestion.answer}</p>
                             </div>
                         </div>
                         <div id={"portal"+eachQuestion.id} style={{display: enlargeImage ? 'block' : 'none' }} className="portal">
-                            <img class="align-self-start mr-3" width='700' height='700' src={eachQuestion.imagePath}></img>
+                            <img class="align-self-start mr-3" alt='' width='700' height='700' src={eachQuestion.imagePath}></img>
                         </div>
                     </div>
                     : <p className="font-weight-normal">{eachQuestion.answer}</p>}

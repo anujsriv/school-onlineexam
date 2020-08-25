@@ -4,7 +4,6 @@ import { withRouter } from "react-router-dom";
 import UserProfile from '../../closure/UserProfile';
 import EvaluateIcon from '../Images/evaluate.png';
 import './QuestionPapers.css';
-import ReactImageMagnify from 'react-image-magnify';
 
 function QuestionTable (props) {
 

@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "OSMS_QUESTION")
@@ -35,6 +36,9 @@ public class Question {
 	
 	@Column(name = "IMAGE_PATH")
 	private String imagePath;
+	
+	@Transient
+	private String buttonClass;
 
 	/**
 	 * @return the id
@@ -146,6 +150,20 @@ public class Question {
 	 */
 	public void setImagePath(String imagePath) {
 		this.imagePath = imagePath;
+	}
+
+	/**
+	 * @return the buttonClass
+	 */
+	public String getButtonClass() {
+		return buttonClass;
+	}
+
+	/**
+	 * @param buttonClass the buttonClass to set
+	 */
+	public void setButtonClass(String buttonClass) {
+		this.buttonClass = buttonClass;
 	}
 
 }
