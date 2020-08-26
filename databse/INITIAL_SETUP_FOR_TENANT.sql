@@ -14,6 +14,7 @@ CREATE TABLE [dbo].[OSMS_ANSWER](
 	[QUESTION_ID] [int] NULL,
 	[CORRECT_INCORRECT] [nvarchar](max) NULL,
 	[MARKS_OBTAINED] [int] NULL,
+	[IMAGE_PATH] [ntext] NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
@@ -61,6 +62,7 @@ CREATE TABLE [dbo].[OSMS_PROCTING_URL](
 	[SECTION] [varchar](255) NULL,
 	[USER_NAME] [varchar](255) NULL,
 	[VIDEO_URL] [ntext] NULL,
+	[USER_TYPE] [nvarchar](max) NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[id] ASC

@@ -11,6 +11,7 @@ CREATE TABLE [dbo].[OSMS_SCHOOL_TENANTID](
 	[id] [int] NOT NULL,
 	[SCHOOL_NAME] [ntext] NOT NULL,
 	[TENANT_ID] [varchar](255) NOT NULL,
+	[VIDEO_APP_ID] [ntext] NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
