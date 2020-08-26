@@ -310,8 +310,8 @@ function StartExam(props) {
                     }
                 })
             .catch(function (error){
-                props.showError('Some error occured while uploading question.');
                 console.log(error);
+                props.showError('The field file exceeds its maximum permitted size of 1 Mb');
             })
         })
     }
@@ -426,10 +426,11 @@ function StartExam(props) {
                                 <div style={{display: question.type === 'subjective' ? 'block' : 'none' }} className="form-group">
                                         {questionPaper.language !== 'en' ?
                                             <div>
-                                            <p>Instructions: Please note to write your 'answer' in any langauge other than 'English', 
-                                            <br></br>please type in English (or the text copied from speech converter) and click 
-                                            <br></br>the button below to convert it into selected language.</p>
-                                            <img src={TranslateIcon} alt='' width="30" height="30" onClick={() => translate('answerText')} title="Click here to translate the above text." />
+                                            <small>Instructions: Please note to write your 'answer' in any langauge other than 'English', 
+                                            please type in English (or the text copied from speech converter) and click 
+                                            the button <img src={TranslateIcon} alt='' width="30" height="30" /> to convert it into selected language.</small>
+                                            <br /><br />
+                                            <img src={TranslateIcon} style={{cursor: "pointer"}} alt='' width="30" height="30" onClick={() => translate('answerText')} title="Click here to translate the above text." />
                                             </div>
                                             : <p></p>
                                         }
@@ -439,11 +440,11 @@ function StartExam(props) {
                                 </div>
                                 <div className="form-group form-inline">
                                     <button id='save'  type="button" className="btn btn-primary form-group" onClick={handleSaveClick} >Save</button>
-                                    <div style={{paddingLeft: '2%' }} className="form-group">
+                                    <div style={{display: question.type === 'subjective' ? 'block' : 'none', paddingLeft: '2%' }} className="form-group">
                                         <small>Add a diagram to your answer And/or Upload your answer.</small>
-                                        <input type="file" accept="image/*" onChange={handleChange} className="form-control-file" id="uploadAnswer"/>
+                                        <input type="file" accept="image/*" key={question.id} onChange={handleChange} className="form-control-file" id="uploadAnswer"/>
                                     </div>
-                                    <div className="form-group">
+                                    <div style={{display: question.type === 'subjective' ? 'block' : 'none'}} className="form-group">
                                         <button type="button" className="btn btn-primary" onClick={handleUploadFile}>Upload</button>
                                     </div>
                                     <button id='submit' style={{display: showSubmit ? 'block' : 'none'}} type="button" className="btn btn-primary form-group" data-toggle="modal" data-target="#submitConfirm">Submit</button>

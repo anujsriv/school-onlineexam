@@ -401,9 +401,9 @@ function CreateEditQuestionPaper(props) {
                     <form noValidate onSubmit={handleQuestionSubmitClick}>
                         {state.questionPaper.language !== 'en' ?
                                 <div className="form-group text-left">
-                                <p>Instructions: 
+                                <small>Instructions: 
                                 <br></br>Please note to write your 'question' and 'options' (in case of multiple choice) in any langauge other than 'English', 
-                                <br></br>please type in English and click the button <img src={TranslateIcon} alt='' width="30" height="30" /> to convert it into selected language.</p>
+                                please type in English and click the button <img src={TranslateIcon} alt='' width="30" height="30" /> to convert it into selected language.</small>
                                 </div>
                                 : <p></p>
                         }

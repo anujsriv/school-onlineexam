@@ -1,4 +1,4 @@
-USE [osms_eci]
+USE [osms_arohan]
 CREATE SEQUENCE hibernate_sequence  
 AS int  
 START WITH 1  

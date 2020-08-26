@@ -17,11 +17,18 @@
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  overflow-x: auto;
   align-items: left;
   justify-content: left;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+th {
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
 }
 
 .App-link {
